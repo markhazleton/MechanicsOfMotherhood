@@ -110,23 +110,23 @@ export default function Recipes() {
                 {recipes.map((recipe: Recipe) => (
                   <Card key={recipe.id} className="gear-border bg-white rounded-xl overflow-hidden mechanical-shadow hover:transform hover:scale-105 transition-all duration-300" data-testid={`recipe-card-${recipe.id}`}>
                     <img
-                      src={recipe.imageUrl}
-                      alt={recipe.title}
+                      src={recipe.imageUrl || "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"}
+                      alt={recipe.title || recipe.name}
                       className="w-full h-40 object-cover"
                     />
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between mb-2">
                         <Badge className="bg-workshop-teal text-white text-xs">
                           <Clock size={12} className="mr-1" />
-                          {recipe.prepTime + recipe.cookTime}min
+                          {(recipe.prepTime || 30) + (recipe.cookTime || 30)}min
                         </Badge>
                         <div className="flex items-center text-energetic-orange">
                           <Star size={12} fill="currentColor" />
-                          <span className="ml-1 text-xs">{recipe.rating}</span>
+                          <span className="ml-1 text-xs">{recipe.rating || recipe.averageRating || 5}</span>
                         </div>
                       </div>
                       <h3 className="font-bold text-lg mb-2 text-industrial-blue line-clamp-2">
-                        {recipe.title}
+                        {recipe.title || recipe.name}
                       </h3>
                       <p className="text-tool-gray text-sm mb-3 line-clamp-2">
                         {recipe.description}

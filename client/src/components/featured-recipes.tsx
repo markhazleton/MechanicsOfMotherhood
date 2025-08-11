@@ -79,26 +79,26 @@ export default function FeaturedRecipes() {
           {recipes.map((recipe: Recipe) => (
             <Card key={recipe.id} className="gear-border bg-white rounded-xl overflow-hidden mechanical-shadow hover:transform hover:scale-105 transition-all duration-300" data-testid={`recipe-card-${recipe.id}`}>
               <img
-                src={recipe.imageUrl}
-                alt={recipe.title}
+                src={recipe.imageUrl || "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"}
+                alt={recipe.title || recipe.name}
                 className="w-full h-48 object-cover"
               />
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-3">
                   <Badge
                     className="text-white px-3 py-1 rounded-full text-sm font-medium"
-                    style={{ backgroundColor: getCategoryColor(recipe.category) }}
+                    style={{ backgroundColor: getCategoryColor(recipe.category || "General") }}
                   >
                     <Clock size={14} className="mr-1" />
-                    {recipe.prepTime + recipe.cookTime} MIN
+                    {(recipe.prepTime || 30) + (recipe.cookTime || 30)} MIN
                   </Badge>
                   <div className="flex items-center text-energetic-orange">
                     <Star size={14} fill="currentColor" />
-                    <span className="ml-1 text-sm font-semibold">{recipe.rating}</span>
+                    <span className="ml-1 text-sm font-semibold">{recipe.rating || recipe.averageRating || 5}</span>
                   </div>
                 </div>
                 <h3 className="font-bold text-xl mb-2 text-industrial-blue" data-testid={`recipe-title-${recipe.id}`}>
-                  {recipe.title}
+                  {recipe.title || recipe.name}
                 </h3>
                 <p className="text-tool-gray mb-4">
                   {recipe.description}
@@ -110,8 +110,8 @@ export default function FeaturedRecipes() {
                       {recipe.servings} servings
                     </span>
                     <span className="flex items-center">
-                      {getDifficultyIcon(recipe.difficulty)}
-                      <span className="ml-1 capitalize">{recipe.difficulty}</span>
+                      {getDifficultyIcon(recipe.difficulty || "easy")}
+                      <span className="ml-1 capitalize">{recipe.difficulty || "easy"}</span>
                     </span>
                   </div>
                   <Button

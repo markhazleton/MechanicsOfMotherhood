@@ -2,110 +2,123 @@ import { type Recipe, type InsertRecipe, type BlogPost, type InsertBlogPost, typ
 import { randomUUID } from "crypto";
 
 export interface IStorage {
-  // Recipes
-  getRecipes(params: { page?: number; limit?: number; category?: string; difficulty?: string; featured?: boolean }): Promise<{ recipes: Recipe[]; total: number }>;
-  getRecipe(id: string): Promise<Recipe | undefined>;
+  // Recipes - RecipeSpark API compatible
+  getRecipes(params: { pageNumber?: number; pageSize?: number; categoryId?: number; searchTerm?: string; featured?: boolean }): Promise<{ recipes: Recipe[]; total: number }>;
+  getRecipe(id: number): Promise<Recipe | undefined>;
   createRecipe(recipe: InsertRecipe): Promise<Recipe>;
+  updateRecipe(id: number, recipe: InsertRecipe): Promise<Recipe | undefined>;
+  deleteRecipe(id: number): Promise<boolean>;
   searchRecipes(query: string): Promise<Recipe[]>;
   getFeaturedRecipes(): Promise<Recipe[]>;
 
-  // Blog Posts
+  // Categories - RecipeSpark API compatible
+  getCategories(includeInactive?: boolean): Promise<Category[]>;
+  getCategory(id: number): Promise<Category | undefined>;
+  createCategory(category: InsertCategory): Promise<Category>;
+  updateCategory(id: number, category: InsertCategory): Promise<Category | undefined>;
+  deleteCategory(id: number): Promise<boolean>;
+
+  // Blog Posts (MoM specific)
   getBlogPosts(params: { page?: number; limit?: number; category?: string; featured?: boolean }): Promise<{ posts: BlogPost[]; total: number }>;
   getBlogPost(id: string): Promise<BlogPost | undefined>;
   createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
   getFeaturedBlogPosts(): Promise<BlogPost[]>;
-
-  // Categories
-  getCategories(): Promise<Category[]>;
-  createCategory(category: InsertCategory): Promise<Category>;
 
   // Stats
   getStats(): Promise<{ recipes: number; families: number; timeSaved: number; communityMembers: number }>;
 }
 
 export class MemStorage implements IStorage {
-  private recipes: Map<string, Recipe> = new Map();
+  private recipes: Map<number, Recipe> = new Map();
   private blogPosts: Map<string, BlogPost> = new Map();
-  private categories: Map<string, Category> = new Map();
+  private categories: Map<number, Category> = new Map();
+  private nextRecipeId: number = 1;
+  private nextCategoryId: number = 1;
 
   constructor() {
     this.seedData();
   }
 
   private seedData() {
-    // Seed Categories
+    // Seed Categories - RecipeSpark API compatible
     const categories = [
-      { name: "Quick Fixes", description: "15-minute meals", color: "#38B2AC", recipeCount: 45, postCount: 12 },
-      { name: "Kid-Friendly", description: "Child-approved recipes", color: "#F59E0B", recipeCount: 32, postCount: 8 },
-      { name: "Healthy Build", description: "Nutritious family meals", color: "#10B981", recipeCount: 28, postCount: 15 },
-      { name: "Budget Tools", description: "Cost-effective cooking", color: "#6366F1", recipeCount: 22, postCount: 6 },
-      { name: "Meal Prep", description: "Batch cooking systems", color: "#F56565", recipeCount: 18, postCount: 10 },
+      { name: "Quick Fixes", description: "15-minute meals for busy schedules", displayOrder: 1, isActive: true, url: "quick-fixes", color: "#38B2AC", recipeCount: 45 },
+      { name: "Kid-Friendly", description: "Child-approved recipes", displayOrder: 2, isActive: true, url: "kid-friendly", color: "#F59E0B", recipeCount: 32 },
+      { name: "Healthy Build", description: "Nutritious family meals", displayOrder: 3, isActive: true, url: "healthy-build", color: "#10B981", recipeCount: 28 },
+      { name: "Budget Tools", description: "Cost-effective cooking solutions", displayOrder: 4, isActive: true, url: "budget-tools", color: "#6366F1", recipeCount: 22 },
+      { name: "Meal Prep", description: "Batch cooking systems", displayOrder: 5, isActive: true, url: "meal-prep", color: "#F56565", recipeCount: 18 },
     ];
 
     categories.forEach(cat => {
-      const id = randomUUID();
+      const id = this.nextCategoryId++;
       this.categories.set(id, { id, ...cat });
     });
 
-    // Seed Recipes
+    // Seed Recipes - RecipeSpark API compatible
     const recipes = [
       {
-        title: "One-Pan Chicken & Veggie Assembly",
+        name: "One-Pan Chicken & Veggie Assembly",
         description: "Perfectly engineered for busy weeknights. Minimal cleanup, maximum flavor.",
+        ingredients: "- 2 lbs chicken thighs\n- 2 cups mixed vegetables\n- 2 tbsp olive oil\n- 1 tsp garlic powder\n- Salt and pepper",
+        instructions: "1. Preheat oven to 425°F\n2. Season chicken with spices\n3. Arrange chicken and vegetables on sheet pan\n4. Drizzle with oil\n5. Bake 25-30 minutes",
+        servings: 4,
+        authorNM: "MoM Engineering Team",
+        recipeCategoryID: 1, // Quick Fixes
+        isApproved: true,
+        averageRating: 5,
+        // MoM specific fields
         imageUrl: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
         prepTime: 10,
         cookTime: 25,
-        servings: 4,
         difficulty: "easy" as const,
-        category: "Quick Fixes",
-        ingredients: ["2 lbs chicken thighs", "2 cups mixed vegetables", "2 tbsp olive oil", "1 tsp garlic powder", "Salt and pepper"],
-        instructions: ["Preheat oven to 425°F", "Season chicken with spices", "Arrange chicken and vegetables on sheet pan", "Drizzle with oil", "Bake 25-30 minutes"],
         tags: ["one-pan", "weeknight", "protein"],
-        rating: 5,
-        ratingCount: 124,
         featured: true,
       },
       {
-        title: "Sunday Prep Station Blueprint",
+        name: "Sunday Prep Station Blueprint",
         description: "Strategic meal prep system that powers your entire week. Professional efficiency.",
+        ingredients: "- 3 lbs chicken breast\n- 4 cups brown rice\n- 6 cups mixed vegetables\n- 2 cups quinoa",
+        instructions: "1. Cook proteins in batches\n2. Prepare grains\n3. Steam vegetables\n4. Portion into containers",
+        servings: 12,
+        authorNM: "MoM Prep Specialists",
+        recipeCategoryID: 5, // Meal Prep
+        isApproved: true,
+        averageRating: 5,
         imageUrl: "https://images.unsplash.com/photo-1546549032-9571cd6b27df?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
         prepTime: 120,
         cookTime: 60,
-        servings: 12,
         difficulty: "medium" as const,
-        category: "Meal Prep",
-        ingredients: ["3 lbs chicken breast", "4 cups brown rice", "6 cups mixed vegetables", "2 cups quinoa"],
-        instructions: ["Cook proteins in batches", "Prepare grains", "Steam vegetables", "Portion into containers"],
         tags: ["meal-prep", "batch-cooking", "weekly"],
-        rating: 5,
-        ratingCount: 89,
         featured: true,
       },
       {
-        title: "Mini Builder's Lunch Kit",
+        name: "Mini Builder's Lunch Kit",
         description: "Fun, interactive meals that keep little hands busy and bellies full. Zero complaints guaranteed.",
+        ingredients: "- Whole grain crackers\n- Cheese cubes\n- Cherry tomatoes\n- Hummus\n- Carrot sticks",
+        instructions: "1. Arrange items in compartmented container\n2. Include fun picks\n3. Add favorite dip",
+        servings: 2,
+        authorNM: "MoM Junior Division",
+        recipeCategoryID: 2, // Kid-Friendly
+        isApproved: true,
+        averageRating: 5,
         imageUrl: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
         prepTime: 15,
         cookTime: 0,
-        servings: 2,
         difficulty: "easy" as const,
-        category: "Kid-Friendly",
-        ingredients: ["Whole grain crackers", "Cheese cubes", "Cherry tomatoes", "Hummus", "Carrot sticks"],
-        instructions: ["Arrange items in compartmented container", "Include fun picks", "Add favorite dip"],
         tags: ["no-cook", "lunch", "interactive"],
-        rating: 5,
-        ratingCount: 156,
         featured: true,
       },
     ];
 
     recipes.forEach(recipe => {
-      const id = randomUUID();
+      const id = this.nextRecipeId++;
       const now = new Date();
       this.recipes.set(id, { 
         id, 
-        ...recipe, 
-        createdAt: now 
+        ...recipe,
+        domainID: 2,
+        createdDT: now,
+        modifiedDT: now,
       });
     });
 
@@ -153,49 +166,76 @@ export class MemStorage implements IStorage {
     });
   }
 
-  async getRecipes(params: { page?: number; limit?: number; category?: string; difficulty?: string; featured?: boolean }): Promise<{ recipes: Recipe[]; total: number }> {
+  // RecipeSpark API compatible methods
+  async getRecipes(params: { pageNumber?: number; pageSize?: number; categoryId?: number; searchTerm?: string; featured?: boolean }): Promise<{ recipes: Recipe[]; total: number }> {
     let filtered = Array.from(this.recipes.values());
 
-    if (params.category) {
-      filtered = filtered.filter(r => r.category === params.category);
+    if (params.categoryId) {
+      filtered = filtered.filter(r => r.recipeCategoryID === params.categoryId);
     }
-    if (params.difficulty) {
-      filtered = filtered.filter(r => r.difficulty === params.difficulty);
+    if (params.searchTerm) {
+      const searchTerm = params.searchTerm.toLowerCase();
+      filtered = filtered.filter(r => 
+        r.name.toLowerCase().includes(searchTerm) ||
+        r.description?.toLowerCase().includes(searchTerm) ||
+        r.ingredients?.toLowerCase().includes(searchTerm)
+      );
     }
     if (params.featured) {
       filtered = filtered.filter(r => r.featured);
     }
 
     const total = filtered.length;
-    const page = params.page || 1;
-    const limit = params.limit || 10;
-    const start = (page - 1) * limit;
-    const recipes = filtered.slice(start, start + limit);
+    const pageNumber = params.pageNumber || 1;
+    const pageSize = params.pageSize || 20;
+    const start = (pageNumber - 1) * pageSize;
+    const recipes = filtered.slice(start, start + pageSize);
 
     return { recipes, total };
   }
 
-  async getRecipe(id: string): Promise<Recipe | undefined> {
+  async getRecipe(id: number): Promise<Recipe | undefined> {
     return this.recipes.get(id);
   }
 
   async createRecipe(recipe: InsertRecipe): Promise<Recipe> {
-    const id = randomUUID();
+    const id = this.nextRecipeId++;
+    const now = new Date();
     const newRecipe: Recipe = { 
       ...recipe, 
-      id, 
-      createdAt: new Date() 
+      id,
+      domainID: 2,
+      createdDT: now,
+      modifiedDT: now,
     };
     this.recipes.set(id, newRecipe);
     return newRecipe;
   }
 
+  async updateRecipe(id: number, recipe: InsertRecipe): Promise<Recipe | undefined> {
+    const existing = this.recipes.get(id);
+    if (!existing) return undefined;
+
+    const updated: Recipe = {
+      ...existing,
+      ...recipe,
+      id,
+      modifiedDT: new Date(),
+    };
+    this.recipes.set(id, updated);
+    return updated;
+  }
+
+  async deleteRecipe(id: number): Promise<boolean> {
+    return this.recipes.delete(id);
+  }
+
   async searchRecipes(query: string): Promise<Recipe[]> {
     const searchTerm = query.toLowerCase();
     return Array.from(this.recipes.values()).filter(recipe =>
-      recipe.title.toLowerCase().includes(searchTerm) ||
-      recipe.description.toLowerCase().includes(searchTerm) ||
-      recipe.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+      recipe.name.toLowerCase().includes(searchTerm) ||
+      recipe.description?.toLowerCase().includes(searchTerm) ||
+      recipe.ingredients?.toLowerCase().includes(searchTerm)
     );
   }
 
@@ -243,15 +283,41 @@ export class MemStorage implements IStorage {
     return Array.from(this.blogPosts.values()).filter(p => p.featured && p.published);
   }
 
-  async getCategories(): Promise<Category[]> {
-    return Array.from(this.categories.values());
+  // Categories - RecipeSpark API compatible
+  async getCategories(includeInactive?: boolean): Promise<Category[]> {
+    let categories = Array.from(this.categories.values());
+    if (!includeInactive) {
+      categories = categories.filter(c => c.isActive);
+    }
+    return categories.sort((a, b) => a.displayOrder - b.displayOrder);
+  }
+
+  async getCategory(id: number): Promise<Category | undefined> {
+    return this.categories.get(id);
   }
 
   async createCategory(category: InsertCategory): Promise<Category> {
-    const id = randomUUID();
+    const id = this.nextCategoryId++;
     const newCategory: Category = { ...category, id };
     this.categories.set(id, newCategory);
     return newCategory;
+  }
+
+  async updateCategory(id: number, category: InsertCategory): Promise<Category | undefined> {
+    const existing = this.categories.get(id);
+    if (!existing) return undefined;
+
+    const updated: Category = {
+      ...existing,
+      ...category,
+      id,
+    };
+    this.categories.set(id, updated);
+    return updated;
+  }
+
+  async deleteCategory(id: number): Promise<boolean> {
+    return this.categories.delete(id);
   }
 
   async getStats(): Promise<{ recipes: number; families: number; timeSaved: number; communityMembers: number }> {
