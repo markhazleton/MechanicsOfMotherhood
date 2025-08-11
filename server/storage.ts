@@ -1,5 +1,6 @@
 import { type Recipe, type InsertRecipe, type BlogPost, type InsertBlogPost, type Category, type InsertCategory, type Website, type InsertWebsite, type MenuItem, type InsertMenuItem } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { recipeSparkClient, type ExternalRecipe, type ExternalCategory } from "./api-client.js";
 
 export interface IStorage {
   // Recipes - RecipeSpark API compatible
@@ -61,6 +62,47 @@ export class MemStorage implements IStorage {
   constructor() {
     this.seedData();
   }
+
+  // Transformation methods for external API data
+  private transformExternalRecipe = (external: ExternalRecipe): Recipe => {
+    return {
+      id: external.id,
+      name: external.name,
+      description: external.description || null,
+      ingredients: external.ingredients || null,
+      instructions: external.instructions || null,
+      servings: external.servings || null,
+      authorNM: external.authorNM || null,
+      recipeCategoryID: external.recipeCategoryID,
+      domainID: external.domainID,
+      createdDT: new Date(external.modifiedDT),
+      modifiedDT: new Date(external.modifiedDT),
+      prepTime: null,
+      cookTime: null,
+      difficulty: null,
+      imageUrl: null,
+      tags: null,
+      averageRating: external.averageRating || null,
+      featured: null,
+      viewCount: external.viewCount || null,
+      recipeURL: external.recipeURL || null,
+      seO_Keywords: null,
+      isApproved: external.isApproved || null,
+    };
+  };
+
+  private transformExternalCategory = (external: ExternalCategory): Category => {
+    return {
+      id: external.id,
+      name: external.name,
+      description: external.description || null,
+      displayOrder: external.order || null,
+      isActive: external.isActive || null,
+      url: external.url || null,
+      color: null,
+      recipeCount: null,
+    };
+  };
 
   private seedData() {
     // Seed Categories - RecipeSpark API compatible
@@ -191,34 +233,31 @@ export class MemStorage implements IStorage {
 
   // RecipeSpark API compatible methods
   async getRecipes(params: { pageNumber?: number; pageSize?: number; categoryId?: number; searchTerm?: string; featured?: boolean }): Promise<{ recipes: Recipe[]; total: number }> {
-    let filtered = Array.from(this.recipes.values());
-
-    if (params.categoryId) {
-      filtered = filtered.filter(r => r.recipeCategoryID === params.categoryId);
+    try {
+      const response = await recipeSparkClient.getRecipes(params);
+      
+      // Transform external API format to our schema
+      const recipes: Recipe[] = response.data.map(this.transformExternalRecipe);
+      
+      return {
+        recipes,
+        total: response.pagination?.totalCount || recipes.length
+      };
+    } catch (error) {
+      console.error('Failed to fetch recipes from external API:', error);
+      // Fallback to empty results on API failure
+      return { recipes: [], total: 0 };
     }
-    if (params.searchTerm) {
-      const searchTerm = params.searchTerm.toLowerCase();
-      filtered = filtered.filter(r => 
-        r.name.toLowerCase().includes(searchTerm) ||
-        r.description?.toLowerCase().includes(searchTerm) ||
-        r.ingredients?.toLowerCase().includes(searchTerm)
-      );
-    }
-    if (params.featured) {
-      filtered = filtered.filter(r => r.featured);
-    }
-
-    const total = filtered.length;
-    const pageNumber = params.pageNumber || 1;
-    const pageSize = params.pageSize || 20;
-    const start = (pageNumber - 1) * pageSize;
-    const recipes = filtered.slice(start, start + pageSize);
-
-    return { recipes, total };
   }
 
   async getRecipe(id: number): Promise<Recipe | undefined> {
-    return this.recipes.get(id);
+    try {
+      const external = await recipeSparkClient.getRecipe(id);
+      return this.transformExternalRecipe(external);
+    } catch (error) {
+      console.error(`Failed to fetch recipe ${id} from external API:`, error);
+      return undefined;
+    }
   }
 
   async createRecipe(recipe: InsertRecipe): Promise<Recipe> {
@@ -254,16 +293,23 @@ export class MemStorage implements IStorage {
   }
 
   async searchRecipes(query: string): Promise<Recipe[]> {
-    const searchTerm = query.toLowerCase();
-    return Array.from(this.recipes.values()).filter(recipe =>
-      recipe.name.toLowerCase().includes(searchTerm) ||
-      recipe.description?.toLowerCase().includes(searchTerm) ||
-      recipe.ingredients?.toLowerCase().includes(searchTerm)
-    );
+    try {
+      const response = await recipeSparkClient.getRecipes({ searchTerm: query, pageSize: 50 });
+      return response.data.map(this.transformExternalRecipe);
+    } catch (error) {
+      console.error('Failed to search recipes from external API:', error);
+      return [];
+    }
   }
 
   async getFeaturedRecipes(): Promise<Recipe[]> {
-    return Array.from(this.recipes.values()).filter(r => r.featured);
+    try {
+      const response = await recipeSparkClient.getRecipes({ featured: true, pageSize: 10 });
+      return response.data.map(this.transformExternalRecipe);
+    } catch (error) {
+      console.error('Failed to fetch featured recipes from external API:', error);
+      return [];
+    }
   }
 
   async getBlogPosts(params: { page?: number; limit?: number; category?: string; featured?: boolean }): Promise<{ posts: BlogPost[]; total: number }> {
@@ -308,11 +354,17 @@ export class MemStorage implements IStorage {
 
   // Categories - RecipeSpark API compatible
   async getCategories(includeInactive?: boolean): Promise<Category[]> {
-    let categories = Array.from(this.categories.values());
-    if (!includeInactive) {
-      categories = categories.filter(c => c.isActive);
+    try {
+      const response = await recipeSparkClient.getCategories();
+      let categories = response.data.map(this.transformExternalCategory);
+      if (!includeInactive) {
+        categories = categories.filter(c => c.isActive);
+      }
+      return categories.sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+    } catch (error) {
+      console.error('Failed to fetch categories from external API:', error);
+      return [];
     }
-    return categories.sort((a, b) => a.displayOrder - b.displayOrder);
   }
 
   async getCategory(id: number): Promise<Category | undefined> {
