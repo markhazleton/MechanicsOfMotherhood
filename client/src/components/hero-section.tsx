@@ -1,0 +1,83 @@
+import { useQuery } from "@tanstack/react-query";
+import { Settings, Utensils, Play, Wrench } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import LoadingSpinner from "./loading-spinner";
+
+export default function HeroSection() {
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ["/api/stats"],
+  });
+
+  return (
+    <section className="bg-gradient-to-br from-industrial-blue via-tool-gray to-workshop-teal py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="flex justify-center items-center mb-8">
+          <div className="relative">
+            <Settings className="text-white text-6xl animate-spin-slow opacity-20" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="bg-white rounded-full p-4 mechanical-shadow">
+                <Utensils className="text-energetic-orange text-2xl" />
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <h1 className="font-mechanical text-5xl md:text-7xl font-black text-white mb-4" data-testid="hero-title">
+          MoM
+        </h1>
+        <p className="font-industrial text-xl md:text-2xl text-gray-200 mb-2 tracking-wide">
+          MECHANICS OF MOTHERHOOD
+        </p>
+        <p className="text-lg md:text-xl text-gray-300 mb-8 font-medium">
+          Engineering Better Meals • The Mother of All Solutions
+        </p>
+        
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <Button 
+            size="lg"
+            className="gear-border bg-energetic-orange hover:bg-red-600 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105"
+            data-testid="button-start-cooking"
+          >
+            <Wrench className="mr-2" size={20} />
+            Start Cooking
+          </Button>
+          <Button
+            variant="outline"
+            size="lg"
+            className="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/20 transition-all"
+            data-testid="button-watch-tutorial"
+          >
+            <Play className="mr-2" size={20} />
+            Watch Tutorial
+          </Button>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
+          {isLoading ? (
+            <div className="md:col-span-3">
+              <LoadingSpinner />
+            </div>
+          ) : stats ? (
+            <>
+              <div className="text-center" data-testid="stat-recipes">
+                <div className="text-3xl font-bold text-white">{stats.recipes}+</div>
+                <div className="text-gray-300 font-industrial">Tested Recipes</div>
+              </div>
+              <div className="text-center" data-testid="stat-families">
+                <div className="text-3xl font-bold text-white">{stats.families.toLocaleString()}+</div>
+                <div className="text-gray-300 font-industrial">Families Served</div>
+              </div>
+              <div className="text-center" data-testid="stat-time-saved">
+                <div className="text-3xl font-bold text-white">{(stats.timeSaved / 1000000).toFixed(1)}M+</div>
+                <div className="text-gray-300 font-industrial">Hours Saved</div>
+              </div>
+            </>
+          ) : (
+            <div className="md:col-span-3 text-white">Unable to load statistics</div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
