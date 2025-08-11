@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
-import { insertRecipeSchema, insertCategorySchema } from "@shared/schema";
+import { insertRecipeSchema, insertCategorySchema, insertWebsiteSchema, insertMenuItemSchema } from "@shared/schema";
 
 // Helper function to create RecipeSpark API compatible responses
 function createApiResponse(data: any, message: string, pagination?: any) {
@@ -585,12 +585,141 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // WebCMS API Routes
+  app.get('/api/webcms/websites', async (req, res) => {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const pageSize = parseInt(req.query.pageSize as string) || 20;
+      const search = req.query.search as string;
+      const template = req.query.template as string;
+      const isRecipeSite = req.query.isRecipeSite === 'true' ? true : req.query.isRecipeSite === 'false' ? false : undefined;
+
+      const result = await storage.getWebsites({ page, pageSize, search, template, isRecipeSite });
+      
+      res.json({
+        success: true,
+        data: result.websites,
+        pagination: {
+          currentPage: page,
+          pageSize,
+          totalItems: result.total,
+          totalPages: Math.ceil(result.total / pageSize)
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Error fetching websites' });
+    }
+  });
+
+  app.get('/api/webcms/websites/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const website = await storage.getWebsite(id);
+      
+      if (!website) {
+        return res.status(404).json({ success: false, message: 'Website not found' });
+      }
+      
+      res.json({ success: true, data: website });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Error fetching website' });
+    }
+  });
+
+  app.post('/api/webcms/websites', async (req, res) => {
+    try {
+      const validatedData = insertWebsiteSchema.parse(req.body);
+      const website = await storage.createWebsite(validatedData);
+      res.status(201).json({ success: true, data: website });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Error creating website' });
+    }
+  });
+
+  app.put('/api/webcms/websites/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertWebsiteSchema.partial().parse(req.body);
+      const website = await storage.updateWebsite(id, validatedData);
+      
+      if (!website) {
+        return res.status(404).json({ success: false, message: 'Website not found' });
+      }
+      
+      res.json({ success: true, data: website });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Error updating website' });
+    }
+  });
+
+  app.delete('/api/webcms/websites/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteWebsite(id);
+      
+      if (!deleted) {
+        return res.status(404).json({ success: false, message: 'Website not found' });
+      }
+      
+      res.json({ success: true, message: 'Website deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Error deleting website' });
+    }
+  });
+
+  // Menu Items endpoints
+  app.get('/api/webcms/menu-items', async (req, res) => {
+    try {
+      const result = await storage.getMenuItems(req.query);
+      res.json({ success: true, data: result.menuItems, total: result.total });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Error fetching menu items' });
+    }
+  });
+
+  app.post('/api/webcms/menu-items', async (req, res) => {
+    try {
+      const validatedData = insertMenuItemSchema.parse(req.body);
+      const menuItem = await storage.createMenuItem(validatedData);
+      res.status(201).json({ success: true, data: menuItem });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Error creating menu item' });
+    }
+  });
+
+  // Dashboard and search endpoints
+  app.get('/api/webcms/dashboard/stats', async (req, res) => {
+    try {
+      const stats = await storage.getDashboardStats();
+      res.json({ success: true, data: stats });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Error fetching dashboard stats' });
+    }
+  });
+
+  app.get('/api/webcms/search', async (req, res) => {
+    try {
+      const query = req.query.q as string;
+      const page = parseInt(req.query.page as string) || 1;
+      const pageSize = parseInt(req.query.pageSize as string) || 20;
+      
+      if (!query) {
+        return res.status(400).json({ success: false, message: 'Search query is required' });
+      }
+      
+      const results = await storage.globalSearch(query, page, pageSize);
+      res.json({ success: true, data: results });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Error performing search' });
+    }
+  });
+
   // API Documentation endpoint
   app.get("/api/docs", async (req, res) => {
     res.json({
       title: "MoM (Mechanics of Motherhood) Recipe API",
       version: "1.0.0",
-      description: "A dual-compatible API supporting both RecipeSpark specification and legacy MoM frontend",
+      description: "A triple-compatible API supporting RecipeSpark, WebCMS, and legacy MoM frontend",
       
       recipeSpark: {
         baseUrl: "/api/recipespark",
@@ -613,6 +742,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
         authentication: "Required (implementation-specific)",
         responseFormat: "Standard RecipeSpark format with data, success, message, and optional pagination"
+      },
+
+      webCMS: {
+        baseUrl: "/api/webcms",
+        description: "WebCMS API for content management system functionality",
+        endpoints: {
+          websites: {
+            "GET /websites": "Get all websites with pagination and filtering",
+            "GET /websites/:id": "Get single website by ID",
+            "POST /websites": "Create new website",
+            "PUT /websites/:id": "Update existing website",
+            "DELETE /websites/:id": "Delete website"
+          },
+          menuItems: {
+            "GET /menu-items": "Get menu items with filtering",
+            "POST /menu-items": "Create new menu item",
+            "PUT /menu-items/:id": "Update existing menu item",
+            "DELETE /menu-items/:id": "Delete menu item"
+          },
+          dashboard: "GET /dashboard/stats",
+          search: "GET /search?q={query}"
+        },
+        authentication: "Required (implementation-specific)",
+        responseFormat: "WebCMS standard format with success, data, message structure"
       },
 
       legacyMoM: {

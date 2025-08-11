@@ -6,13 +6,15 @@ RecipeSpark is a full-stack recipe management web application designed for worki
 
 ## Recent Achievement (August 11, 2025)
 
-Successfully implemented RecipeSpark API specification compatibility while maintaining full backward compatibility with the existing MoM frontend. The application now provides:
+Successfully implemented dual-API architecture with both RecipeSpark and WebCMS API compatibility while maintaining full backward compatibility with the existing MoM frontend. The application now provides:
 
 - **Full RecipeSpark API Compliance**: Complete implementation of the RecipeSpark API specification with proper response formats, pagination, and error handling
-- **Dual-Mode Backend**: Single backend serving both RecipeSpark API (`/api/recipespark`) and legacy MoM API (`/api`) endpoints
-- **Schema Transformation**: Automatic transformation between RecipeSpark schema format and legacy MoM format
-- **API Documentation**: Built-in API documentation endpoint (`/api/docs`) showing both API formats and examples
-- **Seamless Migration Path**: Existing MoM frontend continues to work while new RecipeSpark-compatible applications can integrate immediately
+- **WebCMS API Integration**: Complete WebCMS API implementation for content management with websites, menu items, dashboard stats, and global search functionality
+- **Triple-Mode Backend**: Single backend serving RecipeSpark API (`/api/recipespark`), WebCMS API (`/api/webcms`), and legacy MoM API (`/api`) endpoints
+- **Schema Transformation**: Automatic transformation between RecipeSpark schema format, WebCMS format, and legacy MoM format
+- **Comprehensive API Documentation**: Built-in API documentation endpoint (`/api/docs`) showing all three API formats with examples
+- **Seamless Migration Path**: Existing MoM frontend continues to work while new RecipeSpark and WebCMS-compatible applications can integrate immediately
+- **Dual External API Hosting**: Both APIs ready to be hosted at https://webspark.markhazleton.com as external services
 
 ## User Preferences
 
@@ -47,6 +49,12 @@ Preferred communication style: Simple, everyday language.
   - Recipes: Complete CRUD operations with RecipeSpark format
   - Categories: Category management with display order and status
   - Response Format: Standard RecipeSpark format with data, success, message, pagination
+- **WebCMS API (`/api/webcms`)**: Complete WebCMS specification compliance
+  - Websites: Full website management with template and style configuration
+  - Menu Items: Hierarchical menu structure with navigation management
+  - Dashboard: Statistics and analytics for content management
+  - Global Search: Cross-content search functionality
+  - Response Format: WebCMS standard format with success, data, message structure
 - **Legacy API (`/api`)**: Backward compatibility for existing MoM frontend
   - Recipes: Legacy format transformation from RecipeSpark data
   - Categories: Legacy format support

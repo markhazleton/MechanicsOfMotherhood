@@ -101,3 +101,62 @@ export type Category = typeof categories.$inferSelect;
 export type ApiResponse<T = any> = z.infer<typeof apiResponseSchema> & {
   data: T;
 };
+
+// WebCMS API Schema (from WebSpark)
+export const websites = pgTable("websites", {
+  id: integer("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  siteTemplate: varchar("site_template", { length: 100 }),
+  siteStyle: varchar("site_style", { length: 100 }),
+  message: text("message"), // Welcome message in Markdown
+  siteName: varchar("site_name", { length: 255 }),
+  websiteUrl: varchar("website_url", { length: 500 }),
+  websiteTitle: varchar("website_title", { length: 255 }),
+  useBreadCrumbURL: boolean("use_breadcrumb_url").default(true),
+  isRecipeSite: boolean("is_recipe_site").default(false),
+  modifiedDT: timestamp("modified_dt").defaultNow(),
+  modifiedID: integer("modified_id"),
+});
+
+export const menuItems = pgTable("menu_items", {
+  id: integer("id").primaryKey(),
+  domainID: integer("domain_id").notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  icon: varchar("icon", { length: 50 }),
+  pageContent: text("page_content"), // Content in Markdown
+  action: varchar("action", { length: 100 }),
+  controller: varchar("controller", { length: 100 }),
+  argument: varchar("argument", { length: 255 }),
+  url: varchar("url", { length: 255 }),
+  description: text("description"),
+  displayInNavigation: boolean("display_in_navigation").default(true),
+  displayOrder: integer("display_order").default(0),
+  parentId: integer("parent_id"),
+  lastModified: timestamp("last_modified").defaultNow(),
+});
+
+export const insertWebsiteSchema = createInsertSchema(websites, {
+  name: z.string().min(1).max(255),
+  description: z.string().optional(),
+  websiteUrl: z.string().url().optional(),
+}).omit({
+  id: true,
+  modifiedDT: true,
+  modifiedID: true,
+});
+
+export const insertMenuItemSchema = createInsertSchema(menuItems, {
+  title: z.string().min(1).max(255),
+  description: z.string().optional(),
+  displayOrder: z.number().min(0).default(0),
+}).omit({
+  id: true,
+  lastModified: true,
+});
+
+export type InsertWebsite = z.infer<typeof insertWebsiteSchema>;
+export type Website = typeof websites.$inferSelect;
+
+export type InsertMenuItem = z.infer<typeof insertMenuItemSchema>;
+export type MenuItem = typeof menuItems.$inferSelect;

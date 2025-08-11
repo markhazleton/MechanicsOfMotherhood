@@ -1,4 +1,4 @@
-import { type Recipe, type InsertRecipe, type BlogPost, type InsertBlogPost, type Category, type InsertCategory } from "@shared/schema";
+import { type Recipe, type InsertRecipe, type BlogPost, type InsertBlogPost, type Category, type InsertCategory, type Website, type InsertWebsite, type MenuItem, type InsertMenuItem } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -26,14 +26,37 @@ export interface IStorage {
 
   // Stats
   getStats(): Promise<{ recipes: number; families: number; timeSaved: number; communityMembers: number }>;
+
+  // WebCMS API Methods
+  getWebsites(params: { page?: number; pageSize?: number; search?: string; template?: string; isRecipeSite?: boolean }): Promise<{ websites: Website[]; total: number }>;
+  getWebsite(id: number): Promise<Website | undefined>;
+  createWebsite(website: InsertWebsite): Promise<Website>;
+  updateWebsite(id: number, website: Partial<InsertWebsite>): Promise<Website | undefined>;
+  deleteWebsite(id: number): Promise<boolean>;
+
+  getMenuItems(params: { page?: number; pageSize?: number; search?: string; domainId?: number; parentId?: number; displayInNavigation?: boolean }): Promise<{ menuItems: MenuItem[]; total: number }>;
+  getMenuItem(id: number): Promise<MenuItem | undefined>;
+  createMenuItem(menuItem: InsertMenuItem): Promise<MenuItem>;
+  updateMenuItem(id: number, menuItem: Partial<InsertMenuItem>): Promise<MenuItem | undefined>;
+  deleteMenuItem(id: number): Promise<boolean>;
+  getMenuHierarchy(websiteId: number): Promise<MenuItem[]>;
+  bulkUpdateMenuOrder(menuOrders: { menuId: number; displayOrder: number }[]): Promise<{ updatedCount: number; errors: any[] }>;
+
+  // Dashboard and search
+  getDashboardStats(): Promise<any>;
+  globalSearch(query: string, page?: number, pageSize?: number): Promise<any>;
 }
 
 export class MemStorage implements IStorage {
   private recipes: Map<number, Recipe> = new Map();
   private blogPosts: Map<string, BlogPost> = new Map();
   private categories: Map<number, Category> = new Map();
+  private websites: Map<number, Website> = new Map();
+  private menuItems: Map<number, MenuItem> = new Map();
   private nextRecipeId: number = 1;
   private nextCategoryId: number = 1;
+  private nextWebsiteId: number = 1;
+  private nextMenuItemId: number = 1;
 
   constructor() {
     this.seedData();
@@ -326,6 +349,121 @@ export class MemStorage implements IStorage {
       families: 10000,
       timeSaved: 2000000,
       communityMembers: 15000,
+    };
+  }
+
+  // WebCMS API Methods (stub implementations for now)
+  async getWebsites(params: any): Promise<{ websites: Website[]; total: number }> {
+    if (this.websites.size === 0) {
+      const id = this.nextWebsiteId++;
+      this.websites.set(id, {
+        id,
+        name: "Mechanics of Motherhood",
+        description: "The ultimate recipe and parenting resource for working mothers",
+        siteTemplate: "Modern",
+        siteStyle: "Industrial",
+        websiteUrl: "https://mechanicsofmotherhood.com",
+        isRecipeSite: true,
+        modifiedDT: new Date(),
+        modifiedID: 1,
+      } as Website);
+    }
+    return { websites: Array.from(this.websites.values()), total: this.websites.size };
+  }
+
+  async getWebsite(id: number): Promise<Website | undefined> {
+    return this.websites.get(id);
+  }
+
+  async createWebsite(website: InsertWebsite): Promise<Website> {
+    const id = this.nextWebsiteId++;
+    const newWebsite: Website = { ...website, id, modifiedDT: new Date(), modifiedID: 1 } as Website;
+    this.websites.set(id, newWebsite);
+    return newWebsite;
+  }
+
+  async updateWebsite(id: number, website: Partial<InsertWebsite>): Promise<Website | undefined> {
+    const existing = this.websites.get(id);
+    if (!existing) return undefined;
+    const updated: Website = { ...existing, ...website, id, modifiedDT: new Date() };
+    this.websites.set(id, updated);
+    return updated;
+  }
+
+  async deleteWebsite(id: number): Promise<boolean> {
+    return this.websites.delete(id);
+  }
+
+  // Stub menu implementations
+  async getMenuItems(params: any): Promise<{ menuItems: MenuItem[]; total: number }> {
+    return { menuItems: Array.from(this.menuItems.values()), total: this.menuItems.size };
+  }
+
+  async getMenuItem(id: number): Promise<MenuItem | undefined> {
+    return this.menuItems.get(id);
+  }
+
+  async createMenuItem(menuItem: InsertMenuItem): Promise<MenuItem> {
+    const id = this.nextMenuItemId++;
+    const newMenuItem: MenuItem = { ...menuItem, id, lastModified: new Date() } as MenuItem;
+    this.menuItems.set(id, newMenuItem);
+    return newMenuItem;
+  }
+
+  async updateMenuItem(id: number, menuItem: Partial<InsertMenuItem>): Promise<MenuItem | undefined> {
+    const existing = this.menuItems.get(id);
+    if (!existing) return undefined;
+    const updated: MenuItem = { ...existing, ...menuItem, id, lastModified: new Date() };
+    this.menuItems.set(id, updated);
+    return updated;
+  }
+
+  async deleteMenuItem(id: number): Promise<boolean> {
+    return this.menuItems.delete(id);
+  }
+
+  async getMenuHierarchy(websiteId: number): Promise<MenuItem[]> {
+    return Array.from(this.menuItems.values()).filter(m => m.domainID === websiteId);
+  }
+
+  async bulkUpdateMenuOrder(menuOrders: { menuId: number; displayOrder: number }[]): Promise<{ updatedCount: number; errors: any[] }> {
+    let updatedCount = 0;
+    const errors: any[] = [];
+    
+    for (const order of menuOrders) {
+      const menuItem = this.menuItems.get(order.menuId);
+      if (menuItem) {
+        menuItem.displayOrder = order.displayOrder;
+        menuItem.lastModified = new Date();
+        updatedCount++;
+      } else {
+        errors.push(`Menu item ${order.menuId} not found`);
+      }
+    }
+    
+    return { updatedCount, errors };
+  }
+
+  async getDashboardStats(): Promise<any> {
+    return {
+      totalWebsites: this.websites.size,
+      totalMenuItems: this.menuItems.size,
+      recentWebsites: Array.from(this.websites.values()).slice(0, 5),
+      recentMenuItems: Array.from(this.menuItems.values()).slice(0, 5),
+    };
+  }
+
+  async globalSearch(query: string, page?: number, pageSize?: number): Promise<any> {
+    const results: any[] = [];
+    return {
+      query,
+      items: results,
+      totalCount: 0,
+      page: page || 1,
+      pageSize: pageSize || 20,
+      totalPages: 0,
+      websiteCount: 0,
+      menuItemCount: 0,
     };
   }
 }
