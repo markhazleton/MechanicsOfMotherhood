@@ -22,17 +22,17 @@ export default function CategoryRecipes() {
     queryKey: ["/api/categories"],
   });
 
-  // Get recipes for this category
+  // Get recipes for this category using RecipeSpark API
   const { data: recipesData, isLoading } = useQuery({
-    queryKey: ["/api/recipespark/recipes", { categoryId: parseInt(categoryId || "0"), page, limit: 12 }],
+    queryKey: ["/api/recipespark/recipes", { categoryId: parseInt(categoryId || "0"), pageNumber: page, pageSize: 12 }],
     enabled: !!categoryId,
   });
 
   const categories = categoriesData?.categories || [];
   const currentCategory = categories.find((cat: any) => cat.id.toString() === categoryId);
   const recipes = recipesData?.data || [];
-  const total = recipesData?.total || 0;
-  const totalPages = Math.ceil(total / 12);
+  const pagination = recipesData?.pagination;
+  const totalPages = pagination?.totalPages || 1;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -135,15 +135,17 @@ export default function CategoryRecipes() {
                           <Users size={12} className="mr-1" />
                           {recipe.servings}
                         </span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-energetic-orange hover:text-red-600 p-0 h-auto"
-                          data-testid={`view-recipe-${recipe.id}`}
-                        >
-                          <ArrowRight size={14} className="mr-1" />
-                          View
-                        </Button>
+                        <a href={`/recipes/${recipe.id}`}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-energetic-orange hover:text-red-600 p-0 h-auto"
+                            data-testid={`view-recipe-${recipe.id}`}
+                          >
+                            <ArrowRight size={14} className="mr-1" />
+                            View
+                          </Button>
+                        </a>
                       </div>
                     </CardContent>
                   </Card>
@@ -151,22 +153,22 @@ export default function CategoryRecipes() {
               </div>
 
               {/* Pagination */}
-              {totalPages > 1 && (
+              {pagination && pagination.totalPages > 1 && (
                 <div className="flex items-center justify-center space-x-4 mt-12">
                   <Button
                     variant="outline"
-                    disabled={page === 1}
+                    disabled={!pagination.hasPrevious}
                     onClick={() => setPage(page - 1)}
                     data-testid="pagination-prev"
                   >
                     Previous
                   </Button>
                   <span className="text-tool-gray">
-                    Page {page} of {totalPages}
+                    Page {pagination.currentPage} of {pagination.totalPages}
                   </span>
                   <Button
                     variant="outline"
-                    disabled={page === totalPages}
+                    disabled={!pagination.hasNext}
                     onClick={() => setPage(page + 1)}
                     data-testid="pagination-next"
                   >
