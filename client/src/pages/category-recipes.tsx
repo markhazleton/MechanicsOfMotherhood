@@ -10,10 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { Recipe } from "@shared/schema";
+import { nameToSlug, getCategorySlug } from "@/utils/slugify";
 
 export default function CategoryRecipes() {
-  const [, params] = useRoute("/recipes/category/:categoryId");
-  const categoryId = params?.categoryId;
+  const [, params] = useRoute("/recipes/category/:categorySlug");
+  const categorySlug = params?.categorySlug;
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -22,14 +23,19 @@ export default function CategoryRecipes() {
     queryKey: ["/api/categories"],
   });
 
+  const categories = categoriesData?.categories || [];
+  // Find category by matching both basic slug and enhanced slug
+  const currentCategory = categories.find((cat: any) => 
+    getCategorySlug(cat.name) === categorySlug || nameToSlug(cat.name) === categorySlug
+  );
+  const categoryId = currentCategory?.id;
+
   // Get recipes for this category using RecipeSpark API
   const { data: recipesData, isLoading } = useQuery({
     queryKey: [`/api/recipespark/recipes?categoryId=${categoryId}&pageNumber=${page}&pageSize=12`],
     enabled: !!categoryId,
   });
 
-  const categories = categoriesData?.categories || [];
-  const currentCategory = categories.find((cat: any) => cat.id.toString() === categoryId);
   const recipes = recipesData?.data || [];
   const pagination = recipesData?.pagination;
 

@@ -6,6 +6,7 @@ import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { getCategorySlug } from "@/utils/slugify";
 
 export default function Categories() {
   const { data: categoriesData, isLoading } = useQuery({
@@ -48,35 +49,38 @@ export default function Categories() {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {categories.map((category: any) => (
-              <Link
-                key={category.id}
-                href={`/recipes/category/${category.id}`}
-                data-testid={`category-card-${category.id}`}
-              >
-                <Card className="gear-border bg-white rounded-xl overflow-hidden mechanical-shadow hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
-                  <div className="bg-gradient-to-br from-workshop-teal to-industrial-blue p-8 text-white">
-                    <ChefHat size={32} className="mb-4" />
-                    <h3 className="font-bold text-xl mb-2">
-                      {category.name}
-                    </h3>
-                    {category.description && (
-                      <p className="text-white/80 text-sm line-clamp-2">
-                        {category.description}
-                      </p>
-                    )}
-                  </div>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <Badge className="bg-energetic-orange text-white">
-                        Recipes Available
-                      </Badge>
-                      <ArrowRight size={16} className="text-tool-gray" />
+            {categories.map((category: any) => {
+              const slug = getCategorySlug(category.name);
+              return (
+                <Link
+                  key={category.id}
+                  href={`/recipes/category/${slug}`}
+                  data-testid={`category-card-${category.id}`}
+                >
+                  <Card className="gear-border bg-white rounded-xl overflow-hidden mechanical-shadow hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
+                    <div className="bg-gradient-to-br from-workshop-teal to-industrial-blue p-8 text-white">
+                      <ChefHat size={32} className="mb-4" />
+                      <h3 className="font-bold text-xl mb-2">
+                        {category.name}
+                      </h3>
+                      {category.description && (
+                        <p className="text-white/80 text-sm line-clamp-2">
+                          {category.description}
+                        </p>
+                      )}
                     </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <Badge className="bg-energetic-orange text-white">
+                          Recipes Available
+                        </Badge>
+                        <ArrowRight size={16} className="text-tool-gray" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
 
           {/* Empty State */}
