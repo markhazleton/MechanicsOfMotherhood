@@ -24,7 +24,7 @@ export default function CategoryRecipes() {
 
   // Get recipes for this category using RecipeSpark API
   const { data: recipesData, isLoading } = useQuery({
-    queryKey: ["/api/recipespark/recipes", { categoryId: parseInt(categoryId || "0"), pageNumber: page, pageSize: 12 }],
+    queryKey: [`/api/recipespark/recipes?categoryId=${categoryId}&pageNumber=${page}&pageSize=12`],
     enabled: !!categoryId,
   });
 
@@ -32,7 +32,6 @@ export default function CategoryRecipes() {
   const currentCategory = categories.find((cat: any) => cat.id.toString() === categoryId);
   const recipes = recipesData?.data || [];
   const pagination = recipesData?.pagination;
-  const totalPages = pagination?.totalPages || 1;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

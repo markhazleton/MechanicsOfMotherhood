@@ -17,8 +17,15 @@ export default function Recipes() {
   const [activeSearch, setActiveSearch] = useState("");
 
   // Use RecipeSpark API for search and filtering
+  const searchParams = new URLSearchParams({
+    pageNumber: page.toString(),
+    pageSize: "12",
+    ...(activeSearch && { searchTerm: activeSearch }),
+    ...(selectedCategory && { categoryId: selectedCategory })
+  });
+  
   const { data: recipesData, isLoading } = useQuery({
-    queryKey: ["/api/recipespark/recipes", { pageNumber: page, pageSize: 12, searchTerm: activeSearch, categoryId: selectedCategory ? parseInt(selectedCategory) : undefined }],
+    queryKey: [`/api/recipespark/recipes?${searchParams.toString()}`],
   });
 
   const { data: categoriesData } = useQuery({
