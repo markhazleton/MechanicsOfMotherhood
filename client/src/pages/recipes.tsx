@@ -14,23 +14,25 @@ export default function Recipes() {
   const [page, setPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeSearch, setActiveSearch] = useState("");
 
+  // Use RecipeSpark API for search and filtering
   const { data: recipesData, isLoading } = useQuery({
-    queryKey: ["/api/recipes", { page, category: selectedCategory, limit: 12 }],
+    queryKey: ["/api/recipespark/recipes", { pageNumber: page, pageSize: 12, searchTerm: activeSearch, categoryId: selectedCategory ? parseInt(selectedCategory) : undefined }],
   });
 
   const { data: categoriesData } = useQuery({
     queryKey: ["/api/categories"],
   });
 
-  const recipes = recipesData?.recipes || [];
+  const recipes = recipesData?.data || [];
   const categories = categoriesData?.categories || [];
   const pagination = recipesData?.pagination;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement search functionality
-    console.log("Search:", searchQuery);
+    setActiveSearch(searchQuery);
+    setPage(1); // Reset to first page when searching
   };
 
   return (
@@ -47,6 +49,22 @@ export default function Recipes() {
             <p className="text-tool-gray text-lg max-w-2xl mx-auto">
               Your complete collection of tested, perfected recipes for working mothers
             </p>
+            {activeSearch && (
+              <div className="mt-4 text-center">
+                <span className="text-workshop-teal font-semibold">
+                  Showing results for "{activeSearch}"
+                </span>
+                <button 
+                  onClick={() => {
+                    setActiveSearch("");
+                    setSearchQuery("");
+                  }}
+                  className="ml-2 text-energetic-orange hover:underline text-sm"
+                >
+                  Clear search
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Search and Filters */}
@@ -69,13 +87,16 @@ export default function Recipes() {
               {/* Category Filter */}
               <select
                 value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
+                onChange={(e) => {
+                  setSelectedCategory(e.target.value);
+                  setPage(1); // Reset to first page when filtering
+                }}
                 className="px-4 py-2 border border-medium-gray rounded-lg focus:ring-2 focus:ring-workshop-teal"
                 data-testid="category-filter"
               >
                 <option value="">All Categories</option>
                 {categories.map((category: any) => (
-                  <option key={category.id} value={category.name}>
+                  <option key={category.id} value={category.id.toString()}>
                     {category.name}
                   </option>
                 ))}
@@ -150,18 +171,18 @@ export default function Recipes() {
               </div>
 
               {/* Pagination */}
-              {pagination && (
+              {pagination && pagination.totalPages > 1 && (
                 <div className="flex items-center justify-center space-x-4 mt-12">
                   <Button
                     variant="outline"
-                    disabled={!pagination.hasPrev}
+                    disabled={!pagination.hasPrevious}
                     onClick={() => setPage(page - 1)}
                     data-testid="pagination-prev"
                   >
                     Previous
                   </Button>
                   <span className="text-tool-gray">
-                    Page {pagination.page} of {pagination.totalPages}
+                    Page {pagination.currentPage} of {pagination.totalPages}
                   </span>
                   <Button
                     variant="outline"
