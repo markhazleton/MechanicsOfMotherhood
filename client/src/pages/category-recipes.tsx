@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Filter, Clock, Users, Star, ArrowRight } from "lucide-react";
+import { useRoute, Link } from "wouter";
+import { Search, ArrowLeft, Clock, Users, Star, ArrowRight } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner";
@@ -10,28 +11,46 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { Recipe } from "@shared/schema";
 
-export default function Recipes() {
+export default function CategoryRecipes() {
+  const [, params] = useRoute("/recipes/category/:categoryId");
+  const categoryId = params?.categoryId;
   const [page, setPage] = useState(1);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: recipesData, isLoading } = useQuery({
-    queryKey: ["/api/recipes", { page, category: selectedCategory, limit: 12 }],
-  });
-
+  // Get category details
   const { data: categoriesData } = useQuery({
     queryKey: ["/api/categories"],
   });
 
-  const recipes = recipesData?.recipes || [];
+  // Get recipes for this category
+  const { data: recipesData, isLoading } = useQuery({
+    queryKey: ["/api/recipespark/recipes", { categoryId: parseInt(categoryId || "0"), page, limit: 12 }],
+    enabled: !!categoryId,
+  });
+
   const categories = categoriesData?.categories || [];
-  const pagination = recipesData?.pagination;
+  const currentCategory = categories.find((cat: any) => cat.id.toString() === categoryId);
+  const recipes = recipesData?.data || [];
+  const total = recipesData?.total || 0;
+  const totalPages = Math.ceil(total / 12);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Implement search functionality
     console.log("Search:", searchQuery);
   };
+
+  if (isLoading && !recipes.length) {
+    return (
+      <div className="min-h-screen bg-light-gray">
+        <Navigation />
+        <div className="py-16">
+          <LoadingSpinner />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-light-gray">
@@ -40,59 +59,41 @@ export default function Recipes() {
       {/* Header */}
       <section className="bg-white py-12 border-b border-medium-gray">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-6">
+            <Link href="/categories">
+              <Button variant="ghost" className="mb-4 text-tool-gray hover:text-industrial-blue">
+                <ArrowLeft size={16} className="mr-2" />
+                Back to Categories
+              </Button>
+            </Link>
+          </div>
+          
           <div className="text-center mb-8">
             <h1 className="font-mechanical text-4xl font-bold text-industrial-blue mb-4">
-              Recipe Manual
+              {currentCategory?.name || 'Category'} Recipes
             </h1>
-            <p className="text-tool-gray text-lg max-w-2xl mx-auto">
-              Your complete collection of tested, perfected recipes for working mothers
-            </p>
+            {currentCategory?.description && (
+              <p className="text-tool-gray text-lg max-w-2xl mx-auto">
+                {currentCategory.description}
+              </p>
+            )}
           </div>
 
-          {/* Search and Filters */}
-          <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
+          {/* Search */}
+          <div className="flex flex-col lg:flex-row gap-6 items-center justify-center">
             <form onSubmit={handleSearch} className="flex-1 max-w-md">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-tool-gray" size={16} />
                 <Input
                   type="text"
-                  placeholder="Search recipes..."
+                  placeholder="Search recipes in this category..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
-                  data-testid="recipe-search-input"
+                  data-testid="category-recipe-search-input"
                 />
               </div>
             </form>
-
-            <div className="flex flex-wrap gap-3">
-              {/* Category Filter */}
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 border border-medium-gray rounded-lg focus:ring-2 focus:ring-workshop-teal"
-                data-testid="category-filter"
-              >
-                <option value="">All Categories</option>
-                {categories.map((category: any) => (
-                  <option key={category.id} value={category.name}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-
-              {/* Browse Categories Link */}
-              <a href="/categories">
-                <Button
-                  variant="outline"
-                  className="px-4 py-2 border-workshop-teal text-workshop-teal hover:bg-workshop-teal hover:text-white"
-                  data-testid="browse-categories-button"
-                >
-                  <Filter className="w-4 h-4 mr-2" />
-                  Browse Categories
-                </Button>
-              </a>
-            </div>
           </div>
         </div>
       </section>
@@ -102,7 +103,7 @@ export default function Recipes() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {isLoading ? (
             <LoadingSpinner />
-          ) : (
+          ) : recipes.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {recipes.map((recipe: Recipe) => (
@@ -150,22 +151,22 @@ export default function Recipes() {
               </div>
 
               {/* Pagination */}
-              {pagination && (
+              {totalPages > 1 && (
                 <div className="flex items-center justify-center space-x-4 mt-12">
                   <Button
                     variant="outline"
-                    disabled={!pagination.hasPrev}
+                    disabled={page === 1}
                     onClick={() => setPage(page - 1)}
                     data-testid="pagination-prev"
                   >
                     Previous
                   </Button>
                   <span className="text-tool-gray">
-                    Page {pagination.page} of {pagination.totalPages}
+                    Page {page} of {totalPages}
                   </span>
                   <Button
                     variant="outline"
-                    disabled={!pagination.hasNext}
+                    disabled={page === totalPages}
                     onClick={() => setPage(page + 1)}
                     data-testid="pagination-next"
                   >
@@ -174,6 +175,21 @@ export default function Recipes() {
                 </div>
               )}
             </>
+          ) : (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4">🍽️</div>
+              <h3 className="text-xl font-bold text-industrial-blue mb-2">
+                No Recipes Found
+              </h3>
+              <p className="text-tool-gray mb-6">
+                We don't have any recipes in this category yet.
+              </p>
+              <Link href="/recipes">
+                <Button className="bg-workshop-teal text-white hover:bg-workshop-teal/90">
+                  Browse All Recipes
+                </Button>
+              </Link>
+            </div>
           )}
         </div>
       </section>
