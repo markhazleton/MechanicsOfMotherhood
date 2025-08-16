@@ -4,6 +4,7 @@ import { Settings, Utensils, Search, Home, BookOpen, Wrench, UserCheck, Menu, X 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import logoIcon from "/images/logos/MOM-Logo-Icon.png";
 
 export default function Navigation() {
   const [location] = useLocation();
@@ -45,7 +46,7 @@ export default function Navigation() {
           <Link href="/" className="flex items-center space-x-3" data-testid="logo-link">
             <div className="relative">
               <img 
-                src="/images/logos/MOM-Logo-Icon.png"
+                src={logoIcon}
                 alt="MoM Logo Icon"
                 className="h-10 w-10 object-contain"
                 onError={(e) => {

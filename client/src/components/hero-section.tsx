@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Settings, Utensils, Play, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LoadingSpinner from "./loading-spinner";
+import logoIcon from "/images/logos/MOM-Logo-Icon.png";
 
 export default function HeroSection() {
   const { data: stats, isLoading } = useQuery({
@@ -15,7 +16,7 @@ export default function HeroSection() {
           <div className="relative">
             <div className="bg-white rounded-full p-6 mechanical-shadow">
               <img 
-                src="/images/logos/MOM-Logo-Icon.png"
+                src={logoIcon}
                 alt="MoM Logo"
                 className="h-16 w-16 object-contain"
               />

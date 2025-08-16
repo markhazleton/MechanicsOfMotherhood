@@ -1,5 +1,6 @@
 import { Settings, Utensils, Facebook, Instagram, Youtube } from "lucide-react";
 import { Link } from "wouter";
+import logoIcon from "/images/logos/MOM-Logo-Icon.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -13,7 +14,7 @@ export default function Footer() {
             <div className="flex items-center space-x-3 mb-4">
               <div className="relative">
                 <img 
-                  src="/images/logos/MOM-Logo-Icon.png"
+                  src={logoIcon}
                   alt="MoM Logo Icon"
                   className="h-8 w-8 object-contain filter brightness-0 invert"
                 />
