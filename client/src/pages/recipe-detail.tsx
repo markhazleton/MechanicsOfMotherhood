@@ -194,13 +194,47 @@ export default function RecipeDetail() {
                   {/* SEO Keywords as Tags */}
                   {recipe?.seO_Keywords && (
                     <div className="mt-6 pt-6 border-t border-medium-gray">
-                      <h4 className="font-semibold text-industrial-blue mb-3">Keywords</h4>
+                      <h4 className="font-semibold text-industrial-blue mb-3 flex items-center">
+                        <span className="w-2 h-2 bg-workshop-teal rounded-full mr-2"></span>
+                        Recipe Tags
+                      </h4>
                       <div className="flex flex-wrap gap-2">
-                        {recipe.seO_Keywords.split(',').map((keyword: string, index: number) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
-                            {keyword.trim()}
-                          </Badge>
-                        ))}
+                        {recipe.seO_Keywords
+                          .split(/[\n\r]+/)  // Split by new lines
+                          .map(line => line.trim())  // Trim whitespace
+                          .filter(line => line)  // Remove empty lines
+                          .map(line => line.replace(/^[-\d.]*\s*/, ''))  // Remove bullet points and numbers
+                          .filter(keyword => keyword.trim())  // Filter out empty results
+                          .map((keyword: string, index: number) => {
+                            const cleanKeyword = keyword.trim();
+                            if (!cleanKeyword) return null;
+                            
+                            // Cycle through different badge styles for visual variety
+                            const badgeStyles = [
+                              "bg-workshop-teal/10 text-workshop-teal border-workshop-teal/20 hover:bg-workshop-teal/20 hover:border-workshop-teal/30",
+                              "bg-energetic-orange/10 text-energetic-orange border-energetic-orange/20 hover:bg-energetic-orange/20 hover:border-energetic-orange/30",
+                              "bg-industrial-blue/10 text-industrial-blue border-industrial-blue/20 hover:bg-industrial-blue/20 hover:border-industrial-blue/30",
+                              "bg-cream/80 text-tool-gray border-medium-gray/50 hover:bg-kitchen-warm hover:border-medium-gray"
+                            ];
+                            
+                            const styleIndex = index % badgeStyles.length;
+                            
+                            return (
+                              <Badge 
+                                key={index} 
+                                variant="outline" 
+                                className={`
+                                  text-xs font-medium border transition-all duration-200 cursor-default
+                                  ${badgeStyles[styleIndex]}
+                                  hover:shadow-sm hover:scale-105 transform
+                                  px-3 py-1.5 rounded-full
+                                `}
+                                title={cleanKeyword}
+                              >
+                                {cleanKeyword}
+                              </Badge>
+                            );
+                          })}
                       </div>
                     </div>
                   )}
