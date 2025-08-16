@@ -1,0 +1,89 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Warm gradient background -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF5F0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFE8DC;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Soft shadow filter -->
+    <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.1"/>
+      <feComposite in2="offsetblur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#bgGradient)"/>
+  
+  <!-- Decorative border pattern -->
+  <rect x="10" y="10" width="380" height="280" fill="none" stroke="#F4A460" stroke-width="1" stroke-dasharray="5,3" opacity="0.3"/>
+  
+  <!-- Main plate/dish circle -->
+  <circle cx="200" cy="130" r="70" fill="#FFFFFF" filter="url(#softShadow)"/>
+  <circle cx="200" cy="130" r="65" fill="none" stroke="#E8E8E8" stroke-width="1"/>
+  
+  <!-- Camera icon in center of plate -->
+  <g transform="translate(200, 130)">
+    <!-- Camera body -->
+    <rect x="-20" y="-12" width="40" height="28" rx="3" fill="#A0A0A0" opacity="0.5"/>
+    <!-- Camera lens -->
+    <circle cx="0" cy="2" r="10" fill="#808080" opacity="0.5"/>
+    <circle cx="0" cy="2" r="7" fill="#909090" opacity="0.5"/>
+    <!-- Camera flash/detail -->
+    <rect x="10" y="-10" width="6" height="4" fill="#B0B0B0" opacity="0.5"/>
+    <!-- Viewfinder -->
+    <rect x="-5" y="-12" width="10" height="3" rx="1" fill="#808080" opacity="0.5"/>
+  </g>
+  
+  <!-- Fork icon -->
+  <g transform="translate(140, 130)" opacity="0.3">
+    <rect x="0" y="-5" width="3" height="30" fill="#C0C0C0"/>
+    <rect x="0" y="-15" width="3" height="8" fill="#C0C0C0"/>
+    <rect x="-4" y="-15" width="2" height="6" fill="#C0C0C0"/>
+    <rect x="5" y="-15" width="2" height="6" fill="#C0C0C0"/>
+  </g>
+  
+  <!-- Knife icon -->
+  <g transform="translate(260, 130)" opacity="0.3">
+    <rect x="0" y="-5" width="3" height="30" fill="#C0C0C0"/>
+    <path d="M 3 -15 L 3 -5 L 8 -5 L 8 -12 C 8 -15 6 -15 3 -15 Z" fill="#C0C0C0"/>
+  </g>
+  
+  <!-- Small decorative elements suggesting ingredients -->
+  <g opacity="0.4">
+    <!-- Cherry tomato -->
+    <circle cx="100" cy="80" r="8" fill="#FF6347"/>
+    <!-- Herb leaf -->
+    <ellipse cx="300" cy="90" rx="6" ry="10" fill="#90EE90" transform="rotate(25 300 90)"/>
+    <!-- Garlic clove -->
+    <ellipse cx="320" cy="200" rx="5" ry="8" fill="#FFF8DC"/>
+    <!-- Carrot -->
+    <ellipse cx="80" cy="210" rx="4" ry="12" fill="#FFA500" transform="rotate(-30 80 210)"/>
+  </g>
+  
+  <!-- Text elements -->
+  <text x="200" y="220" font-family="Georgia, serif" font-size="16" fill="#8B4513" text-anchor="middle" font-weight="500">
+    Photo Coming Soon
+  </text>
+  
+  <text x="200" y="245" font-family="Arial, sans-serif" font-size="11" fill="#A0522D" text-anchor="middle" opacity="0.7">
+    This delicious recipe is worth making
+  </text>
+  
+  <text x="200" y="262" font-family="Arial, sans-serif" font-size="11" fill="#A0522D" text-anchor="middle" opacity="0.7">
+    even without the photo!
+  </text>
+  
+  <!-- Small heart accent -->
+  <g transform="translate(200, 280)">
+    <path d="M 0,3 C -4,-3 -12,-1.5 -12,-6 C -12,-9 -10,-11 -7,-11 C -4,-11 -2,-9 0,-6 C 2,-9 4,-11 7,-11 C 10,-11 12,-9 12,-6 C 12,-1.5 4,-3 0,3 Z" 
+          fill="#FF6B6B" opacity="0.3"/>
+  </g>
+</svg>
