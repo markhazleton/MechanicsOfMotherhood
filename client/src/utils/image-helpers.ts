@@ -3,14 +3,24 @@
  */
 
 /**
+ * Gets the base URL for the application, considering GitHub Pages deployment
+ */
+function getBaseUrl(): string {
+  // Use Vite's built-in import.meta.env.BASE_URL which respects the base config
+  return import.meta.env.BASE_URL || '/';
+}
+
+/**
  * Gets the appropriate image URL for a recipe
  * Falls back to placeholder if no image is available
- * Works with the immutable API structure
+ * Works with the immutable API structure and respects base path
  */
 export function getRecipeImageUrl(recipe: {
   images?: string[] | null;
   name?: string;
 }): string {
+  const baseUrl = getBaseUrl();
+  
   // Check if recipe has images and the first image exists
   if (
     recipe.images &&
@@ -24,11 +34,11 @@ export function getRecipeImageUrl(recipe: {
       return recipe.images[0];
     }
     // Otherwise, treat it as a relative path from the images/recipes directory
-    return `/images/recipes/${recipe.images[0]}`;
+    return `${baseUrl}images/recipes/${recipe.images[0]}`;
   }
 
   // Fall back to our custom placeholder
-  return "/images/recipes/mom-recipe-placeholder.svg";
+  return `${baseUrl}images/recipes/mom-recipe-placeholder.svg`;
 }
 
 /**
