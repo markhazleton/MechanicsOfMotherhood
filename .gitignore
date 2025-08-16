@@ -71,7 +71,7 @@ dist
 
 # Gatsby files
 .cache/
-public
+# public  # Commented out - this is a Vite project, not Gatsby
 
 # Vite build tool
 dist
