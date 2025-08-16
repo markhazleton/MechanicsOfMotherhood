@@ -1,89 +1,152 @@
 <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-  <!-- Warm gradient background -->
+  <!-- Industrial gradient background matching MoM theme -->
   <defs>
     <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FFF5F0;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#FFE8DC;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#FEFEFE;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F8FAFC;stop-opacity:1" />
     </linearGradient>
-    
-    <!-- Soft shadow filter -->
-    <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
-      <feOffset dx="0" dy="2" result="offsetblur"/>
-      <feFlood flood-color="#000000" flood-opacity="0.1"/>
-      <feComposite in2="offsetblur" operator="in"/>
+
+    <!-- Industrial gradient for main plate -->
+    <linearGradient id="plateGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F1F5F9;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Mechanical shadow filter -->
+    <filter id="mechanicalShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+      <feOffset dx="2" dy="4" result="offsetblur" />
+      <feFlood flood-color="#3E4A59" flood-opacity="0.15" />
+      <feComposite in2="offsetblur" operator="in" />
       <feMerge>
-        <feMergeNode/>
-        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
       </feMerge>
     </filter>
+
+    <!-- Pattern for industrial texture -->
+    <pattern id="gridPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#E2E8F0" stroke-width="0.5" opacity="0.3" />
+    </pattern>
   </defs>
-  
-  <!-- Background -->
-  <rect width="400" height="300" fill="url(#bgGradient)"/>
-  
-  <!-- Decorative border pattern -->
-  <rect x="10" y="10" width="380" height="280" fill="none" stroke="#F4A460" stroke-width="1" stroke-dasharray="5,3" opacity="0.3"/>
-  
-  <!-- Main plate/dish circle -->
-  <circle cx="200" cy="130" r="70" fill="#FFFFFF" filter="url(#softShadow)"/>
-  <circle cx="200" cy="130" r="65" fill="none" stroke="#E8E8E8" stroke-width="1"/>
-  
-  <!-- Camera icon in center of plate -->
-  <g transform="translate(200, 130)">
-    <!-- Camera body -->
-    <rect x="-20" y="-12" width="40" height="28" rx="3" fill="#A0A0A0" opacity="0.5"/>
-    <!-- Camera lens -->
-    <circle cx="0" cy="2" r="10" fill="#808080" opacity="0.5"/>
-    <circle cx="0" cy="2" r="7" fill="#909090" opacity="0.5"/>
-    <!-- Camera flash/detail -->
-    <rect x="10" y="-10" width="6" height="4" fill="#B0B0B0" opacity="0.5"/>
-    <!-- Viewfinder -->
-    <rect x="-5" y="-12" width="10" height="3" rx="1" fill="#808080" opacity="0.5"/>
+
+  <!-- Background with industrial pattern -->
+  <rect width="400" height="300" fill="url(#bgGradient)" />
+  <rect width="400" height="300" fill="url(#gridPattern)" />
+
+  <!-- Workshop-style border frame -->
+  <rect x="15" y="15" width="370" height="270" fill="none" stroke="#5D8FA8" stroke-width="2"
+    opacity="0.4" />
+  <rect x="12" y="12" width="376" height="276" fill="none" stroke="#3E4A59" stroke-width="1"
+    opacity="0.3" />
+
+  <!-- Main cooking vessel/plate with industrial styling -->
+  <circle cx="200" cy="130" r="75" fill="url(#plateGradient)" filter="url(#mechanicalShadow)" />
+  <circle cx="200" cy="130" r="70" fill="none" stroke="#E2E8F0" stroke-width="2" />
+  <circle cx="200" cy="130" r="65" fill="none" stroke="#CBD5E1" stroke-width="1" />
+
+  <!-- Mechanical utensil icons in MoM style -->
+
+  <!-- Wrench (representing tools/mechanics) -->
+  <g transform="translate(200, 130)" opacity="0.4">
+    <!-- Wrench body -->
+    <rect x="-2" y="-25" width="4" height="35" fill="#637A87" rx="2" />
+    <!-- Wrench head -->
+    <rect x="-8" y="-30" width="16" height="8" fill="#637A87" rx="2" />
+    <rect x="-6" y="-28" width="12" height="4" fill="#FFFFFF" />
+    <!-- Adjustment mechanism -->
+    <circle cx="0" cy="-26" r="2" fill="#E16259" />
   </g>
-  
-  <!-- Fork icon -->
-  <g transform="translate(140, 130)" opacity="0.3">
-    <rect x="0" y="-5" width="3" height="30" fill="#C0C0C0"/>
-    <rect x="0" y="-15" width="3" height="8" fill="#C0C0C0"/>
-    <rect x="-4" y="-15" width="2" height="6" fill="#C0C0C0"/>
-    <rect x="5" y="-15" width="2" height="6" fill="#C0C0C0"/>
+
+  <!-- Gear/Cog (mechanical theme) -->
+  <g transform="translate(150, 120)" opacity="0.35">
+    <!-- Gear teeth -->
+    <path
+      d="M-15,-3 L-12,-8 L-8,-8 L-5,-3 L-3,-5 L2,-8 L8,-8 L12,-5 L15,-3 L12,3 L8,8 L2,8 L-3,5 L-5,3 L-8,8 L-12,8 L-15,3 Z"
+      fill="#637A87" />
+    <!-- Gear center -->
+    <circle cx="0" cy="0" r="6" fill="#5D8FA8" />
+    <circle cx="0" cy="0" r="3" fill="#FFFFFF" />
   </g>
-  
-  <!-- Knife icon -->
-  <g transform="translate(260, 130)" opacity="0.3">
-    <rect x="0" y="-5" width="3" height="30" fill="#C0C0C0"/>
-    <path d="M 3 -15 L 3 -5 L 8 -5 L 8 -12 C 8 -15 6 -15 3 -15 Z" fill="#C0C0C0"/>
+
+  <!-- Spoon with industrial handle -->
+  <g transform="translate(250, 140)" opacity="0.35">
+    <!-- Handle -->
+    <rect x="0" y="-5" width="3" height="25" fill="#637A87" />
+    <!-- Spoon bowl -->
+    <ellipse cx="1.5" cy="-12" rx="6" ry="8" fill="#637A87" />
+    <ellipse cx="1.5" cy="-12" rx="4" ry="6" fill="#E2E8F0" />
+    <!-- Handle grip detail -->
+    <rect x="0" y="15" width="3" height="3" fill="#E16259" />
   </g>
-  
-  <!-- Small decorative elements suggesting ingredients -->
-  <g opacity="0.4">
-    <!-- Cherry tomato -->
-    <circle cx="100" cy="80" r="8" fill="#FF6347"/>
-    <!-- Herb leaf -->
-    <ellipse cx="300" cy="90" rx="6" ry="10" fill="#90EE90" transform="rotate(25 300 90)"/>
-    <!-- Garlic clove -->
-    <ellipse cx="320" cy="200" rx="5" ry="8" fill="#FFF8DC"/>
-    <!-- Carrot -->
-    <ellipse cx="80" cy="210" rx="4" ry="12" fill="#FFA500" transform="rotate(-30 80 210)"/>
+
+  <!-- Recipe ingredients as mechanical components -->
+  <g opacity="0.3">
+    <!-- Bolt/screw (representing precision) -->
+    <g transform="translate(120, 90)">
+      <rect x="-1" y="-8" width="2" height="16" fill="#5D8FA8" />
+      <circle cx="0" cy="-8" r="3" fill="#637A87" />
+      <path d="M-2,-8 L2,-8 M-2,-6 L2,-6" stroke="#E2E8F0" stroke-width="0.5" />
+    </g>
+
+    <!-- Washer/ring component -->
+    <g transform="translate(290, 100)">
+      <circle cx="0" cy="0" r="6" fill="#5D8FA8" opacity="0.6" />
+      <circle cx="0" cy="0" r="3" fill="#FFFFFF" />
+    </g>
+
+    <!-- Spring coil -->
+    <g transform="translate(110, 180)">
+      <path d="M0,0 Q-3,-3 0,-6 Q3,-9 0,-12 Q-3,-15 0,-18"
+        stroke="#5D8FA8" stroke-width="2" fill="none" />
+    </g>
+
+    <!-- Mechanical bearing -->
+    <g transform="translate(290, 190)">
+      <circle cx="0" cy="0" r="5" fill="#637A87" />
+      <circle cx="0" cy="0" r="3" fill="#E2E8F0" />
+      <circle cx="0" cy="0" r="1" fill="#5D8FA8" />
+    </g>
   </g>
-  
-  <!-- Text elements -->
-  <text x="200" y="220" font-family="Georgia, serif" font-size="16" fill="#8B4513" text-anchor="middle" font-weight="500">
-    Photo Coming Soon
+
+  <!-- Text in MoM industrial style -->
+  <text x="200" y="215" font-family="Orbitron, monospace" font-size="18" fill="#3E4A59"
+    text-anchor="middle" font-weight="600">
+    RECIPE ASSEMBLY
   </text>
-  
-  <text x="200" y="245" font-family="Arial, sans-serif" font-size="11" fill="#A0522D" text-anchor="middle" opacity="0.7">
-    This delicious recipe is worth making
+
+  <text x="200" y="235" font-family="Roboto Condensed, sans-serif" font-size="12" fill="#637A87"
+    text-anchor="middle" font-weight="400">
+    PHOTO DOCUMENTATION IN PROGRESS
   </text>
-  
-  <text x="200" y="262" font-family="Arial, sans-serif" font-size="11" fill="#A0522D" text-anchor="middle" opacity="0.7">
-    even without the photo!
+
+  <text x="200" y="250" font-family="Inter, sans-serif" font-size="10" fill="#637A87"
+    text-anchor="middle" opacity="0.8">
+    This precision-engineered recipe delivers results
   </text>
-  
-  <!-- Small heart accent -->
+
+  <text x="200" y="265" font-family="Inter, sans-serif" font-size="10" fill="#637A87"
+    text-anchor="middle" opacity="0.8">
+    even without visual specifications
+  </text>
+
+  <!-- MoM gear accent instead of heart -->
   <g transform="translate(200, 280)">
-    <path d="M 0,3 C -4,-3 -12,-1.5 -12,-6 C -12,-9 -10,-11 -7,-11 C -4,-11 -2,-9 0,-6 C 2,-9 4,-11 7,-11 C 10,-11 12,-9 12,-6 C 12,-1.5 4,-3 0,3 Z" 
-          fill="#FF6B6B" opacity="0.3"/>
+    <!-- Small gear -->
+    <path d="M-6,-2 L-4,-4 L-2,-4 L0,-2 L2,-4 L4,-4 L6,-2 L4,2 L2,4 L0,2 L-2,4 L-4,4 L-6,2 Z"
+      fill="#E16259" opacity="0.4" />
+    <circle cx="0" cy="0" r="2" fill="#5D8FA8" opacity="0.6" />
+  </g>
+
+  <!-- Industrial corner brackets -->
+  <g stroke="#637A87" stroke-width="1" fill="none" opacity="0.2">
+    <!-- Top left -->
+    <path d="M25,25 L35,25 M25,25 L25,35" />
+    <!-- Top right -->
+    <path d="M375,25 L365,25 M375,25 L375,35" />
+    <!-- Bottom left -->
+    <path d="M25,275 L35,275 M25,275 L25,265" />
+    <!-- Bottom right -->
+    <path d="M375,275 L365,275 M375,275 L375,265" />
   </g>
 </svg>
