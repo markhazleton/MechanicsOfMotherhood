@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Search, Filter, Clock, Users, Star, ArrowRight } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
@@ -8,38 +9,43 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { Recipe } from "@shared/schema";
+import { getRecipes, getCategories, searchRecipes, getRecipeUrl } from "@/data/api-loader";
+import type { Recipe } from "@/data/api-types";
 
 export default function Recipes() {
-  const [page, setPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSearch, setActiveSearch] = useState("");
+  const [, navigate] = useLocation();
 
-  // Use RecipeSpark API for search and filtering
-  const searchParams = new URLSearchParams({
-    pageNumber: page.toString(),
-    pageSize: "12",
-    ...(activeSearch && { searchTerm: activeSearch }),
-    ...(selectedCategory && { categoryId: selectedCategory })
+  // Use API loader for recipes and categories
+  const { data: allRecipes, isLoading: recipesLoading } = useQuery<Recipe[]>({
+    queryKey: ["recipes"],
+    queryFn: () => getRecipes(),
   });
+
+  const { data: categories, isLoading: categoriesLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => getCategories(),
+  });
+
+  // Filter recipes based on search and category
+  let filteredRecipes = allRecipes || [];
   
-  const { data: recipesData, isLoading } = useQuery({
-    queryKey: [`/api/recipespark/recipes?${searchParams.toString()}`],
-  });
+  if (activeSearch) {
+    filteredRecipes = searchRecipes(activeSearch);
+  }
+  
+  if (selectedCategory) {
+    const categoryId = parseInt(selectedCategory);
+    filteredRecipes = filteredRecipes.filter(recipe => recipe.recipeCategoryID === categoryId);
+  }
 
-  const { data: categoriesData } = useQuery({
-    queryKey: ["/api/categories"],
-  });
-
-  const recipes = recipesData?.data || [];
-  const categories = categoriesData?.categories || [];
-  const pagination = recipesData?.pagination;
+  const isLoading = recipesLoading || categoriesLoading;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setActiveSearch(searchQuery);
-    setPage(1); // Reset to first page when searching
   };
 
   return (
@@ -96,13 +102,13 @@ export default function Recipes() {
                 value={selectedCategory}
                 onChange={(e) => {
                   setSelectedCategory(e.target.value);
-                  setPage(1); // Reset to first page when filtering
                 }}
                 className="px-4 py-2 border border-medium-gray rounded-lg focus:ring-2 focus:ring-workshop-teal"
                 data-testid="category-filter"
+                title="Filter recipes by category"
               >
                 <option value="">All Categories</option>
-                {categories.map((category: any) => (
+                {(categories || []).map((category: any) => (
                   <option key={category.id} value={category.id.toString()}>
                     {category.name}
                   </option>
@@ -133,10 +139,10 @@ export default function Recipes() {
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {recipes.map((recipe: Recipe) => (
+                {filteredRecipes.map((recipe: Recipe) => (
                   <Card key={recipe.id} className="gear-border bg-white rounded-xl overflow-hidden mechanical-shadow hover:transform hover:scale-105 transition-all duration-300" data-testid={`recipe-card-${recipe.id}`}>
                     <img
-                      src={recipe.imageUrl || "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"}
+                      src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
                       alt={recipe.name}
                       className="w-full h-40 object-cover"
                     />
@@ -144,7 +150,7 @@ export default function Recipes() {
                       <div className="flex items-center justify-between mb-2">
                         <Badge className="bg-workshop-teal text-white text-xs">
                           <Clock size={12} className="mr-1" />
-                          {(recipe.prepTime || 30) + (recipe.cookTime || 30)}min
+                          60min
                         </Badge>
                         <div className="flex items-center text-energetic-orange">
                           <Star size={12} fill="currentColor" />
@@ -166,6 +172,7 @@ export default function Recipes() {
                           variant="ghost"
                           size="sm"
                           className="text-energetic-orange hover:text-red-600 p-0 h-auto"
+                          onClick={() => navigate(getRecipeUrl(recipe))}
                           data-testid={`view-recipe-${recipe.id}`}
                         >
                           <ArrowRight size={14} className="mr-1" />
@@ -177,30 +184,12 @@ export default function Recipes() {
                 ))}
               </div>
 
-              {/* Pagination */}
-              {pagination && pagination.totalPages > 1 && (
-                <div className="flex items-center justify-center space-x-4 mt-12">
-                  <Button
-                    variant="outline"
-                    disabled={!pagination.hasPrevious}
-                    onClick={() => setPage(page - 1)}
-                    data-testid="pagination-prev"
-                  >
-                    Previous
-                  </Button>
-                  <span className="text-tool-gray">
-                    Page {pagination.currentPage} of {pagination.totalPages}
-                  </span>
-                  <Button
-                    variant="outline"
-                    disabled={!pagination.hasNext}
-                    onClick={() => setPage(page + 1)}
-                    data-testid="pagination-next"
-                  >
-                    Next
-                  </Button>
-                </div>
-              )}
+              {/* Show results count */}
+              <div className="text-center mt-8 text-tool-gray">
+                Showing {filteredRecipes.length} recipe{filteredRecipes.length !== 1 ? 's' : ''}
+                {activeSearch && ` for "${activeSearch}"`}
+                {selectedCategory && ` in ${categories?.find(c => c.id.toString() === selectedCategory)?.name}`}
+              </div>
             </>
           )}
         </div>

@@ -2,7 +2,57 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
-import { insertRecipeSchema, insertCategorySchema, insertWebsiteSchema, insertMenuItemSchema } from "@shared/schema";
+
+// Local validation schemas (previously from shared schema)
+const insertRecipeSchema = z.object({
+  name: z.string(),
+  description: z.string().nullish(),
+  ingredients: z.string().nullish(),
+  instructions: z.string().nullish(),
+  servings: z.number().nullish(),
+  authorNM: z.string().nullish(),
+  recipeCategoryID: z.number(),
+  prepTime: z.number().nullish(),
+  cookTime: z.number().nullish(),
+  difficulty: z.enum(["easy", "medium", "hard"]).nullish(),
+  imageUrl: z.string().nullish(),
+  tags: z.array(z.string()).nullish(),
+  averageRating: z.number().nullish(),
+  featured: z.boolean().nullish(),
+  viewCount: z.number().nullish(),
+  recipeURL: z.string().nullish(),
+  seO_Keywords: z.string().nullish(),
+  isApproved: z.boolean().nullish(),
+});
+
+const insertCategorySchema = z.object({
+  name: z.string(),
+  description: z.string().nullish(),
+  displayOrder: z.number().nullish(),
+  isActive: z.boolean().nullish(),
+  url: z.string().nullish(),
+  color: z.string().nullish(),
+  recipeCount: z.number().nullish(),
+});
+
+const insertWebsiteSchema = z.object({
+  name: z.string(),
+  description: z.string().nullish(),
+  siteTemplate: z.string(),
+  siteStyle: z.string(),
+  websiteUrl: z.string().nullish(),
+  isRecipeSite: z.boolean(),
+  modifiedID: z.number(),
+});
+
+const insertMenuItemSchema = z.object({
+  domainID: z.number(),
+  menuName: z.string(),
+  menuURL: z.string().nullish(),
+  parentID: z.number().nullish(),
+  displayOrder: z.number(),
+  displayInNavigation: z.boolean(),
+});
 
 // Helper function to create RecipeSpark API compatible responses
 function createApiResponse(data: any, message: string, pagination?: any) {
@@ -10,54 +60,73 @@ function createApiResponse(data: any, message: string, pagination?: any) {
     data,
     success: true,
     message,
-    ...(pagination && { pagination })
+    ...(pagination && { pagination }),
   };
 }
 
-function createErrorResponse(message: string, details?: string, statusCode = 500) {
+function createErrorResponse(
+  message: string,
+  details?: string,
+  statusCode = 500
+) {
   return {
     message,
-    ...(details && { details })
+    ...(details && { details }),
   };
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // RecipeSpark API compatible routes
-  
+
   // Get recipes with RecipeSpark API format
   app.get("/api/recipespark/recipes", async (req, res) => {
     try {
       const pageNumber = parseInt(req.query.pageNumber as string) || 1;
-      const pageSize = Math.min(parseInt(req.query.pageSize as string) || 20, 100);
-      const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
+      const pageSize = Math.min(
+        parseInt(req.query.pageSize as string) || 20,
+        100
+      );
+      const categoryId = req.query.categoryId
+        ? parseInt(req.query.categoryId as string)
+        : undefined;
       const searchTerm = req.query.searchTerm as string;
-      const featured = req.query.featured === 'true';
+      const featured = req.query.featured === "true";
 
-      const result = await storage.getRecipes({ pageNumber, pageSize, categoryId, searchTerm, featured });
-      
+      const result = await storage.getRecipes({
+        pageNumber,
+        pageSize,
+        categoryId,
+        searchTerm,
+        featured,
+      });
+
       // Add category information to each recipe
       const recipesWithCategory = await Promise.all(
         result.recipes.map(async (recipe) => {
           const category = await storage.getCategory(recipe.recipeCategoryID);
           return {
             ...recipe,
-            recipeCategory: category ? { id: category.id, name: category.name } : null
+            recipeCategory: category
+              ? { id: category.id, name: category.name }
+              : null,
           };
         })
       );
 
-      res.json(createApiResponse(
-        recipesWithCategory,
-        `Retrieved ${recipesWithCategory.length} recipes`,
-        {
-          currentPage: pageNumber,
-          pageSize,
-          totalCount: result.total,
-          totalPages: Math.ceil(result.total / pageSize),
-          hasPrevious: pageNumber > 1,
-          hasNext: pageNumber * pageSize < result.total
-        }
-      ));
+      res.json(
+        createApiResponse(
+          recipesWithCategory,
+          `Retrieved ${recipesWithCategory.length} recipes`,
+          {
+            currentPage: pageNumber,
+            pageSize,
+            totalCount: result.total,
+            totalPages: Math.ceil(result.total / pageSize),
+            hasPrevious: pageNumber > 1,
+            hasNext: pageNumber * pageSize < result.total,
+          }
+        )
+      );
     } catch (error) {
       res.status(500).json(createErrorResponse("Failed to fetch recipes"));
     }
@@ -80,10 +149,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const category = await storage.getCategory(recipe.recipeCategoryID);
       const recipeWithCategory = {
         ...recipe,
-        recipeCategory: category ? { id: category.id, name: category.name } : null
+        recipeCategory: category
+          ? { id: category.id, name: category.name }
+          : null,
       };
 
-      res.json(createApiResponse(recipeWithCategory, "Recipe retrieved successfully"));
+      res.json(
+        createApiResponse(recipeWithCategory, "Recipe retrieved successfully")
+      );
     } catch (error) {
       res.status(500).json(createErrorResponse("Failed to fetch recipe"));
     }
@@ -104,7 +177,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isApproved: false, // New recipes need approval
         averageRating: 0,
         // Default MoM fields
-        imageUrl: req.body.imageUrl || "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        imageUrl:
+          req.body.imageUrl ||
+          "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
         prepTime: req.body.prepTime || 30,
         cookTime: req.body.cookTime || 30,
         difficulty: req.body.difficulty || "easy",
@@ -114,11 +189,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Validate required fields
       if (!recipeData.name || !recipeData.recipeCategoryID) {
-        return res.status(400).json(createErrorResponse("Recipe name and category ID are required"));
+        return res
+          .status(400)
+          .json(
+            createErrorResponse("Recipe name and category ID are required")
+          );
       }
 
       const newRecipe = await storage.createRecipe(recipeData);
-      res.status(201).json(createApiResponse(newRecipe, "Recipe created successfully"));
+      res
+        .status(201)
+        .json(createApiResponse(newRecipe, "Recipe created successfully"));
     } catch (error) {
       res.status(500).json(createErrorResponse("Failed to create recipe"));
     }
@@ -184,14 +265,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/search", async (req, res) => {
     try {
       const { query } = req.body;
-      if (!query || typeof query !== 'string') {
+      if (!query || typeof query !== "string") {
         return res.status(400).json({ message: "Search query is required" });
       }
 
       const results = await storage.searchRecipes(query);
       res.json({
         results,
-        suggestions: [] // Could implement search suggestions here
+        suggestions: [], // Could implement search suggestions here
       });
     } catch (error) {
       res.status(500).json({ message: "Search failed" });
@@ -204,10 +285,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
       const category = req.query.category as string;
-      const featured = req.query.featured === 'true';
+      const featured = req.query.featured === "true";
 
-      const result = await storage.getBlogPosts({ page, limit, category, featured });
-      
+      const result = await storage.getBlogPosts({
+        page,
+        limit,
+        category,
+        featured,
+      });
+
       res.json({
         posts: result.posts,
         pagination: {
@@ -215,8 +301,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           totalPages: Math.ceil(result.total / limit),
           totalCount: result.total,
           hasNext: page * limit < result.total,
-          hasPrev: page > 1
-        }
+          hasPrev: page > 1,
+        },
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch blog posts" });
@@ -239,21 +325,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Categories - RecipeSpark API format
   app.get("/api/recipespark/categories", async (req, res) => {
     try {
-      const includeInactive = req.query.includeInactive === 'true';
+      const includeInactive = req.query.includeInactive === "true";
       const categories = await storage.getCategories(includeInactive);
-      
+
       // Add recipes to each category
       const categoriesWithRecipes = await Promise.all(
         categories.map(async (category) => {
-          const recipes = await storage.getRecipes({ categoryId: category.id, pageSize: 10 });
+          const recipes = await storage.getRecipes({
+            categoryId: category.id,
+            pageSize: 10,
+          });
           return {
             ...category,
-            recipes: recipes.recipes.map(r => ({ id: r.id, name: r.name, description: r.description }))
+            recipes: recipes.recipes.map((r) => ({
+              id: r.id,
+              name: r.name,
+              description: r.description,
+            })),
           };
         })
       );
 
-      res.json(createApiResponse(categoriesWithRecipes, `Retrieved ${categoriesWithRecipes.length} categories`));
+      res.json(
+        createApiResponse(
+          categoriesWithRecipes,
+          `Retrieved ${categoriesWithRecipes.length} categories`
+        )
+      );
     } catch (error) {
       res.status(500).json(createErrorResponse("Failed to fetch categories"));
     }
@@ -276,10 +374,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const recipes = await storage.getRecipes({ categoryId: id });
       const categoryWithRecipes = {
         ...category,
-        recipes: recipes.recipes.map(r => ({ id: r.id, name: r.name, description: r.description }))
+        recipes: recipes.recipes.map((r) => ({
+          id: r.id,
+          name: r.name,
+          description: r.description,
+        })),
       };
 
-      res.json(createApiResponse(categoryWithRecipes, "Category retrieved successfully"));
+      res.json(
+        createApiResponse(
+          categoryWithRecipes,
+          "Category retrieved successfully"
+        )
+      );
     } catch (error) {
       res.status(500).json(createErrorResponse("Failed to fetch category"));
     }
@@ -293,17 +400,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description: req.body.description,
         displayOrder: req.body.displayOrder || 99,
         isActive: req.body.isActive !== false,
-        url: req.body.url || req.body.name?.toLowerCase().replace(/\s+/g, '-'),
+        url: req.body.url || req.body.name?.toLowerCase().replace(/\s+/g, "-"),
         color: req.body.color || "#38B2AC",
         recipeCount: 0,
       };
 
       if (!categoryData.name) {
-        return res.status(400).json(createErrorResponse("Category name is required"));
+        return res
+          .status(400)
+          .json(createErrorResponse("Category name is required"));
       }
 
       const newCategory = await storage.createCategory(categoryData);
-      res.status(201).json(createApiResponse(newCategory, "Category created successfully"));
+      res
+        .status(201)
+        .json(createApiResponse(newCategory, "Category created successfully"));
     } catch (error) {
       res.status(500).json(createErrorResponse("Failed to create category"));
     }
@@ -332,7 +443,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json(createErrorResponse("Category not found"));
       }
 
-      res.json(createApiResponse(updatedCategory, "Category updated successfully"));
+      res.json(
+        createApiResponse(updatedCategory, "Category updated successfully")
+      );
     } catch (error) {
       res.status(500).json(createErrorResponse("Failed to update category"));
     }
@@ -358,7 +471,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Backward compatibility routes for existing MoM frontend
-  
+
   // Legacy recipes endpoint
   app.get("/api/recipes", async (req, res) => {
     try {
@@ -366,25 +479,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const limit = parseInt(req.query.limit as string) || 10;
       const categoryName = req.query.category as string;
       const difficulty = req.query.difficulty as string;
-      const featured = req.query.featured === 'true';
+      const featured = req.query.featured === "true";
 
       // Find category by name if provided
       let categoryId: number | undefined;
       if (categoryName) {
         const categories = await storage.getCategories();
-        const category = categories.find(c => c.name === categoryName);
+        const category = categories.find((c) => c.name === categoryName);
         categoryId = category?.id;
       }
 
-      const result = await storage.getRecipes({ 
-        pageNumber: page, 
-        pageSize: limit, 
-        categoryId, 
-        featured 
+      const result = await storage.getRecipes({
+        pageNumber: page,
+        pageSize: limit,
+        categoryId,
+        featured,
       });
-      
+
       // Transform to legacy format
-      const legacyRecipes = result.recipes.map(recipe => ({
+      const legacyRecipes = result.recipes.map((recipe) => ({
         id: recipe.id.toString(),
         title: recipe.name,
         description: recipe.description || "",
@@ -394,8 +507,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         servings: recipe.servings || 1,
         difficulty: recipe.difficulty || "easy",
         category: categoryName || "General",
-        ingredients: recipe.ingredients ? recipe.ingredients.split('\n').filter(i => i.trim()) : [],
-        instructions: recipe.instructions ? recipe.instructions.split('\n').filter(i => i.trim()) : [],
+        ingredients: recipe.ingredients
+          ? recipe.ingredients.split("\n").filter((i) => i.trim())
+          : [],
+        instructions: recipe.instructions
+          ? recipe.instructions.split("\n").filter((i) => i.trim())
+          : [],
         tags: recipe.tags || [],
         rating: recipe.averageRating || 0,
         ratingCount: Math.floor(Math.random() * 200) + 1,
@@ -410,8 +527,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           totalPages: Math.ceil(result.total / limit),
           totalCount: result.total,
           hasNext: page * limit < result.total,
-          hasPrev: page > 1
-        }
+          hasPrev: page > 1,
+        },
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch recipes" });
@@ -422,7 +539,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/categories", async (req, res) => {
     try {
       const categories = await storage.getCategories();
-      const legacyCategories = categories.map(cat => ({
+      const legacyCategories = categories.map((cat) => ({
         id: cat.id.toString(),
         name: cat.name,
         description: cat.description,
@@ -460,8 +577,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         servings: recipe.servings || 1,
         difficulty: recipe.difficulty || "easy",
         category: "General", // Would need category lookup
-        ingredients: recipe.ingredients ? recipe.ingredients.split('\n').filter(i => i.trim()) : [],
-        instructions: recipe.instructions ? recipe.instructions.split('\n').filter(i => i.trim()) : [],
+        ingredients: recipe.ingredients
+          ? recipe.ingredients.split("\n").filter((i) => i.trim())
+          : [],
+        instructions: recipe.instructions
+          ? recipe.instructions.split("\n").filter((i) => i.trim())
+          : [],
         tags: recipe.tags || [],
         rating: recipe.averageRating || 0,
         ratingCount: Math.floor(Math.random() * 200) + 1,
@@ -481,11 +602,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const [recipes, posts, categories] = await Promise.all([
         storage.getFeaturedRecipes(),
         storage.getFeaturedBlogPosts(),
-        storage.getCategories()
+        storage.getCategories(),
       ]);
 
       // Transform recipes to legacy format
-      const legacyRecipes = recipes.map(recipe => ({
+      const legacyRecipes = recipes.map((recipe) => ({
         id: recipe.id.toString(),
         title: recipe.name,
         description: recipe.description || "",
@@ -495,8 +616,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         servings: recipe.servings || 1,
         difficulty: recipe.difficulty || "easy",
         category: "Featured",
-        ingredients: recipe.ingredients ? recipe.ingredients.split('\n').filter(i => i.trim()) : [],
-        instructions: recipe.instructions ? recipe.instructions.split('\n').filter(i => i.trim()) : [],
+        ingredients: recipe.ingredients
+          ? recipe.ingredients.split("\n").filter((i) => i.trim())
+          : [],
+        instructions: recipe.instructions
+          ? recipe.instructions.split("\n").filter((i) => i.trim())
+          : [],
         tags: recipe.tags || [],
         rating: recipe.averageRating || 0,
         ratingCount: Math.floor(Math.random() * 200) + 1,
@@ -504,7 +629,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         createdAt: recipe.createdDT || new Date(),
       }));
 
-      const legacyCategories = categories.map(cat => ({
+      const legacyCategories = categories.map((cat) => ({
         id: cat.id.toString(),
         name: cat.name,
         description: cat.description,
@@ -516,7 +641,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({
         recipes: legacyRecipes,
         posts,
-        categories: legacyCategories
+        categories: legacyCategories,
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch featured content" });
@@ -537,12 +662,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/search", async (req, res) => {
     try {
       const { query } = req.body;
-      if (!query || typeof query !== 'string') {
+      if (!query || typeof query !== "string") {
         return res.status(400).json({ message: "Search query is required" });
       }
 
       const results = await storage.searchRecipes(query);
-      const legacyResults = results.map(recipe => ({
+      const legacyResults = results.map((recipe) => ({
         id: recipe.id.toString(),
         title: recipe.name,
         description: recipe.description || "",
@@ -552,8 +677,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         servings: recipe.servings || 1,
         difficulty: recipe.difficulty || "easy",
         category: "General",
-        ingredients: recipe.ingredients ? recipe.ingredients.split('\n').filter(i => i.trim()) : [],
-        instructions: recipe.instructions ? recipe.instructions.split('\n').filter(i => i.trim()) : [],
+        ingredients: recipe.ingredients
+          ? recipe.ingredients.split("\n").filter((i) => i.trim())
+          : [],
+        instructions: recipe.instructions
+          ? recipe.instructions.split("\n").filter((i) => i.trim())
+          : [],
         tags: recipe.tags || [],
         rating: recipe.averageRating || 0,
         ratingCount: Math.floor(Math.random() * 200) + 1,
@@ -563,7 +692,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         results: legacyResults,
-        suggestions: []
+        suggestions: [],
       });
     } catch (error) {
       res.status(500).json({ message: "Search failed" });
@@ -574,10 +703,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/newsletter", async (req, res) => {
     try {
       const { email } = req.body;
-      if (!email || !email.includes('@')) {
+      if (!email || !email.includes("@")) {
         return res.status(400).json({ message: "Valid email is required" });
       }
-      
+
       // TODO: Implement actual newsletter signup
       res.json({ message: "Successfully subscribed to newsletter!" });
     } catch (error) {
@@ -586,16 +715,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // WebCMS API Routes
-  app.get('/api/webcms/websites', async (req, res) => {
+  app.get("/api/webcms/websites", async (req, res) => {
     try {
       const page = parseInt(req.query.page as string) || 1;
       const pageSize = parseInt(req.query.pageSize as string) || 20;
       const search = req.query.search as string;
       const template = req.query.template as string;
-      const isRecipeSite = req.query.isRecipeSite === 'true' ? true : req.query.isRecipeSite === 'false' ? false : undefined;
+      const isRecipeSite =
+        req.query.isRecipeSite === "true"
+          ? true
+          : req.query.isRecipeSite === "false"
+          ? false
+          : undefined;
 
-      const result = await storage.getWebsites({ page, pageSize, search, template, isRecipeSite });
-      
+      const result = await storage.getWebsites({
+        page,
+        pageSize,
+        search,
+        template,
+        isRecipeSite,
+      });
+
       res.json({
         success: true,
         data: result.websites,
@@ -603,114 +743,140 @@ export async function registerRoutes(app: Express): Promise<Server> {
           currentPage: page,
           pageSize,
           totalItems: result.total,
-          totalPages: Math.ceil(result.total / pageSize)
-        }
+          totalPages: Math.ceil(result.total / pageSize),
+        },
       });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Error fetching websites' });
+      res
+        .status(500)
+        .json({ success: false, message: "Error fetching websites" });
     }
   });
 
-  app.get('/api/webcms/websites/:id', async (req, res) => {
+  app.get("/api/webcms/websites/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const website = await storage.getWebsite(id);
-      
+
       if (!website) {
-        return res.status(404).json({ success: false, message: 'Website not found' });
+        return res
+          .status(404)
+          .json({ success: false, message: "Website not found" });
       }
-      
+
       res.json({ success: true, data: website });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Error fetching website' });
+      res
+        .status(500)
+        .json({ success: false, message: "Error fetching website" });
     }
   });
 
-  app.post('/api/webcms/websites', async (req, res) => {
+  app.post("/api/webcms/websites", async (req, res) => {
     try {
       const validatedData = insertWebsiteSchema.parse(req.body);
       const website = await storage.createWebsite(validatedData);
       res.status(201).json({ success: true, data: website });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Error creating website' });
+      res
+        .status(500)
+        .json({ success: false, message: "Error creating website" });
     }
   });
 
-  app.put('/api/webcms/websites/:id', async (req, res) => {
+  app.put("/api/webcms/websites/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const validatedData = insertWebsiteSchema.partial().parse(req.body);
       const website = await storage.updateWebsite(id, validatedData);
-      
+
       if (!website) {
-        return res.status(404).json({ success: false, message: 'Website not found' });
+        return res
+          .status(404)
+          .json({ success: false, message: "Website not found" });
       }
-      
+
       res.json({ success: true, data: website });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Error updating website' });
+      res
+        .status(500)
+        .json({ success: false, message: "Error updating website" });
     }
   });
 
-  app.delete('/api/webcms/websites/:id', async (req, res) => {
+  app.delete("/api/webcms/websites/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const deleted = await storage.deleteWebsite(id);
-      
+
       if (!deleted) {
-        return res.status(404).json({ success: false, message: 'Website not found' });
+        return res
+          .status(404)
+          .json({ success: false, message: "Website not found" });
       }
-      
-      res.json({ success: true, message: 'Website deleted successfully' });
+
+      res.json({ success: true, message: "Website deleted successfully" });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Error deleting website' });
+      res
+        .status(500)
+        .json({ success: false, message: "Error deleting website" });
     }
   });
 
   // Menu Items endpoints
-  app.get('/api/webcms/menu-items', async (req, res) => {
+  app.get("/api/webcms/menu-items", async (req, res) => {
     try {
       const result = await storage.getMenuItems(req.query);
       res.json({ success: true, data: result.menuItems, total: result.total });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Error fetching menu items' });
+      res
+        .status(500)
+        .json({ success: false, message: "Error fetching menu items" });
     }
   });
 
-  app.post('/api/webcms/menu-items', async (req, res) => {
+  app.post("/api/webcms/menu-items", async (req, res) => {
     try {
       const validatedData = insertMenuItemSchema.parse(req.body);
       const menuItem = await storage.createMenuItem(validatedData);
       res.status(201).json({ success: true, data: menuItem });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Error creating menu item' });
+      res
+        .status(500)
+        .json({ success: false, message: "Error creating menu item" });
     }
   });
 
   // Dashboard and search endpoints
-  app.get('/api/webcms/dashboard/stats', async (req, res) => {
+  app.get("/api/webcms/dashboard/stats", async (req, res) => {
     try {
       const stats = await storage.getDashboardStats();
       res.json({ success: true, data: stats });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Error fetching dashboard stats' });
+      res
+        .status(500)
+        .json({ success: false, message: "Error fetching dashboard stats" });
     }
   });
 
-  app.get('/api/webcms/search', async (req, res) => {
+  app.get("/api/webcms/search", async (req, res) => {
     try {
       const query = req.query.q as string;
       const page = parseInt(req.query.page as string) || 1;
       const pageSize = parseInt(req.query.pageSize as string) || 20;
-      
+
       if (!query) {
-        return res.status(400).json({ success: false, message: 'Search query is required' });
+        return res
+          .status(400)
+          .json({ success: false, message: "Search query is required" });
       }
-      
+
       const results = await storage.globalSearch(query, page, pageSize);
       res.json({ success: true, data: results });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Error performing search' });
+      res
+        .status(500)
+        .json({ success: false, message: "Error performing search" });
     }
   });
 
@@ -719,8 +885,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({
       title: "MoM (Mechanics of Motherhood) Recipe API",
       version: "1.0.0",
-      description: "A triple-compatible API supporting RecipeSpark, WebCMS, and legacy MoM frontend",
-      
+      description:
+        "A triple-compatible API supporting RecipeSpark, WebCMS, and legacy MoM frontend",
+
       recipeSpark: {
         baseUrl: "/api/recipespark",
         description: "Full RecipeSpark API specification compliance",
@@ -730,18 +897,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
             "GET /recipes/:id": "Get single recipe by ID",
             "POST /recipes": "Create new recipe",
             "PUT /recipes/:id": "Update existing recipe",
-            "DELETE /recipes/:id": "Delete recipe"
+            "DELETE /recipes/:id": "Delete recipe",
           },
           categories: {
             "GET /categories": "Get all categories",
             "GET /categories/:id": "Get single category by ID",
             "POST /categories": "Create new category",
             "PUT /categories/:id": "Update existing category",
-            "DELETE /categories/:id": "Delete category"
-          }
+            "DELETE /categories/:id": "Delete category",
+          },
         },
         authentication: "Required (implementation-specific)",
-        responseFormat: "Standard RecipeSpark format with data, success, message, and optional pagination"
+        responseFormat:
+          "Standard RecipeSpark format with data, success, message, and optional pagination",
       },
 
       webCMS: {
@@ -753,19 +921,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
             "GET /websites/:id": "Get single website by ID",
             "POST /websites": "Create new website",
             "PUT /websites/:id": "Update existing website",
-            "DELETE /websites/:id": "Delete website"
+            "DELETE /websites/:id": "Delete website",
           },
           menuItems: {
             "GET /menu-items": "Get menu items with filtering",
             "POST /menu-items": "Create new menu item",
             "PUT /menu-items/:id": "Update existing menu item",
-            "DELETE /menu-items/:id": "Delete menu item"
+            "DELETE /menu-items/:id": "Delete menu item",
           },
           dashboard: "GET /dashboard/stats",
-          search: "GET /search?q={query}"
+          search: "GET /search?q={query}",
         },
         authentication: "Required (implementation-specific)",
-        responseFormat: "WebCMS standard format with success, data, message structure"
+        responseFormat:
+          "WebCMS standard format with success, data, message structure",
       },
 
       legacyMoM: {
@@ -775,27 +944,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
           "GET /recipes": "Get recipes (legacy format)",
           "GET /recipes/:id": "Get single recipe (legacy format)",
           "GET /categories": "Get categories (legacy format)",
-          "GET /featured-content": "Get featured recipes, posts, and categories",
+          "GET /featured-content":
+            "Get featured recipes, posts, and categories",
           "POST /search": "Search recipes",
           "GET /blog-posts": "Get blog posts",
           "GET /blog-posts/:id": "Get single blog post",
           "GET /stats": "Get platform statistics",
-          "POST /newsletter": "Newsletter signup"
+          "POST /newsletter": "Newsletter signup",
         },
         authentication: "Not required",
-        responseFormat: "Legacy MoM format"
+        responseFormat: "Legacy MoM format",
       },
 
       examples: {
         recipeSpark: {
-          getRecipes: "GET /api/recipespark/recipes?pageNumber=1&pageSize=10&categoryId=1",
-          createRecipe: "POST /api/recipespark/recipes with { name, description, ingredients, instructions, servings, authorName, categoryId }",
+          getRecipes:
+            "GET /api/recipespark/recipes?pageNumber=1&pageSize=10&categoryId=1",
+          createRecipe:
+            "POST /api/recipespark/recipes with { name, description, ingredients, instructions, servings, authorName, categoryId }",
         },
         legacy: {
           getRecipes: "GET /api/recipes?page=1&limit=10&category=Quick%20Fixes",
-          search: "POST /api/search with { query: 'chicken' }"
-        }
-      }
+          search: "POST /api/search with { query: 'chicken' }",
+        },
+      },
     });
   });
 

@@ -22,7 +22,6 @@ export default function Navigation() {
     { href: "/", label: "Workshop", icon: Home },
     { href: "/recipes", label: "Recipe Manual", icon: BookOpen },
     { href: "/blog", label: "Maintenance Log", icon: Wrench },
-    { href: "/about", label: "About", icon: UserCheck },
   ];
 
   const NavLink = ({ href, label, icon: Icon }: { href: string; label: string; icon: any }) => (

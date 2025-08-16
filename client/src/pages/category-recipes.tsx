@@ -9,7 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { Recipe } from "@shared/schema";
+import { getRecipesByCategory, getCategoryBySlug, getRecipeUrl } from "@/data/api-loader";
+import type { Recipe } from "@/data/api-types";
 import { nameToSlug, getCategorySlug } from "@/utils/slugify";
 
 export default function CategoryRecipes() {
@@ -140,7 +141,7 @@ export default function CategoryRecipes() {
                           <Users size={12} className="mr-1" />
                           {recipe.servings}
                         </span>
-                        <a href={`/recipes/${recipe.id}`}>
+                        <Link href={getRecipeUrl(recipe)}>
                           <Button
                             variant="ghost"
                             size="sm"
@@ -150,7 +151,7 @@ export default function CategoryRecipes() {
                             <ArrowRight size={14} className="mr-1" />
                             View
                           </Button>
-                        </a>
+                        </Link>
                       </div>
                     </CardContent>
                   </Card>

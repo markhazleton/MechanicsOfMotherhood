@@ -1,0 +1,142 @@
+[
+  {
+    "id": 1,
+    "name": "Appetizer",
+    "description": "Appetizer",
+    "order": 1,
+    "isActive": true,
+    "recipes": [],
+    "url": "/recipe/category/appetizer",
+    "domainID": 2
+  },
+  {
+    "id": 2,
+    "name": "Bread",
+    "description": "Bread",
+    "order": 2,
+    "isActive": true,
+    "recipes": [],
+    "url": "/recipe/category/bread",
+    "domainID": 2
+  },
+  {
+    "id": 3,
+    "name": "Breakfast",
+    "description": "Breakfast",
+    "order": 3,
+    "isActive": true,
+    "recipes": [],
+    "url": "/recipe/category/breakfast",
+    "domainID": 2
+  },
+  {
+    "id": 4,
+    "name": "Dessert",
+    "description": "Dessert",
+    "order": 4,
+    "isActive": true,
+    "recipes": [],
+    "url": "/recipe/category/dessert",
+    "domainID": 2
+  },
+  {
+    "id": 5,
+    "name": "Dips",
+    "description": "Dips",
+    "order": 5,
+    "isActive": true,
+    "recipes": [],
+    "url": "/recipe/category/dips",
+    "domainID": 2
+  },
+  {
+    "id": 6,
+    "name": "Drink",
+    "description": "Drink",
+    "order": 6,
+    "isActive": true,
+    "recipes": [],
+    "url": "/recipe/category/drink",
+    "domainID": 2
+  },
+  {
+    "id": 7,
+    "name": "Main Course",
+    "description": "Main Course",
+    "order": 7,
+    "isActive": true,
+    "recipes": [],
+    "url": "/recipe/category/main-course",
+    "domainID": 2
+  },
+  {
+    "id": 8,
+    "name": "Quick Meals",
+    "description": "Quick Meals",
+    "order": 8,
+    "isActive": true,
+    "recipes": [],
+    "url": "/recipe/category/quick-meals",
+    "domainID": 2
+  },
+  {
+    "id": 9,
+    "name": "Salad",
+    "description": "Salad",
+    "order": 9,
+    "isActive": true,
+    "recipes": [],
+    "url": "/recipe/category/salad",
+    "domainID": 2
+  },
+  {
+    "id": 10,
+    "name": "Sauce",
+    "description": "Sauce",
+    "order": 10,
+    "isActive": true,
+    "recipes": [],
+    "url": "/recipe/category/sauce",
+    "domainID": 2
+  },
+  {
+    "id": 11,
+    "name": "Side Dishes",
+    "description": "Side Dishes",
+    "order": 11,
+    "isActive": true,
+    "recipes": [],
+    "url": "/recipe/category/side-dishes",
+    "domainID": 2
+  },
+  {
+    "id": 12,
+    "name": "Slow Cooker",
+    "description": "Slow Cooker",
+    "order": 12,
+    "isActive": true,
+    "recipes": [],
+    "url": "/recipe/category/slow-cooker",
+    "domainID": 2
+  },
+  {
+    "id": 13,
+    "name": "Soup",
+    "description": "Soup",
+    "order": 13,
+    "isActive": true,
+    "recipes": [],
+    "url": "/recipe/category/soup",
+    "domainID": 2
+  },
+  {
+    "id": 14,
+    "name": "Vegetable",
+    "description": "Vegetable",
+    "order": 14,
+    "isActive": true,
+    "recipes": [],
+    "url": "/recipe/category/vegetable",
+    "domainID": 2
+  }
+]
