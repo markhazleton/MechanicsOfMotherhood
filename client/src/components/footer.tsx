@@ -12,8 +12,11 @@ export default function Footer() {
           <div className="md:col-span-1">
             <div className="flex items-center space-x-3 mb-4">
               <div className="relative">
-                <Settings className="text-energetic-orange text-2xl" />
-                <Utensils className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-xs" />
+                <img 
+                  src="/images/logos/MOM-Logo-Icon.png"
+                  alt="MoM Logo Icon"
+                  className="h-8 w-8 object-contain filter brightness-0 invert"
+                />
               </div>
               <div>
                 <h3 className="font-mechanical text-xl font-bold">MoM</h3>

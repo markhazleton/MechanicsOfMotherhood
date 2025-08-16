@@ -13,11 +13,12 @@ export default function HeroSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="flex justify-center items-center mb-8">
           <div className="relative">
-            <Settings className="text-white text-6xl animate-spin-slow opacity-20" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="bg-white rounded-full p-4 mechanical-shadow">
-                <Utensils className="text-energetic-orange text-2xl" />
-              </div>
+            <div className="bg-white rounded-full p-6 mechanical-shadow">
+              <img 
+                src="/images/logos/MOM-Logo-Icon.png"
+                alt="MoM Logo"
+                className="h-16 w-16 object-contain"
+              />
             </div>
           </div>
         </div>

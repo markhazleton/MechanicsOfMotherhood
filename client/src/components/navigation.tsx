@@ -44,8 +44,22 @@ export default function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3" data-testid="logo-link">
             <div className="relative">
-              <Settings className="text-tool-gray text-3xl animate-spin-slow" />
-              <Utensils className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-energetic-orange text-sm" />
+              <img 
+                src="/images/logos/MOM-Logo-Icon.png"
+                alt="MoM Logo Icon"
+                className="h-10 w-10 object-contain"
+                onError={(e) => {
+                  console.error('Logo failed to load from:', e.currentTarget.src);
+                  // Fallback to Lucide icons if image fails
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                }}
+              />
+              {/* Fallback to original icons if image fails to load */}
+              <div className="hidden">
+                <Settings className="text-tool-gray text-3xl animate-spin-slow" />
+                <Utensils className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-energetic-orange text-sm" />
+              </div>
             </div>
             <div className="flex flex-col">
               <h1 className="font-mechanical text-2xl font-bold text-industrial-blue">MoM</h1>
