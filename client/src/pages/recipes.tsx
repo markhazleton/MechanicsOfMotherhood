@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Search, Filter, Clock, Users, Star, ArrowRight } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
@@ -116,7 +116,7 @@ export default function Recipes() {
               </select>
 
               {/* Browse Categories Link */}
-              <a href="/categories">
+              <Link href="/categories">
                 <Button
                   variant="outline"
                   className="px-4 py-2 border-workshop-teal text-workshop-teal hover:bg-workshop-teal hover:text-white"
@@ -125,7 +125,7 @@ export default function Recipes() {
                   <Filter className="w-4 h-4 mr-2" />
                   Browse Categories
                 </Button>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

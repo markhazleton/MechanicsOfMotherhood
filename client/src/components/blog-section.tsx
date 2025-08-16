@@ -1,7 +1,10 @@
 import { Wrench } from "lucide-react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 
 export default function BlogSection() {
+  const [, navigate] = useLocation();
+  
   return (
     <section id="blog" className="py-16 bg-kitchen-warm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -38,7 +41,7 @@ export default function BlogSection() {
             size="lg"
             className="gear-border bg-white hover:bg-gray-50 text-tool-gray px-8 py-4 rounded-xl font-semibold text-lg transition-all"
             data-testid="button-view-complete-manual"
-            onClick={() => window.location.href = '/blog'}
+            onClick={() => navigate('/blog')}
           >
             <Wrench className="mr-2" size={20} />
             View Blog Page

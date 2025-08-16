@@ -1,4 +1,5 @@
 import { Clock } from "lucide-react";
+import { Link } from "wouter";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 
@@ -37,9 +38,9 @@ export default function Blog() {
                 </p>
                 <p className="text-sm text-tool-gray">
                   In the meantime, explore our{" "}
-                  <a href="/recipes" className="text-workshop-teal hover:text-energetic-orange font-semibold">
+                  <Link href="/recipes" className="text-workshop-teal hover:text-energetic-orange font-semibold">
                     recipe collection
-                  </a>
+                  </Link>
                   {" "}for some culinary inspiration.
                 </p>
               </div>
