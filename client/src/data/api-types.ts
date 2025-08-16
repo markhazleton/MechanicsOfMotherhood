@@ -1,5 +1,5 @@
 // Auto-generated types from API data
-// Generated on 2025-08-15T23:13:15.680Z
+// Generated on 2025-08-16T15:30:04.137Z
 
 export interface Recipe {
   id: number;
@@ -10,43 +10,25 @@ export interface Recipe {
   servings?: number;
   authorNM?: string;
   recipeCategoryID?: number;
-  recipeCategoryNM?: string | null;
   recipeCategory?: {
     id: number;
     name: string;
-    description?: string;
-    order?: number;
-    isActive?: boolean;
-    recipes?: any[];
-    url?: string;
-    domainID?: number;
   };
   domainID?: number;
+  createdDT?: string;
   modifiedDT?: string;
-  lastViewDT?: string;
   isApproved?: boolean;
   averageRating?: number;
-  ratingCount?: number;
-  commentCount?: number;
-  viewCount?: number;
-  recipeURL?: string;
-  images?: any[];
-  recipeCategories?: any | null;
-  seO_Keywords?: string;
-  fileDescription?: string | null;
-  fileName?: string | null;
-  modifiedID?: number;
 }
 
 export interface Category {
   id: number;
   name: string;
   description?: string;
-  order?: number;
+  displayOrder?: number;
   isActive?: boolean;
   url?: string;
-  recipes?: any[];
-  domainID?: number;
+  recipes?: Recipe[];
 }
 
 export interface Website {
