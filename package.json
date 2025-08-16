@@ -13,7 +13,10 @@
     "preview": "vite preview",
     "check": "tsc",
     "clean": "node scripts/clean.js",
-    "clean:all": "npm run clean && node -e \"const fs = require('fs'); try { fs.rmSync('node_modules', { recursive: true, force: true }); fs.rmSync('package-lock.json', { force: true }); console.log('Removed node_modules and package-lock.json. Run npm install to reinstall dependencies.'); } catch (e) { console.log('Failed to remove some files:', e.message); }\""
+    "clean:all": "npm run clean && node -e \"const fs = require('fs'); try { fs.rmSync('node_modules', { recursive: true, force: true }); fs.rmSync('package-lock.json', { force: true }); console.log('Removed node_modules and package-lock.json. Run npm install to reinstall dependencies.'); } catch (e) { console.log('Failed to remove some files:', e.message); }\"",
+    "prepare-v4": "node scripts/prepare-v4-migration.js",
+    "tailwind:check": "npx tailwindcss --help",
+    "create-v4-test-branch": "node scripts/create-v4-test-branch.js"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
