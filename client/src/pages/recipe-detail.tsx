@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getRecipeBySlug } from "@/data/api-loader";
+import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
 import type { Recipe } from "@/data/api-types";
 
 export default function RecipeDetail() {
@@ -81,8 +82,8 @@ export default function RecipeDetail() {
       <section className="relative">
         <div className="h-96 bg-gradient-to-r from-industrial-blue/20 to-workshop-teal/20 relative overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=800"
-            alt={recipe?.name || "Recipe"}
+            src={getRecipeImageUrl(recipe)}
+            alt={getRecipeImageAlt(recipe)}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />

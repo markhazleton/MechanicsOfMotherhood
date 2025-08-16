@@ -181,6 +181,10 @@ function saveDataFile(filename, data) {
 
 /**
  * Generate TypeScript types for the fetched data
+ * 
+ * Note: Using fixed type definitions that match the immutable API structure.
+ * This ensures predictable builds and stable TypeScript compilation.
+ * All API properties are marked as optional to handle API variations gracefully.
  */
 function generateTypes(recipes, categories, websites) {
   const typesContent = `// Auto-generated types from API data
@@ -198,22 +202,41 @@ export interface Recipe {
   recipeCategory?: {
     id: number;
     name: string;
+    description?: string;
+    order?: number;
+    isActive?: boolean;
+    recipes?: any[];
+    url?: string;
+    domainID?: number;
   };
   domainID?: number;
   createdDT?: string;
   modifiedDT?: string;
   isApproved?: boolean;
   averageRating?: number;
+  ratingCount?: number;
+  commentCount?: number;
+  viewCount?: number;
+  recipeURL?: string;
+  images?: string[];
+  seO_Keywords?: string;
+  recipeCategories?: any;
+  recipeCategoryNM?: any;
+  fileDescription?: any;
+  fileName?: any;
+  lastViewDT?: string;
+  modifiedID?: number;
 }
 
 export interface Category {
   id: number;
   name: string;
   description?: string;
-  displayOrder?: number;
+  order?: number;
   isActive?: boolean;
   url?: string;
-  recipes?: Recipe[];
+  recipes?: any[];
+  domainID?: number;
 }
 
 export interface Website {

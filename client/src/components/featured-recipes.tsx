@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import LoadingSpinner from "./loading-spinner";
 import { Link, useLocation } from "wouter";
 import { getFeaturedRecipes, getCategories, getRecipeUrl } from "@/data/api-loader";
+import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
 import type { Recipe, Category } from "@/data/api-types";
 
 export default function FeaturedRecipes() {
@@ -84,8 +85,8 @@ export default function FeaturedRecipes() {
           {recipes.map((recipe: Recipe) => (
             <Card key={recipe.id} className="gear-border bg-white rounded-xl overflow-hidden mechanical-shadow hover:transform hover:scale-105 transition-all duration-300" data-testid={`recipe-card-${recipe.id}`}>
               <img
-                src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
-                alt={recipe.name}
+                src={getRecipeImageUrl(recipe)}
+                alt={getRecipeImageAlt(recipe)}
                 className="w-full h-48 object-cover"
               />
               <CardContent className="p-6">
