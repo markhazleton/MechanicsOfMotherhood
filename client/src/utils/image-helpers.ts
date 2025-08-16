@@ -7,7 +7,7 @@
  */
 function getBaseUrl(): string {
   // Use Vite's built-in import.meta.env.BASE_URL which respects the base config
-  return import.meta.env.BASE_URL || '/';
+  return import.meta.env.BASE_URL || "/";
 }
 
 /**
@@ -20,7 +20,7 @@ export function getRecipeImageUrl(recipe: {
   name?: string;
 }): string {
   const baseUrl = getBaseUrl();
-  
+
   // Check if recipe has images and the first image exists
   if (
     recipe.images &&

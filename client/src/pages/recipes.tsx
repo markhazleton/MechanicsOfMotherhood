@@ -5,6 +5,7 @@ import { Search, Filter, Clock, Users, Star, ArrowRight } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner";
+import MarkdownContent from "@/components/markdown-content";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -161,9 +162,13 @@ export default function Recipes() {
                       <h3 className="font-bold text-lg mb-2 text-industrial-blue line-clamp-2">
                         {recipe.name}
                       </h3>
-                      <p className="text-tool-gray text-sm mb-3 line-clamp-2">
-                        {recipe.description}
-                      </p>
+                      <div className="text-tool-gray text-sm mb-3 line-clamp-2">
+                        <MarkdownContent 
+                          content={recipe.description || ''}
+                          summary={true}
+                          className="text-sm"
+                        />
+                      </div>
                       <div className="flex items-center justify-between text-xs text-tool-gray">
                         <span className="flex items-center">
                           <Users size={12} className="mr-1" />

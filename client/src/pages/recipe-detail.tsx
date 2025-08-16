@@ -1,16 +1,17 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Clock, Users, Star, ChefHat, ArrowLeft, BookOpen, Timer } from "lucide-react";
-import ReactMarkdown from "react-markdown";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner";
+import MarkdownContent from "@/components/markdown-content";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getRecipeBySlug } from "@/data/api-loader";
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
+import { formatIngredientsAsHtml, formatInstructionsAsHtml } from "@/utils/markdown-helpers";
 import type { Recipe } from "@/data/api-types";
 
 export default function RecipeDetail() {
@@ -70,7 +71,9 @@ export default function RecipeDetail() {
     hard: "bg-red-100 text-red-800"
   };
 
-  // Parse ingredients and instructions from API strings
+  // Parse ingredients and instructions from API strings and format as HTML
+  const ingredientsHtml = recipe?.ingredients ? formatIngredientsAsHtml(recipe.ingredients) : '';
+  const instructionsHtml = recipe?.instructions ? formatInstructionsAsHtml(recipe.instructions) : '';
   const ingredientsList = recipe?.ingredients ? recipe.ingredients.split(/\r?\n/).filter(line => line.trim()) : [];
   const instructionsList = recipe?.instructions ? recipe.instructions.split(/\r?\n/).filter(line => line.trim()) : [];
 
@@ -150,9 +153,10 @@ export default function RecipeDetail() {
           <Card className="mechanical-shadow mb-8">
             <CardContent className="p-6">
               <div className="prose prose-lg max-w-none prose-gray prose-headings:text-industrial-blue prose-links:text-workshop-teal prose-strong:text-industrial-blue prose-em:text-tool-gray prose-p:text-tool-gray prose-p:leading-relaxed">
-                <ReactMarkdown>
-                  {recipe?.description || "No description available for this recipe."}
-                </ReactMarkdown>
+                <MarkdownContent 
+                  content={recipe?.description || "No description available for this recipe."}
+                  className="text-tool-gray"
+                />
               </div>
             </CardContent>
           </Card>
@@ -170,7 +174,12 @@ export default function RecipeDetail() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {ingredientsList && ingredientsList.length > 0 ? (
+                    {ingredientsHtml ? (
+                      <div 
+                        className="ingredients-list"
+                        dangerouslySetInnerHTML={{ __html: ingredientsHtml }}
+                      />
+                    ) : ingredientsList && ingredientsList.length > 0 ? (
                       ingredientsList.map((ingredient: string, index: number) => (
                         <div key={index} className="flex items-start">
                           <div className="w-2 h-2 bg-workshop-teal rounded-full mt-2 mr-3 flex-shrink-0" />
@@ -225,7 +234,12 @@ export default function RecipeDetail() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
-                    {instructionsList && instructionsList.length > 0 ? (
+                    {instructionsHtml ? (
+                      <div 
+                        className="instructions-list"
+                        dangerouslySetInnerHTML={{ __html: instructionsHtml }}
+                      />
+                    ) : instructionsList && instructionsList.length > 0 ? (
                       instructionsList.map((instruction: string, index: number) => (
                         <div key={index} className="flex">
                           <div className="flex-shrink-0 w-8 h-8 bg-workshop-teal text-white rounded-full flex items-center justify-center font-bold text-sm mr-4">

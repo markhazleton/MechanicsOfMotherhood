@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import LoadingSpinner from "./loading-spinner";
+import MarkdownContent from "./markdown-content";
 import { Link, useLocation } from "wouter";
 import { getFeaturedRecipes, getCategories, getRecipeUrl } from "@/data/api-loader";
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
@@ -106,9 +107,13 @@ export default function FeaturedRecipes() {
                 <h3 className="font-bold text-xl mb-2 text-industrial-blue" data-testid={`recipe-title-${recipe.id}`}>
                   {recipe.name}
                 </h3>
-                <p className="text-tool-gray mb-4">
-                  {recipe.description || "Delicious recipe from MoM's kitchen workshop"}
-                </p>
+                <div className="text-tool-gray mb-4">
+                  <MarkdownContent 
+                    content={recipe.description || "Delicious recipe from MoM's kitchen workshop"}
+                    summary={true}
+                    className="text-sm"
+                  />
+                </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4 text-sm text-tool-gray">
                     <span className="flex items-center">

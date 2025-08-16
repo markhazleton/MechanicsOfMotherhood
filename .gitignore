@@ -215,3 +215,7 @@ vite.config.ts.*
 # client/src/data/websites.json
 # client/src/data/menu-items.json
 # client/src/data/api-data.json
+
+# Documentation
+# NOTE: The /copilot folder contains AI-generated documentation and should be tracked
+# Temporary documentation files can be ignored with specific patterns if needed
