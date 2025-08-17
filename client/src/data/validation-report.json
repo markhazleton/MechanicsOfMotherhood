@@ -1,0 +1,44 @@
+{
+  "timestamp": "2025-08-17T18:38:33.550Z",
+  "validation": {
+    "errors": [],
+    "warnings": [],
+    "metrics": {
+      "totalRecipes": 107,
+      "validRecipes": 107,
+      "recipesWithImages": 0,
+      "recipesWithRatings": 60,
+      "approvedRecipes": 81,
+      "categoryDistribution": {
+        "Main Course": 29,
+        "Sauce": 1,
+        "Dessert": 8,
+        "Appetizer": 9,
+        "Quick Meals": 4,
+        "Drink": 27,
+        "Breakfast": 2,
+        "Bread": 1,
+        "Side Dishes": 3,
+        "Slow Cooker": 6,
+        "Soup": 8,
+        "Vegetable": 7,
+        "Salad": 1,
+        "Dips": 1
+      },
+      "missingFields": {
+        "name": 0,
+        "description": 48,
+        "ingredients": 0,
+        "instructions": 0,
+        "category": 0
+      },
+      "totalCategories": 14,
+      "totalWebsites": 0,
+      "totalMenuItems": 0
+    },
+    "qualityScore": 0
+  },
+  "validationMode": "standalone",
+  "dataSource": "api-data.json",
+  "fixIssuesMode": false
+}

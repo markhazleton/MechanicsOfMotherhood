@@ -6,7 +6,7 @@
     "order": 1,
     "isActive": true,
     "recipes": [],
-    "url": "/recipe/category/appetizer",
+    "url": "/recipes/category/appetizer",
     "domainID": 2
   },
   {
@@ -16,7 +16,7 @@
     "order": 2,
     "isActive": true,
     "recipes": [],
-    "url": "/recipe/category/bread",
+    "url": "/recipes/category/bread",
     "domainID": 2
   },
   {
@@ -26,7 +26,7 @@
     "order": 3,
     "isActive": true,
     "recipes": [],
-    "url": "/recipe/category/breakfast",
+    "url": "/recipes/category/breakfast",
     "domainID": 2
   },
   {
@@ -36,7 +36,7 @@
     "order": 4,
     "isActive": true,
     "recipes": [],
-    "url": "/recipe/category/dessert",
+    "url": "/recipes/category/dessert",
     "domainID": 2
   },
   {
@@ -46,7 +46,7 @@
     "order": 5,
     "isActive": true,
     "recipes": [],
-    "url": "/recipe/category/dips",
+    "url": "/recipes/category/dips",
     "domainID": 2
   },
   {
@@ -56,7 +56,7 @@
     "order": 6,
     "isActive": true,
     "recipes": [],
-    "url": "/recipe/category/drink",
+    "url": "/recipes/category/drink",
     "domainID": 2
   },
   {
@@ -66,7 +66,7 @@
     "order": 7,
     "isActive": true,
     "recipes": [],
-    "url": "/recipe/category/main-course",
+    "url": "/recipes/category/main-course",
     "domainID": 2
   },
   {
@@ -76,7 +76,7 @@
     "order": 8,
     "isActive": true,
     "recipes": [],
-    "url": "/recipe/category/quick-meals",
+    "url": "/recipes/category/quick-meals",
     "domainID": 2
   },
   {
@@ -86,7 +86,7 @@
     "order": 9,
     "isActive": true,
     "recipes": [],
-    "url": "/recipe/category/salad",
+    "url": "/recipes/category/salad",
     "domainID": 2
   },
   {
@@ -96,7 +96,7 @@
     "order": 10,
     "isActive": true,
     "recipes": [],
-    "url": "/recipe/category/sauce",
+    "url": "/recipes/category/sauce",
     "domainID": 2
   },
   {
@@ -106,7 +106,7 @@
     "order": 11,
     "isActive": true,
     "recipes": [],
-    "url": "/recipe/category/side-dishes",
+    "url": "/recipes/category/side-dishes",
     "domainID": 2
   },
   {
@@ -116,7 +116,7 @@
     "order": 12,
     "isActive": true,
     "recipes": [],
-    "url": "/recipe/category/slow-cooker",
+    "url": "/recipes/category/slow-cooker",
     "domainID": 2
   },
   {
@@ -126,7 +126,7 @@
     "order": 13,
     "isActive": true,
     "recipes": [],
-    "url": "/recipe/category/soup",
+    "url": "/recipes/category/soup",
     "domainID": 2
   },
   {
@@ -136,7 +136,7 @@
     "order": 14,
     "isActive": true,
     "recipes": [],
-    "url": "/recipe/category/vegetable",
+    "url": "/recipes/category/vegetable",
     "domainID": 2
   }
 ]

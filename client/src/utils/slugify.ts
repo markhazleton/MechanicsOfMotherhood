@@ -28,14 +28,10 @@ export function recipeSlugToSearchTerm(slug: string): string {
   return slug.replace(/-/g, " ");
 }
 
-// Common category slug mappings for better SEO
+// Common category slug mappings for better SEO and user experience
+// Only map where absolutely necessary for SEO or user clarity
 export const categorySlugMap: Record<string, string> = {
-  appetizer: "appetizers",
-  "main-course": "main-courses",
-  "side-dishes": "sides",
-  "slow-cooker": "slow-cooker-meals",
-  "quick-meals": "quick-easy",
-  dessert: "desserts",
+  // Keep these simple and intuitive - most categories will use basic slugification
 };
 
 export function getCategorySlug(name: string): string {

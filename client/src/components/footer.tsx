@@ -65,18 +65,18 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/recipes?category=quick-fixes" className="text-gray-300 hover:text-white transition-colors" data-testid="footer-link-quick-fixes">
-                  Quick Fixes
+                <Link href="/recipes/category/quick-meals" className="text-gray-300 hover:text-white transition-colors" data-testid="footer-link-quick-meals">
+                  Quick Meals
                 </Link>
               </li>
               <li>
-                <Link href="/recipes?category=kid-friendly" className="text-gray-300 hover:text-white transition-colors" data-testid="footer-link-kid-friendly">
-                  Kid-Friendly Builds
+                <Link href="/recipes/category/breakfast" className="text-gray-300 hover:text-white transition-colors" data-testid="footer-link-breakfast">
+                  Family-Friendly Recipes
                 </Link>
               </li>
               <li>
-                <Link href="/recipes?category=meal-prep" className="text-gray-300 hover:text-white transition-colors" data-testid="footer-link-meal-prep">
-                  Meal Prep Systems
+                <Link href="/recipes/category/main-course" className="text-gray-300 hover:text-white transition-colors" data-testid="footer-link-main-course">
+                  Meal Prep Ideas
                 </Link>
               </li>
               <li>

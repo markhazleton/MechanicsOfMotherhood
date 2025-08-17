@@ -60,6 +60,41 @@ export default function CategoryRecipes() {
     );
   }
 
+  // Handle case where category doesn't exist
+  if (!isLoading && categorySlug && !currentCategory) {
+    return (
+      <div className="min-h-screen bg-light-gray">
+        <Navigation />
+        <section className="bg-white py-12 border-b border-medium-gray">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4">🔧</div>
+              <h1 className="text-3xl font-bold text-industrial-blue mb-4">
+                Category Not Found
+              </h1>
+              <p className="text-tool-gray mb-6">
+                The category "{categorySlug}" doesn't exist in our workshop.
+              </p>
+              <div className="space-x-4">
+                <Link href="/categories">
+                  <Button className="bg-workshop-teal text-white hover:bg-workshop-teal/90">
+                    Browse All Categories
+                  </Button>
+                </Link>
+                <Link href="/recipes">
+                  <Button variant="outline">
+                    View All Recipes
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-light-gray">
       <Navigation />

@@ -8,6 +8,7 @@ import MarkdownContent from "./markdown-content";
 import { Link, useLocation } from "wouter";
 import { getFeaturedRecipes, getCategories, getRecipeUrl } from "@/data/api-loader";
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
+import { getCategorySlug } from "@/utils/slugify";
 import type { Recipe, Category } from "@/data/api-types";
 
 export default function FeaturedRecipes() {
@@ -73,7 +74,7 @@ export default function FeaturedRecipes() {
               variant="outline"
               className="bg-kitchen-warm hover:bg-energetic-orange hover:text-white text-tool-gray px-6 py-3 rounded-full font-medium transition-all duration-300 border border-medium-gray"
               data-testid={`category-button-${category.name.toLowerCase().replace(/\s+/g, '-')}`}
-              onClick={() => navigate(`/recipes/category/${category.name.toLowerCase().replace(/\s+/g, '-')}`)}
+              onClick={() => navigate(`/recipes/category/${getCategorySlug(category.name)}`)}
             >
               <Clock size={16} className="mr-2" />
               {category.name}

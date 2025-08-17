@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { DataQualityValidator } from './data-quality-validator.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -296,6 +297,114 @@ export interface ApiData {
 }
 
 /**
+ * Apply automatic data quality fixes
+ */
+function applyDataQualityFixes(data, validationResult) {
+  console.log('🔧 Applying automatic data quality fixes...');
+  
+  let fixedCount = 0;
+  const { recipes, categories } = data;
+  
+  if (!recipes || !categories) {
+    console.log('❌ Cannot apply fixes: missing recipes or categories data');
+    return { fixedCount: 0, data };
+  }
+
+  // Create category map for lookups
+  const categoryMap = new Map(categories.map(cat => [cat.id, cat]));
+  const activeCategoryIds = new Set(categories.map(cat => cat.id));
+
+  // Fix orphaned recipes by reassigning to appropriate categories
+  const orphanedErrors = validationResult.errors.filter(
+    error => error.category === 'categories' && error.item === 'orphaned-recipe'
+  );
+
+  orphanedErrors.forEach(error => {
+    const { recipeId, recipeName, categoryId } = error.details;
+    const recipe = recipes.find(r => r.id === recipeId);
+    
+    if (recipe) {
+      // Try to find an appropriate category based on recipe name/type
+      let newCategoryId = null;
+      
+      const recipeLower = recipeName.toLowerCase();
+      
+      // Simple heuristics for category assignment
+      if (recipeLower.includes('dip') || recipeLower.includes('appetizer')) {
+        newCategoryId = categories.find(cat => cat.name.toLowerCase().includes('appetizer'))?.id;
+      } else if (recipeLower.includes('dessert') || recipeLower.includes('cake') || recipeLower.includes('cookie')) {
+        newCategoryId = categories.find(cat => cat.name.toLowerCase().includes('dessert'))?.id;
+      } else if (recipeLower.includes('soup') || recipeLower.includes('stew')) {
+        newCategoryId = categories.find(cat => cat.name.toLowerCase().includes('soup'))?.id;
+      } else if (recipeLower.includes('salad')) {
+        newCategoryId = categories.find(cat => cat.name.toLowerCase().includes('salad'))?.id;
+      } else if (recipeLower.includes('main') || recipeLower.includes('dinner') || recipeLower.includes('chicken') || recipeLower.includes('beef')) {
+        newCategoryId = categories.find(cat => cat.name.toLowerCase().includes('main') || cat.name.toLowerCase().includes('entree'))?.id;
+      }
+      
+      // If no specific match, assign to first available category
+      if (!newCategoryId && categories.length > 0) {
+        newCategoryId = categories[0].id;
+      }
+      
+      if (newCategoryId && activeCategoryIds.has(newCategoryId)) {
+        console.log(`   🔧 Fixed orphaned recipe: "${recipeName}" (${recipeId}) moved from category ${categoryId} to ${newCategoryId}`);
+        recipe.recipeCategoryID = newCategoryId;
+        
+        // Update the category object reference if it exists
+        const newCategory = categoryMap.get(newCategoryId);
+        if (newCategory) {
+          recipe.recipeCategory = {
+            id: newCategory.id,
+            name: newCategory.name,
+            description: newCategory.description || ''
+          };
+        }
+        
+        fixedCount++;
+      }
+    }
+  });
+
+  // Fix category URLs to use consistent format
+  categories.forEach(category => {
+    if (category.url && !category.url.includes('/recipes/category/')) {
+      const oldUrl = category.url;
+      // Generate consistent URL format
+      const slug = category.name.toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim('-');
+      
+      category.url = `/recipes/category/${slug}`;
+      console.log(`   🔧 Fixed category URL: "${category.name}" from "${oldUrl}" to "${category.url}"`);
+      fixedCount++;
+    }
+  });
+
+  // Remove recipes with missing essential data
+  const originalRecipeCount = recipes.length;
+  const validRecipes = recipes.filter(recipe => {
+    const hasBasicData = recipe.name && recipe.name.trim() !== '';
+    if (!hasBasicData) {
+      console.log(`   🗑️  Removed recipe with missing name: ${recipe.id || 'unknown'}`);
+      fixedCount++;
+    }
+    return hasBasicData;
+  });
+
+  if (validRecipes.length !== originalRecipeCount) {
+    data.recipes = validRecipes;
+    console.log(`   🔧 Removed ${originalRecipeCount - validRecipes.length} recipes with missing essential data`);
+  }
+
+  console.log(`✅ Applied ${fixedCount} automatic fixes`);
+  
+  return { fixedCount, data };
+}
+
+/**
  * Main function to fetch all data
  */
 async function main() {
@@ -325,13 +434,7 @@ async function main() {
       return acc;
     }, {});
     
-    // Save individual data files
-    saveDataFile('recipes.json', recipes);
-    saveDataFile('categories.json', categories);
-    saveDataFile('websites.json', websites);
-    saveDataFile('menu-items.json', menuItems);
-    
-    // Save combined data file
+    // Prepare combined data
     const combinedData = {
       recipes,
       categories,
@@ -344,20 +447,156 @@ async function main() {
         totalWebsites: websites.length
       }
     };
+
+    // Run data quality validation
+    console.log('');
+    console.log('🔍 Running comprehensive data quality validation...');
+    const validator = new DataQualityValidator();
+    const initialValidationResult = validator.validate(combinedData);
+
+    // Save initial validation report
+    const reportPath = path.join(DATA_DIR, 'validation-report.json');
+    await validator.saveReport(reportPath, {
+      apiEndpoints: {
+        recipeApi: RECIPE_API_BASE,
+        webCmsApi: WEBCMS_API_BASE
+      },
+      fetchMetadata: combinedData.metadata,
+      phase: 'initial-validation'
+    });
+
+    // Display initial validation results
+    console.log('');
+    console.log('📊 Initial Data Quality Assessment:');
+    console.log(`   Quality Score: ${initialValidationResult.qualityScore.toFixed(1)}%`);
+    console.log(`   Critical Errors: ${initialValidationResult.errors.length}`);
+    console.log(`   Warnings: ${initialValidationResult.warnings.length}`);
+
+    // Always attempt to fix issues if any are found
+    let finalData = combinedData;
+    let fixedIssuesCount = 0;
     
-    saveDataFile('api-data.json', combinedData);
+    if (initialValidationResult.errors.length > 0 || initialValidationResult.warnings.length > 0) {
+      console.log('');
+      console.log('🔧 Auto-fixing data quality issues...');
+      
+      // Apply fixes using the same logic as validate-data.js
+      const fixResult = applyDataQualityFixes(combinedData, initialValidationResult);
+      finalData = fixResult.data;
+      fixedIssuesCount = fixResult.fixedCount;
+      
+      if (fixedIssuesCount > 0) {
+        console.log(`✅ Automatically fixed ${fixedIssuesCount} issues`);
+        
+        // Re-run validation on fixed data
+        console.log('');
+        console.log('🔄 Re-validating after auto-fixes...');
+        const postFixValidator = new DataQualityValidator();
+        const postFixValidationResult = postFixValidator.validate(finalData);
+        
+        // Save post-fix validation report
+        await postFixValidator.saveReport(reportPath, {
+          apiEndpoints: {
+            recipeApi: RECIPE_API_BASE,
+            webCmsApi: WEBCMS_API_BASE
+          },
+          fetchMetadata: finalData.metadata,
+          phase: 'post-fix-validation',
+          fixesApplied: fixedIssuesCount,
+          initialResults: {
+            errors: initialValidationResult.errors.length,
+            warnings: initialValidationResult.warnings.length,
+            qualityScore: initialValidationResult.qualityScore
+          }
+        });
+        
+        // Display improvement results
+        console.log('');
+        console.log('📈 Data Quality Improvement Results:');
+        console.log(`   Quality Score: ${initialValidationResult.qualityScore.toFixed(1)}% → ${postFixValidationResult.qualityScore.toFixed(1)}%`);
+        console.log(`   Critical Errors: ${initialValidationResult.errors.length} → ${postFixValidationResult.errors.length}`);
+        console.log(`   Warnings: ${initialValidationResult.warnings.length} → ${postFixValidationResult.warnings.length}`);
+        console.log(`   Issues Fixed: ${fixedIssuesCount}`);
+        
+        // Check if critical errors remain after fixes
+        if (postFixValidationResult.errors.length > 0) {
+          console.log('');
+          console.log('❌ Critical errors remain after auto-fix attempts');
+          postFixValidationResult.errors.forEach(error => {
+            console.log(`   • [${error.category}] ${error.item}: ${error.message}`);
+          });
+          
+          const continueWithErrors = process.env.FORCE_SAVE === 'true';
+          if (!continueWithErrors) {
+            console.log('');
+            console.log('💡 To force save despite remaining errors, set FORCE_SAVE=true environment variable');
+            console.log(`📄 Detailed report saved to: ${reportPath}`);
+            process.exit(1);
+          } else {
+            console.log('');
+            console.log('⚠️  Forcing save despite remaining errors (FORCE_SAVE=true)');
+          }
+        } else {
+          console.log('');
+          console.log('🎉 All critical issues resolved successfully!');
+          if (postFixValidationResult.warnings.length > 0) {
+            console.log(`⚠️  ${postFixValidationResult.warnings.length} minor warning(s) remain - see report for details`);
+          }
+        }
+      } else {
+        console.log('⚠️  No automatic fixes available for detected issues');
+        
+        if (initialValidationResult.errors.length > 0) {
+          console.log('');
+          console.log('❌ Manual intervention required for critical errors:');
+          initialValidationResult.errors.forEach(error => {
+            console.log(`   • [${error.category}] ${error.item}: ${error.message}`);
+          });
+          
+          const continueWithErrors = process.env.FORCE_SAVE === 'true';
+          if (!continueWithErrors) {
+            console.log('');
+            console.log('💡 To force save despite errors, set FORCE_SAVE=true environment variable');
+            console.log(`📄 Detailed report saved to: ${reportPath}`);
+            process.exit(1);
+          } else {
+            console.log('');
+            console.log('⚠️  Forcing save despite errors (FORCE_SAVE=true)');
+          }
+        }
+      }
+    } else {
+      console.log('');
+      console.log('✅ Perfect data quality - no issues detected!');
+      console.log(`🌟 Quality Score: ${initialValidationResult.qualityScore.toFixed(1)}%`);
+    }
+
+    // Save individual data files using the quality-validated and fixed data
+    console.log('');
+    console.log('💾 Saving validated data files...');
+    saveDataFile('recipes.json', finalData.recipes);
+    saveDataFile('categories.json', finalData.categories);
+    saveDataFile('websites.json', finalData.websites);
+    saveDataFile('menu-items.json', finalData.menuItems);
+    
+    // Save combined data file
+    saveDataFile('api-data.json', finalData);
     
     // Generate TypeScript types
-    generateTypes(recipes, categories, websites);
+    generateTypes(finalData.recipes, finalData.categories, finalData.websites);
     
     console.log('');
-    console.log('📊 Data fetch summary:');
-    console.log(`  Recipes: ${recipes.length}`);
-    console.log(`  Categories: ${categories.length}`);
-    console.log(`  Websites: ${websites.length}`);
-    console.log(`  Menu Items: ${Object.keys(menuItems).length} websites`);
+    console.log('📊 Final Data Summary:');
+    console.log(`  Recipes: ${finalData.recipes.length}`);
+    console.log(`  Categories: ${finalData.categories.length}`);
+    console.log(`  Websites: ${finalData.websites.length}`);
+    console.log(`  Menu Items: ${Object.keys(finalData.menuItems).length} websites`);
+    if (fixedIssuesCount > 0) {
+      console.log(`  Quality Fixes Applied: ${fixedIssuesCount}`);
+    }
+    console.log(`📄 Validation Report: ${reportPath}`);
     console.log('');
-    console.log('✅ Data fetch completed successfully!');
+    console.log('✅ Data fetch and validation completed successfully!');
     
   } catch (error) {
     console.error('❌ Data fetch failed:', error);
