@@ -7,12 +7,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import LoadingSpinner from "./loading-spinner";
+import type { StatsResponse } from "@/data/api-types";
 
 export default function CommunitySection() {
   const [email, setEmail] = useState("");
   const { toast } = useToast();
 
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading } = useQuery<StatsResponse>({
     queryKey: ["/api/stats"],
   });
 

@@ -73,7 +73,7 @@ export function getRecipeSlug(recipe: Recipe): string {
   if (recipe.recipeURL) {
     // Extract the slug part from /recipe/slug-name
     const match = recipe.recipeURL.match(/\/recipe\/(.+)$/);
-    if (match) {
+    if (match && match[1]) {
       return match[1];
     }
   }

@@ -106,7 +106,15 @@ async function apiDataHandler(
   }
 
   if (urlPath.startsWith("/api/recipes/")) {
-    const id = parseInt(urlPath.split("/")[3]);
+    const pathParts = urlPath.split("/");
+    const idString = pathParts[3];
+    if (!idString) {
+      throw new Error("Invalid recipe ID in URL");
+    }
+    const id = parseInt(idString);
+    if (isNaN(id)) {
+      throw new Error("Recipe ID must be a number");
+    }
     const recipe = getRecipeById(id);
     if (!recipe) {
       throw new Error("Recipe not found");

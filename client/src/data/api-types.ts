@@ -8,6 +8,8 @@ export interface Recipe {
   ingredients?: string;
   instructions?: string;
   servings?: number;
+  prepTime?: number;
+  cookTime?: number;
   authorNM?: string;
   recipeCategoryID?: number;
   recipeCategory?: {
@@ -98,4 +100,30 @@ export interface ApiData {
     totalCategories: number;
     totalWebsites: number;
   };
+}
+
+// API Response interfaces for component usage
+export interface StatsResponse {
+  recipes: number;
+  families: number;
+  timeSaved: number;
+  satisfaction: number;
+  communityMembers: number;
+}
+
+export interface CategoriesResponse {
+  categories: Category[];
+}
+
+export interface RecipesResponse {
+  data: Recipe[];
+  pagination?: {
+    currentPage: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrevious: boolean;
+    total: number;
+  };
+  message?: string;
+  success?: boolean;
 }

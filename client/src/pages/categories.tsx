@@ -7,9 +7,10 @@ import LoadingSpinner from "@/components/loading-spinner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getCategorySlug } from "@/utils/slugify";
+import type { CategoriesResponse } from "@/data/api-types";
 
 export default function Categories() {
-  const { data: categoriesData, isLoading } = useQuery({
+  const { data: categoriesData, isLoading } = useQuery<CategoriesResponse>({
     queryKey: ["/api/categories"],
   });
 

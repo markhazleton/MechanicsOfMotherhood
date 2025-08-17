@@ -12,7 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getRecipesByCategory, getCategoryBySlug, getRecipeUrl } from "@/data/api-loader";
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
-import type { Recipe } from "@/data/api-types";
+import type { Recipe, CategoriesResponse, RecipesResponse } from "@/data/api-types";
 import { nameToSlug, getCategorySlug } from "@/utils/slugify";
 
 export default function CategoryRecipes() {
@@ -22,7 +22,7 @@ export default function CategoryRecipes() {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Get category details
-  const { data: categoriesData } = useQuery({
+  const { data: categoriesData } = useQuery<CategoriesResponse>({
     queryKey: ["/api/categories"],
   });
 
@@ -34,7 +34,7 @@ export default function CategoryRecipes() {
   const categoryId = currentCategory?.id;
 
   // Get recipes for this category using RecipeSpark API
-  const { data: recipesData, isLoading } = useQuery({
+  const { data: recipesData, isLoading } = useQuery<RecipesResponse>({
     queryKey: [`/api/recipespark/recipes?categoryId=${categoryId}&pageNumber=${page}&pageSize=12`],
     enabled: !!categoryId,
   });
@@ -125,7 +125,7 @@ export default function CategoryRecipes() {
                       <div className="flex items-center justify-between mb-2">
                         <Badge className="bg-workshop-teal text-white text-xs">
                           <Clock size={12} className="mr-1" />
-                          {(recipe.prepTime || 30) + (recipe.cookTime || 30)}min
+                          {((recipe.prepTime || 30) + (recipe.cookTime || 30))}min
                         </Badge>
                         <div className="flex items-center text-energetic-orange">
                           <Star size={12} fill="currentColor" />

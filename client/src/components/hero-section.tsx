@@ -3,9 +3,10 @@ import { Settings, Utensils, Play, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LoadingSpinner from "./loading-spinner";
 import logoIcon from "@/assets/MOM-Logo-Icon.png";
+import type { StatsResponse } from "@/data/api-types";
 
 export default function HeroSection() {
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading } = useQuery<StatsResponse>({
     queryKey: ["/api/stats"],
   });
 
