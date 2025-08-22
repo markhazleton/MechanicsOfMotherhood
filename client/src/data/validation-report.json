@@ -1,14 +1,14 @@
 {
-  "timestamp": "2025-08-17T18:38:33.550Z",
+  "timestamp": "2025-08-22T15:27:46.493Z",
   "validation": {
     "errors": [],
     "warnings": [],
     "metrics": {
-      "totalRecipes": 107,
-      "validRecipes": 107,
+      "totalRecipes": 108,
+      "validRecipes": 108,
       "recipesWithImages": 0,
-      "recipesWithRatings": 60,
-      "approvedRecipes": 81,
+      "recipesWithRatings": 61,
+      "approvedRecipes": 82,
       "categoryDistribution": {
         "Main Course": 29,
         "Sauce": 1,
@@ -19,7 +19,7 @@
         "Breakfast": 2,
         "Bread": 1,
         "Side Dishes": 3,
-        "Slow Cooker": 6,
+        "Slow Cooker": 7,
         "Soup": 8,
         "Vegetable": 7,
         "Salad": 1,
@@ -38,7 +38,21 @@
     },
     "qualityScore": 0
   },
-  "validationMode": "standalone",
-  "dataSource": "api-data.json",
-  "fixIssuesMode": false
+  "apiEndpoints": {
+    "recipeApi": "https://webspark.markhazleton.com/api/recipespark",
+    "webCmsApi": "https://webspark.markhazleton.com/api/WebCMS/WebCMSApi"
+  },
+  "fetchMetadata": {
+    "fetchedAt": "2025-08-22T15:27:46.485Z",
+    "totalRecipes": 108,
+    "totalCategories": 14,
+    "totalWebsites": 0
+  },
+  "phase": "post-fix-validation",
+  "fixesApplied": 14,
+  "initialResults": {
+    "errors": 0,
+    "warnings": 14,
+    "qualityScore": 88.52459016393442
+  }
 }
