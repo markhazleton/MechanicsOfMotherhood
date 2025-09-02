@@ -2,14 +2,18 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { DataQualityValidator } from './data-quality-validator.js';
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // API Configuration
 const RECIPE_API_BASE = process.env.RECIPE_API_BASE || 'https://webspark.markhazleton.com/api/recipespark';
-const WEBCMS_API_BASE = process.env.WEBCMS_API_BASE || 'https://webspark.markhazleton.com/api/WebCMS/WebCMSApi';
-const AUTH_TOKEN = process.env.WEBCMS_AUTH_TOKEN || '';
+const WEBCMS_API_BASE = process.env.WEBCMS_API_BASE || 'https://webspark.markhazleton.com/api/WebCMS';
+const AUTH_TOKEN = process.env.WEBCMS_AUTH_TOKEN || 'MARKHAZLETON-WEB';
 
 // Output directory for static data
 const DATA_DIR = path.join(__dirname, '..', 'client', 'src', 'data');
@@ -106,7 +110,7 @@ async function fetchAllCategories() {
 }
 
 /**
- * Fetch websites from WebCMS API
+ * Fetch specific website (ID 2) from WebCMS API
  */
 async function fetchWebsites() {
   if (!AUTH_TOKEN) {
@@ -114,24 +118,23 @@ async function fetchWebsites() {
     return [];
   }
   
-  console.log('Fetching websites...');
+  console.log('Fetching website (ID: 2)...');
   
   const headers = {
     'Authorization': `Bearer ${AUTH_TOKEN}`,
-    'Content-Type': 'application/json'
+    'Accept': 'application/json'
   };
   
-  const url = `${WEBCMS_API_BASE}/websites?pageSize=100`;
-  const response = await fetchData(url, headers);
+  const url = `${WEBCMS_API_BASE}/websites/2`;
+  const website = await fetchData(url, headers);
   
-  if (!response) {
-    console.warn('Failed to fetch websites');
+  if (!website) {
+    console.warn('Failed to fetch website (ID: 2)');
     return [];
   }
   
-  const websites = response.items || response || [];
-  console.log(`Total websites fetched: ${websites.length}`);
-  return websites;
+  console.log(`Website fetched: ${website.name || website.siteName || 'Unknown'}`);
+  return [website]; // Return as array to maintain compatibility
 }
 
 /**
@@ -146,7 +149,7 @@ async function fetchMenuItems(websiteId) {
   
   const headers = {
     'Authorization': `Bearer ${AUTH_TOKEN}`,
-    'Content-Type': 'application/json'
+    'Accept': 'application/json'
   };
   
   const url = `${WEBCMS_API_BASE}/websites/${websiteId}/menu-hierarchy`;
@@ -423,16 +426,35 @@ async function main() {
       fetchWebsites()
     ]);
     
-    // Fetch menu items for each website
-    const menuItemsPromises = websites.map(website => 
-      fetchMenuItems(website.id).then(items => ({ websiteId: website.id, items }))
-    );
+    // Extract menu items from website data instead of separate API calls
+    const menuItems = {};
+    let totalMenuItems = 0;
+    let recipeMenuItems = 0;
+    let contentMenuItems = 0;
     
-    const menuItemsResults = await Promise.all(menuItemsPromises);
-    const menuItems = menuItemsResults.reduce((acc, result) => {
-      acc[result.websiteId] = result.items;
-      return acc;
-    }, {});
+    websites.forEach(website => {
+      if (website && website.id) {
+        // Extract menu items from the website's menu array
+        const siteMenuItems = website.menu || [];
+        menuItems[website.id] = siteMenuItems;
+        
+        // Categorize menu items
+        const recipeItems = siteMenuItems.filter(item => 
+          item.controller && item.controller.toLowerCase() === 'recipe'
+        );
+        const contentItems = siteMenuItems.filter(item => 
+          !item.controller || item.controller.toLowerCase() !== 'recipe'
+        );
+        
+        totalMenuItems += siteMenuItems.length;
+        recipeMenuItems += recipeItems.length;
+        contentMenuItems += contentItems.length;
+        
+        console.log(`Extracted ${siteMenuItems.length} menu items from website ${website.id}`);
+        console.log(`  → ${recipeItems.length} recipe menu items`);
+        console.log(`  → ${contentItems.length} content menu items`);
+      }
+    });
     
     // Prepare combined data
     const combinedData = {
@@ -444,7 +466,10 @@ async function main() {
         fetchedAt: new Date().toISOString(),
         totalRecipes: recipes.length,
         totalCategories: categories.length,
-        totalWebsites: websites.length
+        totalWebsites: websites.length,
+        totalMenuItems: totalMenuItems,
+        recipeMenuItems: recipeMenuItems,
+        contentMenuItems: contentMenuItems
       }
     };
 
@@ -590,7 +615,9 @@ async function main() {
     console.log(`  Recipes: ${finalData.recipes.length}`);
     console.log(`  Categories: ${finalData.categories.length}`);
     console.log(`  Websites: ${finalData.websites.length}`);
-    console.log(`  Menu Items: ${Object.keys(finalData.menuItems).length} websites`);
+    console.log(`  Menu Items: ${finalData.metadata.totalMenuItems} total`);
+    console.log(`    ├─ Recipe Menu Items: ${finalData.metadata.recipeMenuItems}`);
+    console.log(`    └─ Content Menu Items: ${finalData.metadata.contentMenuItems}`);
     if (fixedIssuesCount > 0) {
       console.log(`  Quality Fixes Applied: ${fixedIssuesCount}`);
     }

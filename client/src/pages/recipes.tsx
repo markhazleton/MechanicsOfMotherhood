@@ -6,12 +6,15 @@ import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner";
 import MarkdownContent from "@/components/markdown-content";
+import SeoHead from "@/components/seo/SeoHead";
+import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getRecipes, getCategories, searchRecipes, getRecipeUrl } from "@/data/api-loader";
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
+import { generateCanonicalUrl, generateBreadcrumbs } from "@/utils/seo-helpers";
 import type { Recipe } from "@/data/api-types";
 
 export default function Recipes() {
@@ -50,9 +53,43 @@ export default function Recipes() {
     setActiveSearch(searchQuery);
   };
 
+  // SEO data
+  const currentUrl = generateCanonicalUrl('/recipes');
+  const breadcrumbs = generateBreadcrumbs('/recipes');
+  const recipeCount = filteredRecipes?.length || 0;
+  
+  const pageDescription = activeSearch 
+    ? `Search results for "${activeSearch}" - ${recipeCount} recipes found. Find tested recipes, kitchen tools, and meal planning solutions.`
+    : `Browse our collection of ${recipeCount}+ tested recipes for working mothers. Quick meals, family favorites, and kitchen organization tips.`;
+
   return (
     <div className="min-h-screen bg-light-gray">
+      {/* SEO Head */}
+      <SeoHead
+        title={activeSearch ? `Search: ${activeSearch} - Recipe Manual` : 'Recipe Manual - Tested Recipes for Working Mothers'}
+        description={pageDescription}
+        keywords={[
+          'recipe collection',
+          'family recipes',
+          'tested recipes',
+          'working mother meals',
+          'quick dinner ideas',
+          'meal planning recipes',
+          'kitchen tested',
+          'easy family cooking'
+        ]}
+        url={currentUrl}
+        type="website"
+      />
+      
       <Navigation />
+      
+      {/* Breadcrumb Navigation */}
+      <div className="bg-white border-b border-medium-gray">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <BreadcrumbNav items={breadcrumbs} />
+        </div>
+      </div>
       
       {/* Header */}
       <section className="bg-white py-12 border-b border-medium-gray">

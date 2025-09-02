@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-08-22T15:27:46.493Z",
+  "timestamp": "2025-09-01T14:14:48.590Z",
   "validation": {
     "errors": [],
     "warnings": [],
@@ -27,32 +27,35 @@
       },
       "missingFields": {
         "name": 0,
-        "description": 48,
+        "description": 1,
         "ingredients": 0,
         "instructions": 0,
         "category": 0
       },
       "totalCategories": 14,
-      "totalWebsites": 0,
-      "totalMenuItems": 0
+      "totalWebsites": 1,
+      "totalMenuItems": 128
     },
     "qualityScore": 0
   },
   "apiEndpoints": {
     "recipeApi": "https://webspark.markhazleton.com/api/recipespark",
-    "webCmsApi": "https://webspark.markhazleton.com/api/WebCMS/WebCMSApi"
+    "webCmsApi": "https://webspark.markhazleton.com/api/WebCMS"
   },
   "fetchMetadata": {
-    "fetchedAt": "2025-08-22T15:27:46.485Z",
+    "fetchedAt": "2025-09-01T14:14:48.579Z",
     "totalRecipes": 108,
     "totalCategories": 14,
-    "totalWebsites": 0
+    "totalWebsites": 1,
+    "totalMenuItems": 128,
+    "recipeMenuItems": 123,
+    "contentMenuItems": 5
   },
   "phase": "post-fix-validation",
   "fixesApplied": 14,
   "initialResults": {
     "errors": 0,
     "warnings": 14,
-    "qualityScore": 88.52459016393442
+    "qualityScore": 88.6178861788618
   }
 }

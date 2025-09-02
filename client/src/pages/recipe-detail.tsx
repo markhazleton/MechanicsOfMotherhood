@@ -5,6 +5,8 @@ import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner";
 import MarkdownContent from "@/components/markdown-content";
+import SeoHead from "@/components/seo/SeoHead";
+import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,6 +14,15 @@ import { Separator } from "@/components/ui/separator";
 import { getRecipeBySlug } from "@/data/api-loader";
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
 import { formatIngredientsAsHtml, formatInstructionsAsHtml } from "@/utils/markdown-helpers";
+import { 
+  generateRecipeDescription, 
+  generateRecipeKeywords, 
+  generateRecipeImageUrl,
+  generateCanonicalUrl,
+  generateBreadcrumbs,
+  estimateCookingTimes
+} from "@/utils/seo-helpers";
+import { generateRecipeStructuredData } from "@/components/seo/StructuredData";
 import type { Recipe } from "@/data/api-types";
 
 export default function RecipeDetail() {
@@ -77,9 +88,43 @@ export default function RecipeDetail() {
   const ingredientsList = recipe?.ingredients ? recipe.ingredients.split(/\r?\n/).filter(line => line.trim()) : [];
   const instructionsList = recipe?.instructions ? recipe.instructions.split(/\r?\n/).filter(line => line.trim()) : [];
 
+  // SEO data generation
+  const currentUrl = generateCanonicalUrl(`/recipe/${slug}`);
+  const recipeDescription = generateRecipeDescription(recipe);
+  const recipeKeywords = generateRecipeKeywords(recipe);
+  const recipeImageUrl = generateRecipeImageUrl(recipe);
+  const breadcrumbs = generateBreadcrumbs(`/recipe/${slug}`, recipe);
+  const structuredData = generateRecipeStructuredData({
+    recipe,
+    url: currentUrl,
+    imageUrl: recipeImageUrl
+  });
+  const cookingTimes = estimateCookingTimes(recipe);
+
   return (
     <div className="min-h-screen bg-light-gray">
+      {/* SEO Head */}
+      <SeoHead
+        title={recipe.name}
+        description={recipeDescription}
+        keywords={recipeKeywords}
+        image={recipeImageUrl}
+        url={currentUrl}
+        type="recipe"
+        author={recipe.authorNM}
+        publishedTime={recipe.lastViewDT}
+        modifiedTime={recipe.modifiedDT}
+        structuredData={structuredData}
+      />
+      
       <Navigation />
+      
+      {/* Breadcrumb Navigation */}
+      <div className="bg-white border-b border-medium-gray">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <BreadcrumbNav items={breadcrumbs} />
+        </div>
+      </div>
       
       {/* Hero Section */}
       <section className="relative">

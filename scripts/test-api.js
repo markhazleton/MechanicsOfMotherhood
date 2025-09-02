@@ -1,9 +1,14 @@
 // Test script to verify API connectivity
 // Run this to test your API endpoints before running the full fetch
 
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
+
 const RECIPE_API_BASE = process.env.RECIPE_API_BASE || 'https://webspark.markhazleton.com/api/recipespark';
-const WEBCMS_API_BASE = process.env.WEBCMS_API_BASE || 'https://webspark.markhazleton.com/api/WebCMS/WebCMSApi';
-const AUTH_TOKEN = process.env.WEBCMS_AUTH_TOKEN || '';
+const WEBCMS_API_BASE = process.env.WEBCMS_API_BASE || 'https://webspark.markhazleton.com/api/WebCMS';
+const AUTH_TOKEN = process.env.WEBCMS_AUTH_TOKEN || 'MARKHAZLETON-WEB';
 
 async function testEndpoint(url, headers = {}) {
   try {
@@ -40,13 +45,14 @@ async function main() {
   console.log('');
   
   // Test WebCMS API
+  let websitesOk = false;
   if (AUTH_TOKEN) {
     console.log('🌐 Testing WebCMS API:');
     const headers = {
       'Authorization': `Bearer ${AUTH_TOKEN}`,
-      'Content-Type': 'application/json'
+      'Accept': 'application/json'
     };
-    const websitesOk = await testEndpoint(`${WEBCMS_API_BASE}/websites?pageSize=1`, headers);
+    websitesOk = await testEndpoint(`${WEBCMS_API_BASE}/websites/2`, headers);
     console.log('');
   } else {
     console.log('🌐 WebCMS API: Skipping (no auth token)\n');
