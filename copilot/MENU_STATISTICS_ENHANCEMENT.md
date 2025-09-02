@@ -7,11 +7,13 @@ The fetch-data.js script has been successfully updated to provide detailed stati
 ## 📊 Enhanced Statistics Display
 
 ### Before
+
 ```
 Menu Items: 1 websites
 ```
 
 ### After
+
 ```
 Menu Items: 128 total
   ├─ Recipe Menu Items: 123
@@ -50,6 +52,7 @@ Extracted 128 menu items from website 2
 ### Updated Metadata Structure
 
 The `combinedData.metadata` now includes:
+
 ```javascript
 metadata: {
   fetchedAt: new Date().toISOString(),
@@ -86,12 +89,15 @@ From the latest fetch:
 ## 🔍 Menu Item Types Identified
 
 ### Recipe Menu Items (123 items)
+
 - Individual recipe pages with detailed cooking instructions
 - Organized by categories like Main Course, Desserts, Appetizers, etc.
 - Each has `controller: "recipe"` indicating recipe-specific functionality
 
 ### Content Menu Items (5 items)
+
 Examples include:
+
 - About page (`controller: "Page"`)
 - Bootswatch styling page (`controller: "Bootswatch"`)
 - General navigation and informational content
