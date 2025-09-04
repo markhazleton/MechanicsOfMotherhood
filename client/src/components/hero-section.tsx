@@ -64,16 +64,16 @@ export default function HeroSection() {
           ) : stats ? (
             <>
               <div className="text-center" data-testid="stat-recipes">
-                <div className="text-3xl font-bold text-white">{stats.recipes}+</div>
+                <div className="text-3xl font-bold text-white">{stats.totalRecipes}+</div>
                 <div className="text-gray-300 font-industrial">Tested Recipes</div>
               </div>
-              <div className="text-center" data-testid="stat-families">
-                <div className="text-3xl font-bold text-white">{(stats.families || 25000).toLocaleString()}+</div>
-                <div className="text-gray-300 font-industrial">Families Served</div>
+              <div className="text-center" data-testid="stat-categories">
+                <div className="text-3xl font-bold text-white">{stats.totalCategories}+</div>
+                <div className="text-gray-300 font-industrial">Recipe Categories</div>
               </div>
-              <div className="text-center" data-testid="stat-time-saved">
-                <div className="text-3xl font-bold text-white">{((stats.timeSaved || 5000000) / 1000000).toFixed(1)}M+</div>
-                <div className="text-gray-300 font-industrial">Hours Saved</div>
+              <div className="text-center" data-testid="stat-rating">
+                <div className="text-3xl font-bold text-white">{stats.averageRating.toFixed(1)}★</div>
+                <div className="text-gray-300 font-industrial">Average Rating</div>
               </div>
             </>
           ) : (

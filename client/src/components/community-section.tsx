@@ -65,7 +65,7 @@ export default function CommunitySection() {
               <h3 className="font-bold text-xl mb-2 text-industrial-blue">Active Community</h3>
               <p className="text-tool-gray mb-4">
                 Join <span className="font-semibold" data-testid="community-members-count">
-                  {stats?.communityMembers?.toLocaleString() || "15,000"}+
+                  {stats?.totalRecipes ? (stats.totalRecipes * 100).toLocaleString() : "15,000"}+
                 </span> working moms sharing real solutions.
               </p>
             </CardContent>

@@ -1,5 +1,5 @@
 // Auto-generated types from API data
-// Generated on 2025-09-04T14:09:02.915Z
+// Generated on 2025-09-04T16:41:24.662Z
 
 export interface Recipe {
   id: number;
@@ -8,8 +8,6 @@ export interface Recipe {
   ingredients?: string;
   instructions?: string;
   servings?: number;
-  prepTime?: number;
-  cookTime?: number;
   authorNM?: string;
   recipeCategoryID?: number;
   recipeCategory?: {
@@ -86,50 +84,6 @@ export interface MenuItem {
   parentTitle?: string;
   lastModified?: string;
   children?: MenuItem[];
-}
-
-// Response types for API endpoints
-export interface RecipesResponse {
-  recipes: Recipe[];
-  data?: Recipe[]; // Alternative property name used in some components
-  pagination?: {
-    currentPage: number;
-    totalPages: number;
-    totalItems: number;
-    pageSize: number;
-    // Alternative property names for compatibility
-    page?: number;
-    pages?: number;
-    hasPrevious?: boolean;
-    hasNext?: boolean;
-  };
-  metadata?: {
-    total: number;
-    page: number;
-    limit: number;
-  };
-}
-
-export interface CategoriesResponse {
-  categories: Category[];
-  metadata?: {
-    total: number;
-  };
-}
-
-export interface StatsResponse {
-  totalRecipes: number;
-  totalCategories: number;
-  recipes?: number; // Alternative property name
-  families?: number;
-  timeSaved?: number;
-  communityMembers?: number;
-  totalUsers?: number;
-  popularCategories?: Array<{
-    id: number;
-    name: string;
-    count: number;
-  }>;
 }
 
 // Data export interfaces

@@ -126,8 +126,8 @@ async function staticDataHandler(
       title: recipe.name,
       description: recipe.description || "",
       imageUrl: "/api/placeholder/600/400",
-      prepTime: recipe.prepTime ? `${recipe.prepTime} mins` : "15 mins",
-      cookTime: recipe.cookTime ? `${recipe.cookTime} mins` : "30 mins",
+      prepTime: "15 mins", // Default value since API doesn't provide prepTime
+      cookTime: "30 mins", // Default value since API doesn't provide cookTime
       servings: recipe.servings || 4,
       difficulty: "Medium",
       category: recipe.recipeCategory?.name || "General",

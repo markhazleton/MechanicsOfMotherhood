@@ -20,19 +20,30 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          // Separate vendor chunks for better caching
-          vendor: ["react", "react-dom"],
-          router: ["wouter"],
-          ui: [
+          // Core React functionality
+          "vendor-react": ["react", "react-dom"],
+
+          // Routing
+          "vendor-router": ["wouter"],
+
+          // State management
+          "vendor-query": ["@tanstack/react-query"],
+
+          // UI libraries - split into smaller chunks
+          "ui-radix-core": ["@radix-ui/react-slot", "@radix-ui/react-tooltip"],
+          "ui-radix-overlay": [
             "@radix-ui/react-dialog",
-            "@radix-ui/react-separator",
-            "@radix-ui/react-slot",
             "@radix-ui/react-toast",
-            "@radix-ui/react-tooltip",
           ],
-          query: ["@tanstack/react-query"],
-          markdown: ["react-markdown"],
-          icons: ["lucide-react"],
+          "ui-radix-layout": ["@radix-ui/react-separator"],
+
+          // Heavy dependencies split separately
+          "vendor-markdown": ["react-markdown"],
+          "vendor-helmet": ["react-helmet-async"],
+          "vendor-icons": ["lucide-react"],
+
+          // Styling utilities
+          "utils-style": ["clsx", "tailwind-merge", "class-variance-authority"],
         },
         // Optimize chunk file naming
         chunkFileNames: "assets/[name]-[hash].js",
@@ -43,8 +54,8 @@ export default defineConfig({
     // Optimize build performance
     minify: "esbuild",
     target: "esnext",
-    // Chunk size warnings
-    chunkSizeWarningLimit: 500,
+    // Enforce stricter chunk size warnings
+    chunkSizeWarningLimit: 300,
   },
   server: {
     fs: {
