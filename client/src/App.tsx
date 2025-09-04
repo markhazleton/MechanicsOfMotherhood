@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Suspense, lazy } from "react";
 import PageSkeleton from "@/components/page-skeleton";
 import { ErrorBoundary } from "@/components/error-boundary";
+import { logError } from '@/utils/error-logger';
 
 // Lazy load page components for code splitting
 const Home = lazy(() => import("@/pages/home"));
@@ -40,7 +41,16 @@ function AppRouter() {
 
 function App() {
   return (
-    <ErrorBoundary>
+    <ErrorBoundary onErrorCapture={(error, info, errorId) => {
+      logError({
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+  componentStack: info.componentStack || undefined,
+        errorId,
+        time: new Date().toISOString()
+      });
+    }}>
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
           <TooltipProvider>

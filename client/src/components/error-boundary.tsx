@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
+  onErrorCapture?: (error: Error, info: React.ErrorInfo, errorId: string) => void;
 }
 
 interface State {
@@ -23,11 +24,15 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Error caught by boundary:', error, errorInfo);
-    
-    // In production, you might want to send this to an error reporting service
+    const errorId = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
+    if (this.props.onErrorCapture) {
+      try { this.props.onErrorCapture(error, errorInfo, errorId); } catch (e) {
+        console.warn('onErrorCapture handler failed', e);
+      }
+    }
     if (import.meta.env.PROD) {
-      // Example: Send to monitoring service
-      // logErrorToService(error, errorInfo);
+      // Placeholder for production logging integration
+      // navigator.sendBeacon('/__log', JSON.stringify({ error: error.message, stack: error.stack, errorId }));
     }
   }
 
@@ -55,9 +60,10 @@ export class ErrorBoundary extends Component<Props, State> {
                 Something went wrong
               </h1>
               
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 mb-4">
                 We're sorry, but something unexpected happened. Please try refreshing the page.
               </p>
+              <p className="text-xs text-gray-400 mb-6">If the issue persists contact support and share this code: <code>{this.state.error?.name}</code></p>
               
               {!import.meta.env.PROD && this.state.error && (
                 <details className="text-left bg-gray-100 p-4 rounded-lg mb-6">
