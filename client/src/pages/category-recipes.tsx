@@ -204,7 +204,7 @@ export default function CategoryRecipes() {
                 <div className="flex items-center justify-center space-x-4 mt-12">
                   <Button
                     variant="outline"
-                    disabled={!(pagination.hasPrevious ?? (pagination.page > 1))}
+                    disabled={!(pagination.hasPrevious ?? ((pagination.page || 0) > 1))}
                     onClick={() => setPage(page - 1)}
                     data-testid="pagination-prev"
                   >
@@ -215,7 +215,7 @@ export default function CategoryRecipes() {
                   </span>
                   <Button
                     variant="outline"
-                    disabled={!(pagination.hasNext ?? (pagination.page < (pagination.totalPages || pagination.pages || 0)))}
+                    disabled={!(pagination.hasNext ?? ((pagination.page || 0) < (pagination.totalPages || pagination.pages || 0)))}
                     onClick={() => setPage(page + 1)}
                     data-testid="pagination-next"
                   >
