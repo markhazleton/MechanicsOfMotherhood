@@ -128,7 +128,25 @@ export function getCategoryBySlug(slug: string): Category | undefined {
  * Get all websites
  */
 export function getWebsites(): Website[] {
-  return websitesData as Website[];
+  // Safe type conversion with fallback structure
+  return (websitesData as any[]).map(
+    (site: any) =>
+      ({
+        id: site.id || 0,
+        name: site.name || "",
+        description: site.description || "",
+        siteTemplate: site.siteTemplate || "",
+        siteStyle: site.siteStyle || "",
+        message: site.message || "",
+        siteName: site.siteName || "",
+        websiteUrl: site.websiteUrl || "",
+        websiteTitle: site.websiteTitle || "",
+        useBreadCrumbURL: site.useBreadCrumbURL || false,
+        isRecipeSite: site.isRecipeSite || false,
+        modifiedDT: site.modifiedDT || "",
+        modifiedID: site.modifiedID || 0,
+      } as Website)
+  );
 }
 
 /**
@@ -143,15 +161,56 @@ export function getWebsiteById(id: number): Website | undefined {
  * Get menu items for a website
  */
 export function getMenuItemsByWebsite(websiteId: number): MenuItem[] {
-  const menuItems = menuItemsData as Record<number, MenuItem[]>;
-  return menuItems[websiteId] || [];
+  // Safe type conversion for menu items
+  const menuData = menuItemsData as any;
+  const items = menuData[websiteId.toString()] || menuData[websiteId] || [];
+
+  return items.map(
+    (item: any) =>
+      ({
+        id: item.id || 0,
+        domainID: item.domain_id || item.domainID || 0,
+        domainName: item.domain_name || item.domainName || "",
+        title: item.title || item.page_title || "",
+        icon: item.icon || "",
+        pageContent: item.page_content || item.pageContent || "",
+        action: item.action || "",
+        controller: item.controller || "",
+        argument: item.argument || "",
+        url: item.url || item.virtual_path || "",
+        description: item.description || "",
+        displayInNavigation:
+          item.display_navigation || item.displayInNavigation || false,
+        displayOrder: item.order || item.displayOrder || 0,
+        parentId: item.parent_id || item.parentId || 0,
+        parentTitle: item.parent_title || item.parentTitle || "",
+        lastModified: item.last_modified || item.lastModified || "",
+      } as MenuItem)
+  );
 }
 
 /**
  * Get complete API data with metadata
  */
 export function getApiData(): ApiData {
-  return apiData as ApiData;
+  // Safe conversion of API data
+  const data = apiData as any;
+  return {
+    recipes: getRecipes(),
+    categories: getCategories(),
+    websites: getWebsites(),
+    menuItems: Object.keys(data.menuItems || {}).reduce((acc, key) => {
+      const numKey = parseInt(key);
+      acc[numKey] = getMenuItemsByWebsite(numKey);
+      return acc;
+    }, {} as Record<number, MenuItem[]>),
+    metadata: data.metadata || {
+      fetchedAt: new Date().toISOString(),
+      totalRecipes: getRecipes().length,
+      totalCategories: getCategories().length,
+      totalWebsites: getWebsites().length,
+    },
+  };
 }
 
 /**

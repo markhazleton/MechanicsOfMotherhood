@@ -195,24 +195,66 @@ VITE_API_URL= (leave empty for static mode)
 
 ## 🚀 Deployment Options
 
-### GitHub Pages (Automatic)
+### GitHub Pages (Recommended - Automatic)
 
-1. Push to `main` branch
-2. GitHub Actions automatically builds and deploys
-3. Site available at `https://[username].github.io/MechanicsOfMotherhood/`
+#### Prerequisites
+
+- GitHub repository with Pages enabled
+- Actions workflow permissions configured
+
+#### Setup Instructions
+
+1. **Fork this repository** to your GitHub account
+2. **Enable GitHub Pages** in repository settings:
+   - Go to Settings → Pages
+   - Source: "GitHub Actions"
+   - Ensure "Enforce HTTPS" is checked
+3. **Configure Environment Variables** (optional):
+   - RECIPE_API_BASE: `https://webspark.markhazleton.com/api/recipespark`
+   - WEBCMS_API_BASE: `https://webspark.markhazleton.com/api/WebCMS/WebCMSApi`
+   - WEBCMS_AUTH_TOKEN: (secret token if available)
+4. **Push to `main` branch** - deployment is automatic via GitHub Actions
+5. **Site will be available** at `https://[your-username].github.io/MechanicsOfMotherhood/`
+
+#### What Happens During Deployment
+
+- ✅ Node.js 20 environment setup
+- ✅ Dependencies installation with npm ci
+- ✅ TypeScript type checking
+- ✅ API data fetching (with graceful fallback)
+- ✅ Data quality validation
+- ✅ Sitemap generation for SEO
+- ✅ Production build with optimizations
+- ✅ Automatic deployment to GitHub Pages
+
+#### GitHub Actions Workflow Features
+
+- **Separation of concerns**: Build and deploy are separate jobs
+- **Pull request previews**: Builds are tested on PRs without deployment
+- **Security**: Uses GitHub's official actions and proper permissions
+- **Performance**: Includes caching for faster builds
+- **Quality gates**: TypeScript checking and data validation
 
 ### Manual Static Deployment
 
-1. Run `npm run build:static`
-2. Upload `dist/public` folder to any static hosting service
-3. Configure for SPA (Single Page Application) routing
+Perfect for other static hosting providers (Netlify, Vercel, etc.):
+
+```bash
+# Build with all optimizations
+npm run build:github
+
+# Upload dist/public folder to your hosting provider
+# Make sure to configure SPA routing redirects
+```
 
 ### Full-Stack Deployment
 
-1. Deploy backend to services like Railway, Render, or Vercel
-2. Configure database connection
-3. Set environment variables
-4. Deploy frontend with API URL configuration
+For servers or platforms supporting Node.js backends:
+
+1. **Deploy backend** to services like Railway, Render, or Vercel
+2. **Configure database** connection (if using database features)
+3. **Set environment variables** for API endpoints
+4. **Deploy frontend** with API URL configuration
 
 ## 🧪 Testing
 

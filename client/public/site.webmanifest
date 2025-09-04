@@ -4,21 +4,36 @@
   "description": "Engineering better meals for working mothers worldwide",
   "icons": [
     {
-      "src": "/web-app-manifest-192x192.png",
+      "src": "/MechanicsOfMotherhood/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/web-app-manifest-512x512.png",
+      "src": "/MechanicsOfMotherhood/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "/MechanicsOfMotherhood/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/MechanicsOfMotherhood/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
-  "theme_color": "#3e5461",
+  "theme_color": "#2C3E50",
   "background_color": "#ffffff",
   "display": "standalone",
-  "start_url": "/",
-  "scope": "/"
+  "orientation": "portrait-primary",
+  "start_url": "/MechanicsOfMotherhood/",
+  "scope": "/MechanicsOfMotherhood/",
+  "categories": ["food", "lifestyle", "recipes", "cooking"],
+  "lang": "en-US"
 }

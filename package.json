@@ -9,11 +9,13 @@
     "build:static": "cross-env NODE_ENV=production vite build",
     "build:with-data": "npm run fetch-data && npm run build:static",
     "build:seo": "npm run generate:sitemap && npm run build",
+    "build:github": "npm run fetch-data && npm run generate:sitemap && npm run validate-data && vite build",
     "fetch-data": "node scripts/fetch-data.js",
     "validate-data": "node scripts/validate-data.js",
     "validate-data:fix": "node scripts/validate-data.js --fix-issues",
     "test-api": "node scripts/test-api.js",
     "preview": "vite preview",
+    "preview:github": "vite preview --base=/MechanicsOfMotherhood/",
     "check": "tsc",
     "clean": "node scripts/clean.js",
     "clean:all": "npm run clean && node -e \"const fs = require('fs'); try { fs.rmSync('node_modules', { recursive: true, force: true }); fs.rmSync('package-lock.json', { force: true }); console.log('Removed node_modules and package-lock.json. Run npm install to reinstall dependencies.'); } catch (e) { console.log('Failed to remove some files:', e.message); }\"",
@@ -23,7 +25,8 @@
     "tailwind:v4-readiness": "node scripts/tailwind-v4-readiness-check.js",
     "generate:sitemap": "node scripts/generate-sitemap.js",
     "seo:build": "npm run generate:sitemap && npm run build",
-    "seo:validate": "echo 'SEO validation tools would run here - check lighthouse, structured data testing, etc.'"
+    "seo:validate": "echo 'SEO validation tools would run here - check lighthouse, structured data testing, etc.'",
+    "deploy:check": "npm run check && npm run validate-data && npm run build:github && npm run preview:github"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

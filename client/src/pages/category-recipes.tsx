@@ -200,22 +200,22 @@ export default function CategoryRecipes() {
               </div>
 
               {/* Pagination */}
-              {pagination && pagination.totalPages > 1 && (
+              {pagination && (pagination.totalPages || pagination.pages) > 1 && (
                 <div className="flex items-center justify-center space-x-4 mt-12">
                   <Button
                     variant="outline"
-                    disabled={!pagination.hasPrevious}
+                    disabled={!(pagination.hasPrevious ?? (pagination.page > 1))}
                     onClick={() => setPage(page - 1)}
                     data-testid="pagination-prev"
                   >
                     Previous
                   </Button>
                   <span className="text-tool-gray">
-                    Page {pagination.currentPage} of {pagination.totalPages}
+                    Page {pagination.currentPage || pagination.page} of {pagination.totalPages || pagination.pages}
                   </span>
                   <Button
                     variant="outline"
-                    disabled={!pagination.hasNext}
+                    disabled={!(pagination.hasNext ?? (pagination.page < (pagination.totalPages || pagination.pages)))}
                     onClick={() => setPage(page + 1)}
                     data-testid="pagination-next"
                   >

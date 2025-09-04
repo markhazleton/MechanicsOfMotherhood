@@ -1,0 +1,24 @@
+# Security Headers for GitHub Pages
+# Note: GitHub Pages has limited support for custom headers
+# These are more for documentation and potential future hosting platforms
+
+/*
+  # Basic Security Headers
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  
+  # Content Security Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://webspark.markhazleton.com; object-src 'none'; base-uri 'self'; form-action 'self';
+  
+  # Performance & Caching
+  Cache-Control: public, max-age=31536000, immutable
+
+# HTML files - shorter cache
+/*.html
+  Cache-Control: public, max-age=3600
+
+# Service Worker - no cache
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate

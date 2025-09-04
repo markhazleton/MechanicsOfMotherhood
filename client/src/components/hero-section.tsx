@@ -68,11 +68,11 @@ export default function HeroSection() {
                 <div className="text-gray-300 font-industrial">Tested Recipes</div>
               </div>
               <div className="text-center" data-testid="stat-families">
-                <div className="text-3xl font-bold text-white">{stats.families.toLocaleString()}+</div>
+                <div className="text-3xl font-bold text-white">{(stats.families || 25000).toLocaleString()}+</div>
                 <div className="text-gray-300 font-industrial">Families Served</div>
               </div>
               <div className="text-center" data-testid="stat-time-saved">
-                <div className="text-3xl font-bold text-white">{(stats.timeSaved / 1000000).toFixed(1)}M+</div>
+                <div className="text-3xl font-bold text-white">{((stats.timeSaved || 5000000) / 1000000).toFixed(1)}M+</div>
                 <div className="text-gray-300 font-industrial">Hours Saved</div>
               </div>
             </>
