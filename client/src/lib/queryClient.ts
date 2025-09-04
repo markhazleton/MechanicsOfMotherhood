@@ -13,7 +13,9 @@ import {
   getMenuItemsByWebsite,
 } from "@/data/api-loader";
 
-// Simple pagination helper
+// Static data query handler for client-side only operations
+
+// Simple pagination helper for static data
 function createPagination(page: number, limit: number, total: number) {
   const totalPages = Math.ceil(total / limit);
   const currentPage = Math.min(page, totalPages);
@@ -29,8 +31,8 @@ function createPagination(page: number, limit: number, total: number) {
   };
 }
 
-// API response wrapper
-function createApiResponse(data: any, message: string, pagination?: any) {
+// Static data response wrapper
+function createStaticResponse(data: any, message: string, pagination?: any) {
   return {
     data,
     message,
@@ -39,28 +41,28 @@ function createApiResponse(data: any, message: string, pagination?: any) {
   };
 }
 
-async function apiDataFetch(url: string): Promise<any> {
-  // Simulate network delay for better UX
+async function staticDataFetch(url: string): Promise<any> {
+  // Simple delay for better UX
   await new Promise((resolve) => setTimeout(resolve, 50));
 
   const urlPath = new URL(url, "http://localhost").pathname;
   const urlParams = new URL(url, "http://localhost").searchParams;
 
-  // Only use real API data - throw error if not available
+  // Only use real static data - throw error if not available
   if (!hasApiData()) {
     throw new Error(
-      "API data is not available. Please run the data fetch script."
+      "Static data is not available. Please run the data fetch script."
     );
   }
 
-  return await apiDataHandler(urlPath, urlParams);
+  return await staticDataHandler(urlPath, urlParams);
 }
 
-async function apiDataHandler(
+async function staticDataHandler(
   urlPath: string,
   urlParams: URLSearchParams
 ): Promise<any> {
-  // Handle different API endpoints using fetched data
+  // Handle different static data queries using pre-fetched data
   if (urlPath === "/api/recipes") {
     const page = parseInt(urlParams.get("page") || "1");
     const limit = parseInt(urlParams.get("limit") || "10");
@@ -85,13 +87,13 @@ async function apiDataHandler(
     const paginatedRecipes = recipes.slice(startIndex, endIndex);
 
     return {
-      recipes: paginatedRecipes.map((r) => ({
+      recipes: paginatedRecipes.map((r: any) => ({
         id: r.id.toString(),
         title: r.name,
         description: r.description || "",
         imageUrl: "/api/placeholder/600/400",
-        prepTime: "15 mins",
-        cookTime: "30 mins",
+        prepTime: r.prepTime ? `${r.prepTime} mins` : "15 mins",
+        cookTime: r.cookTime ? `${r.cookTime} mins` : "30 mins",
         servings: r.servings || 4,
         difficulty: "Medium",
         category: r.recipeCategory?.name || "General",
@@ -124,8 +126,8 @@ async function apiDataHandler(
       title: recipe.name,
       description: recipe.description || "",
       imageUrl: "/api/placeholder/600/400",
-      prepTime: "15 mins",
-      cookTime: "30 mins",
+      prepTime: recipe.prepTime ? `${recipe.prepTime} mins` : "15 mins",
+      cookTime: recipe.cookTime ? `${recipe.cookTime} mins` : "30 mins",
       servings: recipe.servings || 4,
       difficulty: "Medium",
       category: recipe.recipeCategory?.name || "General",
@@ -167,7 +169,7 @@ async function apiDataHandler(
     const endIndex = startIndex + pageSize;
     const paginatedRecipes = recipes.slice(startIndex, endIndex);
 
-    return createApiResponse(
+    return createStaticResponse(
       paginatedRecipes,
       `Retrieved ${paginatedRecipes.length} recipes`,
       createPagination(pageNumber, pageSize, recipes.length)
@@ -177,7 +179,7 @@ async function apiDataHandler(
   if (urlPath === "/api/categories") {
     const categories = getCategories();
     return {
-      categories: categories.map((c) => ({
+      categories: categories.map((c: any) => ({
         id: c.id.toString(),
         name: c.name,
         description: c.description || "",
@@ -189,13 +191,13 @@ async function apiDataHandler(
   if (urlPath === "/api/featured-content") {
     const featuredRecipes = getFeaturedRecipes(6);
     return {
-      recipes: featuredRecipes.map((r) => ({
+      recipes: featuredRecipes.map((r: any) => ({
         id: r.id.toString(),
         title: r.name,
         description: r.description || "",
         imageUrl: "/api/placeholder/600/400",
-        prepTime: "15 mins",
-        cookTime: "30 mins",
+        prepTime: r.prepTime ? `${r.prepTime} mins` : "15 mins",
+        cookTime: r.cookTime ? `${r.cookTime} mins` : "30 mins",
         servings: r.servings || 4,
         difficulty: "Medium",
         category: r.recipeCategory?.name || "General",
@@ -205,8 +207,8 @@ async function apiDataHandler(
           : [],
         featured: true,
       })),
-      posts: [], // No blog posts in API data
-      categories: getCategories().map((c) => ({
+      posts: [], // No blog posts in static data
+      categories: getCategories().map((c: any) => ({
         id: c.id.toString(),
         name: c.name,
         description: c.description || "",
@@ -224,11 +226,16 @@ async function apiDataHandler(
       timeSaved: recipeStats.totalRecipes * 15000, // Estimate 15 minutes saved per recipe
       satisfaction: 98,
       communityMembers: Math.floor(recipeStats.totalRecipes * 150), // Estimate community size
+      totalRecipes: recipeStats.totalRecipes,
+      totalCategories: recipeStats.totalCategories,
+      averageRating: recipeStats.averageRating,
+      recipesByCategory: recipeStats.recipesByCategory,
+      recentRecipes: recipeStats.recentRecipes,
     };
   }
 
   if (urlPath === "/api/blog-posts") {
-    // No blog posts in API data, return empty array
+    // No blog posts in static data, return empty array
     const page = parseInt(urlParams.get("page") || "1");
     const limit = parseInt(urlParams.get("limit") || "10");
 
@@ -238,54 +245,27 @@ async function apiDataHandler(
     };
   }
 
-  throw new Error(`API endpoint not implemented: ${urlPath}`);
+  throw new Error(`Static data endpoint not implemented: ${urlPath}`);
 }
 
-async function throwIfResNotOk(res: Response) {
-  if (!res.ok) {
-    const text = (await res.text()) || res.statusText;
-    throw new Error(`${res.status}: ${text}`);
+// Static data query function for React Query
+export const getQueryFn: QueryFunction = async ({ queryKey }) => {
+  const url = queryKey.join("/") as string;
+
+  // Always use real static data - no fallback to mock data
+  if (!hasApiData()) {
+    throw new Error(
+      "Static data is not available. Please run the data fetch script first using 'npm run fetch-data'."
+    );
   }
-}
 
-export async function apiRequest(
-  method: string,
-  url: string,
-  data?: unknown | undefined
-): Promise<Response> {
-  const res = await fetch(url, {
-    method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
-  });
-
-  await throwIfResNotOk(res);
-  return res;
-}
-
-type UnauthorizedBehavior = "returnNull" | "throw";
-export const getQueryFn: <T>(options: {
-  on401: UnauthorizedBehavior;
-}) => QueryFunction<T> =
-  ({ on401: unauthorizedBehavior }) =>
-  async ({ queryKey }) => {
-    const url = queryKey.join("/") as string;
-
-    // Always use real API data - no fallback to mock data
-    if (!hasApiData()) {
-      throw new Error(
-        "API data is not available. Please run the data fetch script first using 'npm run fetch-data'."
-      );
-    }
-
-    return await apiDataFetch(url);
-  };
+  return await staticDataFetch(url);
+};
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      queryFn: getQueryFn({ on401: "throw" }),
+      queryFn: getQueryFn,
       refetchInterval: false,
       refetchOnWindowFocus: false,
       staleTime: Infinity,

@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Users, MessageCircle, Lightbulb, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 import LoadingSpinner from "./loading-spinner";
 import type { StatsResponse } from "@/data/api-types";
 
@@ -17,28 +16,15 @@ export default function CommunitySection() {
     queryKey: ["/api/stats"],
   });
 
-  const newsletterMutation = useMutation({
-    mutationFn: (email: string) => apiRequest("POST", "/api/newsletter", { email }),
-    onSuccess: () => {
-      toast({
-        title: "Success!",
-        description: "Welcome to the MoM crew! Check your email for a confirmation.",
-      });
-      setEmail("");
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to join newsletter. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email && email.includes("@")) {
-      newsletterMutation.mutate(email);
+      // Static app - show success message without actual submission
+      toast({
+        title: "Thanks for your interest!",
+        description: "We're working on newsletter functionality. Please check back soon!",
+      });
+      setEmail("");
     } else {
       toast({
         title: "Invalid Email",
@@ -129,12 +115,11 @@ export default function CommunitySection() {
             />
             <Button
               type="submit"
-              disabled={newsletterMutation.isPending}
               className="bg-energetic-orange hover:bg-red-600 text-white px-8 py-4 rounded-xl font-semibold whitespace-nowrap transition-all"
               data-testid="button-start-building"
             >
               <Rocket className="mr-2" size={18} />
-              {newsletterMutation.isPending ? "Joining..." : "Start Building"}
+              Start Building
             </Button>
           </form>
           <p className="text-sm opacity-75 mt-4">
