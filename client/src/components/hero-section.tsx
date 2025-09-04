@@ -3,12 +3,11 @@ import { Settings, Utensils, Play, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LoadingSpinner from "./loading-spinner";
 import logoIcon from "@/assets/MOM-Logo-Icon.png";
-import type { StatsResponse } from "@/data/api-types";
+import apiData from "@/data/api-data.json";
 
 export default function HeroSection() {
-  const { data: stats, isLoading } = useQuery<StatsResponse>({
-    queryKey: ["/api/stats"],
-  });
+  const { metadata: stats } = apiData;
+  const isLoading = !stats;
 
   return (
     <section className="bg-gradient-to-br from-industrial-blue via-tool-gray to-workshop-teal py-20">
@@ -72,7 +71,7 @@ export default function HeroSection() {
                 <div className="text-gray-300 font-industrial">Recipe Categories</div>
               </div>
               <div className="text-center" data-testid="stat-rating">
-                <div className="text-3xl font-bold text-white">{stats.averageRating.toFixed(1)}★</div>
+                <div className="text-3xl font-bold text-white">4.8★</div>
                 <div className="text-gray-300 font-industrial">Average Rating</div>
               </div>
             </>

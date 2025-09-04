@@ -6,15 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import LoadingSpinner from "./loading-spinner";
-import type { StatsResponse } from "@/data/api-types";
+import apiData from "@/data/api-data.json";
 
 export default function CommunitySection() {
   const [email, setEmail] = useState("");
   const { toast } = useToast();
 
-  const { data: stats, isLoading } = useQuery<StatsResponse>({
-    queryKey: ["/api/stats"],
-  });
+  const { metadata: stats } = apiData;
+  const isLoading = !stats;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

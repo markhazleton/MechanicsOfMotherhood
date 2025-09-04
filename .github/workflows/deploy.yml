@@ -39,23 +39,13 @@ jobs:
         run: npm run check || echo "TypeScript errors found but build will continue"
         continue-on-error: true
 
-      - name: Fetch API data
-        run: npm run fetch-data
+      - name: Build for GitHub Pages
+        run: npm run build:github
         env:
+          NODE_ENV: production
           RECIPE_API_BASE: ${{ vars.RECIPE_API_BASE }}
           WEBCMS_API_BASE: ${{ vars.WEBCMS_API_BASE }}
           WEBCMS_AUTH_TOKEN: ${{ secrets.WEBCMS_AUTH_TOKEN }}
-
-      - name: Validate data quality
-        run: npm run validate-data
-
-      - name: Generate sitemap
-        run: npm run generate:sitemap
-
-      - name: Build static site
-        run: npm run build:static
-        env:
-          NODE_ENV: production
 
       - name: Upload build artifacts
         uses: actions/upload-pages-artifact@v3
