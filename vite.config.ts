@@ -3,6 +3,12 @@ import react from "@vitejs/plugin-react";
 import tailwind from "@tailwindcss/vite";
 import path from "path";
 
+// Support custom domain deployment on GitHub Pages.
+// If VITE_CUSTOM_DOMAIN is set (e.g. mechanicsofmotherhood.com) we serve from root '/'.
+// Otherwise we retain the repository sub-path for user/organization pages.
+const repoBase = "/MechanicsOfMotherhood/";
+const hasCustomDomain = !!process.env.VITE_CUSTOM_DOMAIN;
+
 export default defineConfig({
   plugins: [react(), tailwind()],
   resolve: {
@@ -12,7 +18,7 @@ export default defineConfig({
     },
   },
   root: path.resolve(import.meta.dirname, "client"),
-  base: process.env.NODE_ENV === "production" ? "/MechanicsOfMotherhood/" : "/",
+  base: process.env.NODE_ENV === "production" ? (hasCustomDomain ? "/" : repoBase) : "/",
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,

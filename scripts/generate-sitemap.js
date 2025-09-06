@@ -10,8 +10,13 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configuration
-const SITE_URL = 'https://sharesmallbiz-support.github.io/MechanicsOfMotherhood';
+// Configuration: allow override via environment for custom domain support
+// If VITE_CUSTOM_DOMAIN (no protocol) provided, default to https scheme
+// e.g. VITE_CUSTOM_DOMAIN=mechanicsofmotherhood.com
+const customDomain = process.env.VITE_CUSTOM_DOMAIN;
+const SITE_URL = customDomain
+  ? `https://${customDomain}`
+  : 'https://sharesmallbiz-support.github.io/MechanicsOfMotherhood';
 const OUTPUT_PATH = path.join(__dirname, '../client/public/sitemap.xml');
 
 // Load recipe and category data

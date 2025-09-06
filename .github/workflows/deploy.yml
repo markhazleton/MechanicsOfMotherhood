@@ -46,11 +46,14 @@ jobs:
           RECIPE_API_BASE: ${{ vars.RECIPE_API_BASE }}
           WEBCMS_API_BASE: ${{ vars.WEBCMS_API_BASE }}
           WEBCMS_AUTH_TOKEN: ${{ secrets.WEBCMS_AUTH_TOKEN }}
+          # Optional: define VITE_CUSTOM_DOMAIN in repository variables to deploy at root for a custom domain.
+          # Example (Repository Settings > Variables > Actions): NAME=VITE_CUSTOM_DOMAIN, VALUE=mechanicsofmotherhood.com
 
       - name: Upload build artifacts
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist/public
+          # Ensure CNAME file is included
 
   # Deploy job - only runs on push to main
   deploy:

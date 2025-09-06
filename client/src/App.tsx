@@ -18,8 +18,12 @@ const CategoryRecipes = lazy(() => import("@/pages/category-recipes"));
 const Blog = lazy(() => import("@/pages/blog"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
-// Configure base path for GitHub Pages
-const basePath = import.meta.env.PROD ? "/MechanicsOfMotherhood" : "";
+// Configure base path for GitHub Pages.
+// If a custom domain is configured (VITE_CUSTOM_DOMAIN), deploy at root.
+// Otherwise use the repository name sub-path.
+const basePath = import.meta.env.PROD
+  ? (import.meta.env.VITE_CUSTOM_DOMAIN ? "" : "/MechanicsOfMotherhood")
+  : "";
 
 function AppRouter() {
   return (

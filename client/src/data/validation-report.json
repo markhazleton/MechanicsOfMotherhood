@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-09-06T02:46:43.870Z",
+  "timestamp": "2025-09-06T03:04:26.332Z",
   "validation": {
     "errors": [],
     "warnings": [],
@@ -38,24 +38,7 @@
     },
     "qualityScore": 0
   },
-  "apiEndpoints": {
-    "recipeApi": "https://webspark.markhazleton.com/api/recipespark",
-    "webCmsApi": "https://webspark.markhazleton.com/api/WebCMS"
-  },
-  "fetchMetadata": {
-    "fetchedAt": "2025-09-06T02:46:43.859Z",
-    "totalRecipes": 108,
-    "totalCategories": 14,
-    "totalWebsites": 1,
-    "totalMenuItems": 128,
-    "recipeMenuItems": 123,
-    "contentMenuItems": 5
-  },
-  "phase": "post-fix-validation",
-  "fixesApplied": 14,
-  "initialResults": {
-    "errors": 0,
-    "warnings": 14,
-    "qualityScore": 88.6178861788618
-  }
+  "validationMode": "standalone",
+  "dataSource": "api-data.json",
+  "fixIssuesMode": false
 }
