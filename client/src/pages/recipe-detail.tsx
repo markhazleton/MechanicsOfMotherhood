@@ -1,9 +1,7 @@
 import { useParams, useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { Users, Star, ChefHat, ArrowLeft, BookOpen } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import LoadingSpinner from "@/components/loading-spinner";
 import MarkdownContent from "@/components/markdown-content";
 import SeoHead from "@/components/seo/SeoHead";
 import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
@@ -29,19 +27,27 @@ export default function RecipeDetail() {
   const { slug } = useParams();
   const [, navigate] = useLocation();
 
-  const { data: recipe, isLoading, error } = useQuery<Recipe>({
-    queryKey: [`recipe-${slug}`],
-    queryFn: () => {
-      if (!slug) throw new Error("No recipe slug provided");
+  // Use direct static data access instead of React Query
+  let recipe: Recipe | null = null;
+  let error: string | null = null;
+
+  try {
+    if (slug) {
       const foundRecipe = getRecipeBySlug(slug);
-      if (!foundRecipe) throw new Error("Recipe not found");
-      return foundRecipe;
-    },
-    enabled: !!slug,
-  });
+      if (!foundRecipe) {
+        error = "Recipe not found";
+      } else {
+        recipe = foundRecipe;
+      }
+    } else {
+      error = "No recipe slug provided";
+    }
+  } catch (e) {
+    error = e instanceof Error ? e.message : "Unknown error";
+  }
 
   // Initialize analytics for this recipe
-  const analytics = useRecipeAnalytics(recipe);
+  const analytics = useRecipeAnalytics(recipe || undefined);
 
   // Track recipe completion when user scrolls or navigates away
   const handleBackClick = () => {
@@ -62,18 +68,6 @@ export default function RecipeDetail() {
     analytics.trackInstructionView();
   };
 
-  if (isLoading) {
-    return (
-  <div className="min-h-screen bg-[hsl(var(--light-gray))]">
-        <Navigation />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <LoadingSpinner />
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
   if (error || !recipe) {
     return (
       <div className="min-h-screen bg-light-gray">
@@ -84,7 +78,7 @@ export default function RecipeDetail() {
               Recipe Not Found
             </h1>
             <p className="text-tool-gray mb-8">
-              The recipe you're looking for doesn't exist or has been removed.
+              {error || "The recipe you're looking for doesn't exist or has been removed."}
             </p>
             <Button onClick={() => navigate("/recipes")} className="bg-workshop-teal hover:bg-workshop-teal/90">
               <ArrowLeft className="w-4 h-4 mr-2" />

@@ -43,7 +43,7 @@ export default defineConfig({
             manualChunks: {
               "vendor-react": ["react", "react-dom"],
               "vendor-router": ["wouter"],
-              "vendor-query": ["@tanstack/react-query"],
+
               "ui-radix-core": [
                 "@radix-ui/react-slot",
                 "@radix-ui/react-tooltip",

@@ -1,18 +1,16 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import { Search, ArrowLeft, Users, Star, ArrowRight } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
 import { generateBreadcrumbs } from "@/utils/seo-helpers";
-import LoadingSpinner from "@/components/loading-spinner";
 import MarkdownContent from "@/components/markdown-content";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getRecipesByCategory, getCategoryBySlug, getRecipeUrl } from "@/data/api-loader";
+import { getRecipesByCategory, getCategoryBySlug, getRecipeUrl, getApiData } from "@/data/api-loader";
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import type { Recipe, ApiData } from "@/data/api-types";
@@ -40,78 +38,73 @@ export default function CategoryRecipes() {
   // Initialize analytics
   const analytics = useAnalytics();
 
-  // Get category details
-  const { data: apiData } = useQuery<ApiData>({
-    queryKey: ["api-data"],
-  });
-
+  // Get category details using static data
+  const apiData = getApiData();
   const categories = apiData?.categories || [];
+  
   // Find category by matching both basic slug and enhanced slug
   const currentCategory = categories.find((cat: any) => 
     getCategorySlug(cat.name) === categorySlug || nameToSlug(cat.name) === categorySlug
   );
   const categoryId = currentCategory?.id;
 
-  // Get recipes for this category using RecipeSpark API
-  const { data: recipesResponse, isLoading } = useQuery<RecipeResponse>({
-    queryKey: [`/api/recipespark/recipes?categoryId=${categoryId}&pageNumber=${page}&pageSize=12`],
-    enabled: !!categoryId,
-  });
-
-  const recipes = recipesResponse?.data || [];
-  const totalRecipes = recipes.length;
-  const pagination = recipesResponse?.pagination || {
-    currentPage: 1,
-    totalPages: 1,
-    hasNext: false,
-    hasPrevious: false,
+  // Get recipes for this category using static data
+  const allCategoryRecipes = categoryId ? getRecipesByCategory(categoryId) : [];
+  
+  // Apply pagination and search filters
+  const pageSize = 12;
+  const startIndex = (page - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const filteredRecipes = searchQuery 
+    ? allCategoryRecipes.filter(recipe => 
+        recipe.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (recipe.description && recipe.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : allCategoryRecipes;
+  
+  const recipes = filteredRecipes.slice(startIndex, endIndex);
+  const totalRecipes = filteredRecipes.length;
+  const totalPages = Math.ceil(totalRecipes / pageSize);
+  
+  const pagination = {
+    currentPage: page,
+    totalPages,
+    hasNext: page < totalPages,
+    hasPrevious: page > 1,
     total: totalRecipes,
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    setPage(1); // Reset to first page on search
     // Track category search
     if (searchQuery.trim()) {
-      analytics.trackSearch(searchQuery, recipes.length, 'category');
+      analytics.trackSearch(searchQuery, filteredRecipes.length, 'category');
     }
-    // TODO: Implement search functionality
-    console.log("Search:", searchQuery);
   };
 
   // Track category view when data loads
   useEffect(() => {
-    if (currentCategory && !isLoading) {
+    if (currentCategory) {
       analytics.trackCategoryView(
         currentCategory.name,
         categorySlug || '',
         totalRecipes
       );
     }
-  }, [currentCategory, isLoading, analytics, categorySlug, totalRecipes]);
-
-  if (isLoading && !recipes.length) {
-    return (
-  <div className="min-h-screen bg-[hsl(var(--light-gray))]">
-        <Navigation />
-        <div className="py-16">
-          <LoadingSpinner />
-        </div>
-        <Footer />
-      </div>
-    );
-  }
+  }, [currentCategory, analytics, categorySlug, totalRecipes]);
 
   // Handle case where category doesn't exist
-  if (!isLoading && categorySlug && !currentCategory) {
+  if (!categorySlug || !currentCategory) {
     return (
-  <div className="min-h-screen bg-[hsl(var(--light-gray))]">
+      <div className="min-h-screen bg-[hsl(var(--light-gray))]">
         <Navigation />
-  <div className="bg-white border-b border-[hsl(var(--color-border))]">
+        <div className="bg-white border-b border-[hsl(var(--color-border))]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <BreadcrumbNav items={generateBreadcrumbs('/categories')} />
           </div>
         </div>
-  <section className="bg-white py-12 border-b border-[hsl(var(--color-border))]">
+        <section className="bg-white py-12 border-b border-[hsl(var(--color-border))]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center py-12">
               <div className="text-6xl mb-4">🔧</div>
@@ -196,9 +189,7 @@ export default function CategoryRecipes() {
       {/* Recipes Grid */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {isLoading ? (
-            <LoadingSpinner />
-          ) : recipes.length > 0 ? (
+          {recipes.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {recipes.map((recipe: Recipe) => (

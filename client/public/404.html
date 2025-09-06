@@ -35,16 +35,21 @@
       }
     </style>
     <script>
+      // Check if this is a known route that should be handled by the SPA
       (function () {
         var path = window.location.pathname;
         var knownPattern =
           /^(\/recipe\/|\/recipes\/category\/|\/recipes$|\/categories$|\/$)/.test(
             path
           );
+
         if (knownPattern) {
-          // If this was supposed to be prerendered but isn't present (maybe cache race), go to root for hydration
-          window.location.replace("/");
+          // For known SPA routes, redirect to index.html to let React handle routing
+          window.location.replace(
+            "/#" + path + window.location.search + window.location.hash
+          );
         }
+        // For unknown routes, show the 404 page
       })();
     </script>
   </head>

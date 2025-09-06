@@ -1,9 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
 import { Users, TrendingUp, Star, ArrowRight, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import LoadingSpinner from "./loading-spinner";
 import MarkdownContent from "./markdown-content";
 import { Link, useLocation } from "wouter";
 import { getFeaturedRecipes, getCategories, getRecipeUrl } from "@/data/api-loader";
@@ -16,15 +14,9 @@ export default function FeaturedRecipes() {
   const [, navigate] = useLocation();
   const analytics = useAnalytics();
 
-  const { data: featuredContent, isLoading } = useQuery({
-    queryKey: ["featured-recipes"],
-    queryFn: () => getFeaturedRecipes(6),
-  });
-
-  const { data: categoriesData } = useQuery({
-    queryKey: ["categories"],
-    queryFn: () => getCategories(),
-  });
+  // Use static data directly without React Query
+  const featuredContent = getFeaturedRecipes(6);
+  const categoriesData = getCategories();
 
   const categories = categoriesData || [];
   const recipes = featuredContent || [];
@@ -35,16 +27,6 @@ export default function FeaturedRecipes() {
   const getCategoryColor = (categoryName: string) => {
     return "#38B2AC"; // Default teal color since API doesn't have color field
   };
-
-  if (isLoading) {
-    return (
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <LoadingSpinner />
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section id="recipes" className="py-16 bg-white">
@@ -78,7 +60,7 @@ export default function FeaturedRecipes() {
         </div>
 
         {/* Recipe Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-2 lg:grid-cols-3 gap-8">
           {recipes.map((recipe: Recipe) => (
             <Card key={recipe.id} className="gear-border bg-white rounded-xl overflow-hidden mechanical-shadow hover:transform hover:scale-105 transition-all duration-300" data-testid={`recipe-card-${recipe.id}`}>
               <img

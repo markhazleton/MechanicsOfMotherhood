@@ -1,16 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
 import { Settings, Utensils, Play, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import LoadingSpinner from "./loading-spinner";
-const logoIcon = "/images/logos/MOM-Logo-Icon.png";
 import apiData from "@/data/api-data.json";
+
+const logoIcon = "/images/logos/MOM-Logo-Icon.png";
 
 export default function HeroSection() {
   const { metadata: stats } = apiData;
-  const isLoading = !stats;
 
   return (
-  <section className="bg-gradient-to-br from-[hsl(var(--color-industrial-blue))] via-[hsl(var(--color-tool-gray))] to-[hsl(var(--color-workshop-teal))] py-20">
+    <section className="bg-gradient-to-br from-[hsl(var(--color-industrial-blue))] via-[hsl(var(--color-tool-gray))] to-[hsl(var(--color-workshop-teal))] py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="flex justify-center items-center mb-8">
           <div className="relative">
@@ -34,10 +32,10 @@ export default function HeroSection() {
           Engineering Better Meals • The Mother of All Solutions
         </p>
         
-    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <Button 
             size="lg"
-      className="btn-brand-primary px-8 py-4 text-lg transition-all duration-300 transform hover:scale-105"
+            className="btn-brand-primary px-8 py-4 text-lg transition-all duration-300 transform hover:scale-105"
             data-testid="button-start-cooking"
           >
             <Wrench className="mr-2" size={20} />
@@ -46,7 +44,7 @@ export default function HeroSection() {
           <Button
             variant="outline"
             size="lg"
-      className="btn-brand-outline px-8 py-4 text-lg"
+            className="btn-brand-outline px-8 py-4 text-lg"
             data-testid="button-watch-tutorial"
           >
             <Play className="mr-2" size={20} />
@@ -54,13 +52,9 @@ export default function HeroSection() {
           </Button>
         </div>
 
-        {/* Stats */}
+        {/* Static Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
-          {isLoading ? (
-            <div className="md:col-span-3">
-              <LoadingSpinner />
-            </div>
-          ) : stats ? (
+          {stats ? (
             <>
               <div className="text-center" data-testid="stat-recipes">
                 <div className="text-3xl font-bold text-white">{stats.totalRecipes}+</div>
@@ -76,7 +70,7 @@ export default function HeroSection() {
               </div>
             </>
           ) : (
-            <div className="md:col-span-3 text-white">Unable to load statistics</div>
+            <div className="md:col-span-3 text-white">Statistics not available</div>
           )}
         </div>
       </div>

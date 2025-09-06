@@ -5,8 +5,6 @@ import { fileURLToPath, pathToFileURL } from "url";
 import React from "react";
 import { renderToString } from "react-dom/server";
 import AppSSR from "../client/src/AppSSR";
-import { queryClient } from "../client/src/lib/queryClient";
-import { dehydrate } from "@tanstack/react-query";
 import {
   getRecipes,
   getCategories,
@@ -51,24 +49,14 @@ async function getRenderer() {
   return renderer;
 }
 
-function escapeJson(str: string) {
-  return str.replace(/</g, "\\u003c");
-}
-
-function writeHtml(
-  routePath: string,
-  html: string,
-  helmet: any,
-  dehydratedState: any
-) {
+function writeHtml(routePath: string, html: string, helmet: any) {
   // Sanitize the route path for filesystem compatibility (remove invalid characters)
   const sanitizedRoutePath = routePath.replace(/[<>:"|?*]/g, "-");
   const outDir = path.join(distRoot, sanitizedRoutePath);
   mkdirSync(outDir, { recursive: true });
-  const stateJson = escapeJson(JSON.stringify(dehydratedState));
   const replaced = template.replace(
     '<div id="root" role="main"></div>',
-    `<div id=\"root\" role=\"main\">${html}</div>\n<script type=\"application/json\" id=\"__INITIAL_QUERY_STATE__\">${stateJson}</script>`
+    `<div id=\"root\" role=\"main\">${html}</div>`
   );
   const withHead = replaced.replace(
     "</head>",
@@ -107,9 +95,9 @@ async function run() {
         getRecipeBySlug(slug);
       } catch {}
     }
-    const { html, dehydratedState, helmet } = await render(route);
+    const { html, helmet } = await render(route);
     const outRoute = route === "/" ? "" : route.replace(/^\//, "");
-    writeHtml(outRoute, html, helmet, dehydratedState);
+    writeHtml(outRoute, html, helmet);
   }
 }
 run().catch((e) => {

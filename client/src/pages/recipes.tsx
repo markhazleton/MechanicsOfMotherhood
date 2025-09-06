@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
 import { Search, Filter, Users, Star, ArrowRight } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import LoadingSpinner from "@/components/loading-spinner";
 import MarkdownContent from "@/components/markdown-content";
 import SeoHead from "@/components/seo/SeoHead";
 import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
@@ -26,16 +24,9 @@ export default function Recipes() {
   // Initialize analytics
   const analytics = useAnalytics();
 
-  // Use API loader for recipes and categories
-  const { data: allRecipes, isLoading: recipesLoading } = useQuery<Recipe[]>({
-    queryKey: ["recipes"],
-    queryFn: () => getRecipes(),
-  });
-
-  const { data: categories, isLoading: categoriesLoading } = useQuery({
-    queryKey: ["categories"],
-    queryFn: () => getCategories(),
-  });
+  // Use direct static data access instead of React Query
+  const allRecipes = getRecipes();
+  const categories = getCategories();
 
   // Filter recipes based on search and category
   let filteredRecipes = allRecipes || [];
@@ -48,8 +39,6 @@ export default function Recipes() {
     const categoryId = parseInt(selectedCategory);
     filteredRecipes = filteredRecipes.filter(recipe => recipe.recipeCategoryID === categoryId);
   }
-
-  const isLoading = recipesLoading || categoriesLoading;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -181,71 +170,65 @@ export default function Recipes() {
       {/* Recipes Grid */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {isLoading ? (
-            <LoadingSpinner />
-          ) : (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredRecipes.map((recipe: Recipe) => (
-                  <Card key={recipe.id} className="gear-border bg-white rounded-xl overflow-hidden mechanical-shadow hover:transform hover:scale-105 transition-all duration-300" data-testid={`recipe-card-${recipe.id}`}>
-                    <img
-                      src={getRecipeImageUrl(recipe)}
-                      alt={getRecipeImageAlt(recipe)}
-                      className="w-full h-40 object-cover"
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredRecipes.map((recipe: Recipe) => (
+              <Card key={recipe.id} className="gear-border bg-white rounded-xl overflow-hidden mechanical-shadow hover:transform hover:scale-105 transition-all duration-300" data-testid={`recipe-card-${recipe.id}`}>
+                <img
+                  src={getRecipeImageUrl(recipe)}
+                  alt={getRecipeImageAlt(recipe)}
+                  className="w-full h-40 object-cover"
+                />
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-end mb-2">
+                    <div className="flex items-center text-[hsl(var(--color-energetic-orange))]" aria-label="Recipe rating">
+                      <Star size={12} fill="currentColor" />
+                      <span className="ml-1 text-xs">{recipe.averageRating || 5}</span>
+                    </div>
+                  </div>
+                  <h3 className="font-bold text-lg mb-2 text-[hsl(var(--color-industrial-blue))] line-clamp-2">
+                    {recipe.name}
+                  </h3>
+                  <div className="text-[hsl(var(--color-tool-gray))] text-sm mb-3 line-clamp-2">
+                    <MarkdownContent 
+                      content={recipe.description || ''}
+                      summary={true}
+                      className="text-sm"
                     />
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-end mb-2">
-                        <div className="flex items-center text-[hsl(var(--color-energetic-orange))]" aria-label="Recipe rating">
-                          <Star size={12} fill="currentColor" />
-                          <span className="ml-1 text-xs">{recipe.averageRating || 5}</span>
-                        </div>
-                      </div>
-                      <h3 className="font-bold text-lg mb-2 text-[hsl(var(--color-industrial-blue))] line-clamp-2">
-                        {recipe.name}
-                      </h3>
-                      <div className="text-[hsl(var(--color-tool-gray))] text-sm mb-3 line-clamp-2">
-                        <MarkdownContent 
-                          content={recipe.description || ''}
-                          summary={true}
-                          className="text-sm"
-                        />
-                      </div>
-                      <div className="flex items-center justify-between text-xs text-[hsl(var(--color-tool-gray))]">
-                        <span className="flex items-center">
-                          <Users size={12} className="mr-1" />
-                          {recipe.servings}
-                        </span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-[hsl(var(--color-energetic-orange))] hover:text-red-600 p-0 h-auto"
-                          onClick={() => {
-                            analytics.trackButtonClick('view_recipe', 'recipes_grid', {
-                              recipe_id: recipe.id,
-                              recipe_name: recipe.name,
-                              recipe_category: recipe.recipeCategory?.name
-                            });
-                            navigate(getRecipeUrl(recipe));
-                          }}
-                          data-testid={`view-recipe-${recipe.id}`}
-                        >
-                          <ArrowRight size={14} className="mr-1" />
-                          View
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-[hsl(var(--color-tool-gray))]">
+                    <span className="flex items-center">
+                      <Users size={12} className="mr-1" />
+                      {recipe.servings}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-[hsl(var(--color-energetic-orange))] hover:text-red-600 p-0 h-auto"
+                      onClick={() => {
+                        analytics.trackButtonClick('view_recipe', 'recipes_grid', {
+                          recipe_id: recipe.id,
+                          recipe_name: recipe.name,
+                          recipe_category: recipe.recipeCategory?.name
+                        });
+                        navigate(getRecipeUrl(recipe));
+                      }}
+                      data-testid={`view-recipe-${recipe.id}`}
+                    >
+                      <ArrowRight size={14} className="mr-1" />
+                      View
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
 
-              {/* Show results count */}
-              <div className="text-center mt-8 text-[hsl(var(--color-tool-gray))]">
-                Showing {filteredRecipes.length} recipe{filteredRecipes.length !== 1 ? 's' : ''}
-                {activeSearch && ` for "${activeSearch}"`}
-                {selectedCategory && ` in ${categories?.find(c => c.id.toString() === selectedCategory)?.name}`}
-              </div>
-            </>
-          )}
+          {/* Show results count */}
+          <div className="text-center mt-8 text-[hsl(var(--color-tool-gray))]">
+            Showing {filteredRecipes.length} recipe{filteredRecipes.length !== 1 ? 's' : ''}
+            {activeSearch && ` for "${activeSearch}"`}
+            {selectedCategory && ` in ${categories?.find(c => c.id.toString() === selectedCategory)?.name}`}
+          </div>
         </div>
       </section>
 

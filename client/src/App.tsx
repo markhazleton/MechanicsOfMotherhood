@@ -1,7 +1,5 @@
 import React from "react";
 import { Switch, Route, Router } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
 import * as HelmetAsync from "react-helmet-async";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,19 +23,10 @@ import NotFound from "@/pages/not-found";
 let basePath = "";
 const isProd = (typeof import.meta !== 'undefined' && (import.meta as any).env && (import.meta as any).env.PROD) || process.env.NODE_ENV === 'production';
 if (isProd) {
-  // Check if we're running on the custom domain
-  try {
-    const host = typeof window !== 'undefined' ? window.location.host : '';
-    
-    // If running on the custom domain mechanicsofmotherhood.com, use root path
-    if (host === 'mechanicsofmotherhood.com' || host === 'www.mechanicsofmotherhood.com') {
-      basePath = ""; // custom domain root
-    } else {
-      basePath = "/MechanicsOfMotherhood"; // GitHub Pages sub-path fallback
-    }
-  } catch {
-    basePath = "/MechanicsOfMotherhood"; // safe fallback
-  }
+  // For production, we know this site has a custom domain configured
+  // The CNAME file indicates mechanicsofmotherhood.com is the custom domain
+  // So we can safely use root path for all production builds
+  basePath = ""; // custom domain root
 }
 
 interface AppRouterProps { ssrPath?: string }
@@ -69,19 +58,17 @@ function App({ ssrPath, helmetContext }: AppProps) {
         message: error.message,
         stack: error.stack,
         name: error.name,
-  componentStack: info.componentStack || undefined,
+        componentStack: info.componentStack || undefined,
         errorId,
         time: new Date().toISOString()
       });
     }}>
-  {React.createElement((HelmetAsync as any).HelmetProvider || React.Fragment, { context: helmetContext },
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <Toaster />
-            <AppRouter ssrPath={ssrPath} />
-          </TooltipProvider>
-        </QueryClientProvider>
-  )}
+      {React.createElement((HelmetAsync as any).HelmetProvider || React.Fragment, { context: helmetContext },
+        <TooltipProvider>
+          <Toaster />
+          <AppRouter ssrPath={ssrPath} />
+        </TooltipProvider>
+      )}
     </ErrorBoundary>
   );
 }

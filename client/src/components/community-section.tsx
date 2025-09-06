@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Users, MessageCircle, Lightbulb, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import LoadingSpinner from "./loading-spinner";
 import apiData from "@/data/api-data.json";
 
 export default function CommunitySection() {
@@ -13,7 +11,6 @@ export default function CommunitySection() {
   const { toast } = useToast();
 
   const { metadata: stats } = apiData;
-  const isLoading = !stats;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,18 +30,8 @@ export default function CommunitySection() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <LoadingSpinner />
-        </div>
-      </section>
-    );
-  }
-
   return (
-  <section className="py-16 bg-white">
+    <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="font-industrial text-3xl md:text-4xl font-bold text-brand-blue mb-4">
@@ -56,13 +43,13 @@ export default function CommunitySection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-      <Card className="text-center p-6 bg-kitchen-warm rounded-xl border-none">
+          <Card className="text-center p-6 bg-kitchen-warm rounded-xl border-none">
             <CardContent className="pt-6">
-        <div className="bg-brand-orange w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-brand-orange w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="text-white text-2xl" />
               </div>
-        <h3 className="font-bold text-xl mb-2 text-brand-blue">Active Community</h3>
-        <p className="text-brand-tool mb-4">
+              <h3 className="font-bold text-xl mb-2 text-brand-blue">Active Community</h3>
+              <p className="text-brand-tool mb-4">
                 Join <span className="font-semibold" data-testid="community-members-count">
                   {stats?.totalRecipes ? (stats.totalRecipes * 100).toLocaleString() : "15,000"}+
                 </span> working moms sharing real solutions.
@@ -70,32 +57,32 @@ export default function CommunitySection() {
             </CardContent>
           </Card>
           
-      <Card className="text-center p-6 bg-kitchen-warm rounded-xl border-none">
+          <Card className="text-center p-6 bg-kitchen-warm rounded-xl border-none">
             <CardContent className="pt-6">
-        <div className="bg-brand-teal w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-brand-teal w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <MessageCircle className="text-white text-2xl" />
               </div>
-        <h3 className="font-bold text-xl mb-2 text-brand-blue">Daily Support</h3>
-        <p className="text-brand-tool mb-4">
+              <h3 className="font-bold text-xl mb-2 text-brand-blue">Daily Support</h3>
+              <p className="text-brand-tool mb-4">
                 Get answers to your questions from experienced mom engineers.
               </p>
             </CardContent>
           </Card>
           
-      <Card className="text-center p-6 bg-kitchen-warm rounded-xl border-none">
+          <Card className="text-center p-6 bg-kitchen-warm rounded-xl border-none">
             <CardContent className="pt-6">
               <div className="bg-yellow-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Lightbulb className="text-white text-2xl" />
               </div>
-      <h3 className="font-bold text-xl mb-2 text-brand-blue">Exclusive Content</h3>
-      <p className="text-brand-tool mb-4">
+              <h3 className="font-bold text-xl mb-2 text-brand-blue">Exclusive Content</h3>
+              <p className="text-brand-tool mb-4">
                 Access member-only recipes, meal plans, and workshop sessions.
               </p>
             </CardContent>
           </Card>
         </div>
 
-    <div className="bg-gradient-to-r from-[hsl(var(--color-industrial-blue))] to-[hsl(var(--color-workshop-teal))] rounded-2xl p-8 md:p-12 text-center text-white">
+        <div className="bg-gradient-to-r from-[hsl(var(--color-industrial-blue))] to-[hsl(var(--color-workshop-teal))] rounded-2xl p-8 md:p-12 text-center text-white">
           <h3 className="font-mechanical text-2xl md:text-3xl font-bold mb-4">
             Ready to Join the Workshop?
           </h3>
@@ -108,13 +95,13 @@ export default function CommunitySection() {
               placeholder="Enter your email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-      className="flex-1 px-6 py-4 rounded-xl text-brand-tool focus:ring-2 focus:ring-[hsl(var(--color-energetic-orange))] focus:outline-none"
+              className="flex-1 px-6 py-4 rounded-xl text-brand-tool focus:ring-2 focus:ring-[hsl(var(--color-energetic-orange))] focus:outline-none"
               data-testid="newsletter-email-input"
               required
             />
             <Button
               type="submit"
-      className="btn-brand-primary px-8 py-4 rounded-xl font-semibold whitespace-nowrap transition-all"
+              className="btn-brand-primary px-8 py-4 rounded-xl font-semibold whitespace-nowrap transition-all"
               data-testid="button-start-building"
             >
               <Rocket className="mr-2" size={18} />

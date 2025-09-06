@@ -1,21 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { ArrowRight, ChefHat } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
 import { generateBreadcrumbs } from "@/utils/seo-helpers";
-import LoadingSpinner from "@/components/loading-spinner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getCategorySlug } from "@/utils/slugify";
-import { ApiData } from "@/data/api-types";
+import { getApiData } from "@/data/api-loader";
 
 export default function Categories() {
-  const { data: apiData, isLoading } = useQuery<ApiData>({
-    queryKey: ["api-data"],
-  });
-
+  const apiData = getApiData();
   const categories = apiData?.categories || [];
   const recipes = apiData?.recipes || [];
 
@@ -27,30 +22,18 @@ export default function Categories() {
 
   const breadcrumbs = generateBreadcrumbs('/categories');
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-light-gray">
-        <Navigation />
-        <div className="py-16">
-          <LoadingSpinner />
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
   return (
-  <div className="min-h-screen bg-[hsl(var(--light-gray))]">
+    <div className="min-h-screen bg-[hsl(var(--light-gray))]">
       <Navigation />
       {/* Breadcrumb Navigation */}
-  <div className="bg-white border-b border-[hsl(var(--color-border))]">
+      <div className="bg-white border-b border-[hsl(var(--color-border))]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <BreadcrumbNav items={breadcrumbs} />
         </div>
       </div>
       
-  {/* Header */}
-  <section className="bg-white py-12 border-b border-[hsl(var(--color-border))]">
+      {/* Header */}
+      <section className="bg-white py-12 border-b border-[hsl(var(--color-border))]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="font-mechanical text-4xl font-bold text-[hsl(var(--color-industrial-blue))] mb-4">
@@ -105,7 +88,7 @@ export default function Categories() {
           {categoriesWithCounts.length === 0 && (
             <div className="text-center py-12">
               <ChefHat size={64} className="mx-auto text-tool-gray mb-4" />
-                      <h3 className="text-xl font-bold text-[hsl(var(--color-industrial-blue))] mb-2">
+              <h3 className="text-xl font-bold text-[hsl(var(--color-industrial-blue))] mb-2">
                 No Categories Available
               </h3>
               <p className="text-tool-gray">
