@@ -51,13 +51,20 @@
             .slice(1)
             .split("&")
             .map(function (s) {
-              return s.replace(/~and~/g, "&");
+              return s
+                .replace(/~and~/g, "&")
+                .replace(/~lp~/g, "(")
+                .replace(/~rp~/g, ")")
+                .replace(/~colon~/g, ":")
+                .replace(/~percent~/g, "%")
+                .replace(/~plus~/g, "+")
+                .replace(/~eq~/g, "=");
             })
             .join("?");
 
           if (isCustomDomain) {
-            // Custom domain - use root path
-            window.history.replaceState(null, null, "/" + decoded + l.hash);
+            // Custom domain - use root path, remove leading slash from decoded
+            window.history.replaceState(null, null, decoded + l.hash);
           } else {
             // GitHub Pages sub-path - preserve original behavior
             window.history.replaceState(

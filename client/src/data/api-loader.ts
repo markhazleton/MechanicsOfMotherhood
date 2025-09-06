@@ -11,6 +11,18 @@ import type { Recipe, Category, Website, MenuItem, ApiData } from "./api-types";
 import { recipeNameToSlug, recipeSlugToSearchTerm } from "../utils/slugify";
 
 /**
+ * Normalize slug for comparison (handle edge cases with special characters)
+ */
+function normalizeSlugForComparison(slug: string): string {
+  return slug
+    .toLowerCase()
+    .replace(/--+/g, "-") // Multiple hyphens → single hyphen
+    .replace(/[()]/g, "") // Remove parentheses
+    .replace(/:/g, "") // Remove colons
+    .replace(/^-|-$/g, ""); // Trim leading/trailing hyphens
+}
+
+/**
  * Check if we have fetched data available
  */
 export function hasApiData(): boolean {
@@ -41,6 +53,7 @@ export function getRecipeById(id: number): Recipe | undefined {
  */
 export function getRecipeBySlug(slug: string): Recipe | undefined {
   const recipes = getRecipes();
+  const normalizedInputSlug = normalizeSlugForComparison(slug);
 
   // First try exact match with API's recipeURL (remove leading /recipe/ if present)
   const targetPath = slug.startsWith("recipe/")
@@ -50,8 +63,23 @@ export function getRecipeBySlug(slug: string): Recipe | undefined {
 
   // If no exact match with recipeURL, try generated slug from name
   if (!recipe) {
-    const searchTerm = recipeSlugToSearchTerm(slug);
-    recipe = recipes.find((recipe) => recipeNameToSlug(recipe.name) === slug);
+    recipe = recipes.find((recipe) => {
+      const recipeSlug = recipeNameToSlug(recipe.name);
+      return normalizeSlugForComparison(recipeSlug) === normalizedInputSlug;
+    });
+  }
+
+  // If no match with normalized comparison, try API recipeURL normalization
+  if (!recipe) {
+    recipe = recipes.find((recipe) => {
+      if (recipe.recipeURL) {
+        const match = recipe.recipeURL.match(/\/recipe\/(.+)$/);
+        if (match && match[1]) {
+          return normalizeSlugForComparison(match[1]) === normalizedInputSlug;
+        }
+      }
+      return false;
+    });
   }
 
   // If still no exact match, try fuzzy search

@@ -15,19 +15,38 @@
         l.hostname === "www.mechanicsofmotherhood.com";
 
       if (isCustomDomain) {
-        // Custom domain - redirect directly without sub-path
+        // Custom domain - redirect with proper SPA format and enhanced character escaping
         l.replace(
           l.protocol +
             "//" +
             l.hostname +
             (l.port ? ":" + l.port : "") +
-            "/?" +
-            l.pathname.slice(1) +
-            (l.search ? "&" + l.search.slice(1) : "") +
+            "/?/" +
+            l.pathname
+              .slice(1)
+              .replace(/&/g, "~and~")
+              .replace(/\(/g, "~lp~")
+              .replace(/\)/g, "~rp~")
+              .replace(/:/g, "~colon~")
+              .replace(/%/g, "~percent~")
+              .replace(/\+/g, "~plus~")
+              .replace(/=/g, "~eq~") +
+            (l.search
+              ? "&" +
+                l.search
+                  .slice(1)
+                  .replace(/&/g, "~and~")
+                  .replace(/\(/g, "~lp~")
+                  .replace(/\)/g, "~rp~")
+                  .replace(/:/g, "~colon~")
+                  .replace(/%/g, "~percent~")
+                  .replace(/\+/g, "~plus~")
+                  .replace(/=/g, "~eq~")
+              : "") +
             l.hash
         );
       } else {
-        // GitHub Pages sub-path - use original logic
+        // GitHub Pages sub-path - use original logic with enhanced escaping
         var pathSegmentsToKeep = 1;
         l.replace(
           l.protocol +
@@ -44,8 +63,25 @@
               .split("/")
               .slice(pathSegmentsToKeep)
               .join("/")
-              .replace(/&/g, "~and~") +
-            (l.search ? "&" + l.search.slice(1).replace(/&/g, "~and~") : "") +
+              .replace(/&/g, "~and~")
+              .replace(/\(/g, "~lp~")
+              .replace(/\)/g, "~rp~")
+              .replace(/:/g, "~colon~")
+              .replace(/%/g, "~percent~")
+              .replace(/\+/g, "~plus~")
+              .replace(/=/g, "~eq~") +
+            (l.search
+              ? "&" +
+                l.search
+                  .slice(1)
+                  .replace(/&/g, "~and~")
+                  .replace(/\(/g, "~lp~")
+                  .replace(/\)/g, "~rp~")
+                  .replace(/:/g, "~colon~")
+                  .replace(/%/g, "~percent~")
+                  .replace(/\+/g, "~plus~")
+                  .replace(/=/g, "~eq~")
+              : "") +
             l.hash
         );
       }
