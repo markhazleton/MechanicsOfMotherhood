@@ -11,6 +11,7 @@ import {
   getRecipeStats,
   getWebsites,
   getMenuItemsByWebsite,
+  getApiData,
 } from "@/data/api-loader";
 
 // Static data query handler for client-side only operations
@@ -92,7 +93,6 @@ async function staticDataHandler(
         title: r.name,
         description: r.description || "",
         imageUrl: "/api/placeholder/600/400",
-        prepTime: r.prepTime ? `${r.prepTime} mins` : "15 mins",
         cookTime: r.cookTime ? `${r.cookTime} mins` : "30 mins",
         servings: r.servings || 4,
         difficulty: "Medium",
@@ -126,7 +126,6 @@ async function staticDataHandler(
       title: recipe.name,
       description: recipe.description || "",
       imageUrl: "/api/placeholder/600/400",
-      prepTime: "15 mins", // Default value since API doesn't provide prepTime
       cookTime: "30 mins", // Default value since API doesn't provide cookTime
       servings: recipe.servings || 4,
       difficulty: "Medium",
@@ -196,7 +195,6 @@ async function staticDataHandler(
         title: r.name,
         description: r.description || "",
         imageUrl: "/api/placeholder/600/400",
-        prepTime: r.prepTime ? `${r.prepTime} mins` : "15 mins",
         cookTime: r.cookTime ? `${r.cookTime} mins` : "30 mins",
         servings: r.servings || 4,
         difficulty: "Medium",
@@ -243,6 +241,12 @@ async function staticDataHandler(
       posts: [],
       pagination: createPagination(page, limit, 0),
     };
+  }
+
+  if (urlPath === "/api-data") {
+    // Return the complete API data structure for components that need it
+    const apiDataObj = getApiData();
+    return apiDataObj;
   }
 
   throw new Error(`Static data endpoint not implemented: ${urlPath}`);

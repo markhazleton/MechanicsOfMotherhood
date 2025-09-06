@@ -15,6 +15,19 @@ import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
 import type { Recipe, ApiData } from "@/data/api-types";
 import { nameToSlug, getCategorySlug } from "@/utils/slugify";
 
+interface RecipeResponse {
+  data: Recipe[];
+  message: string;
+  success: boolean;
+  pagination?: {
+    currentPage: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrevious: boolean;
+    total: number;
+  };
+}
+
 export default function CategoryRecipes() {
   const [, params] = useRoute("/recipes/category/:categorySlug");
   const categorySlug = params?.categorySlug;
@@ -34,21 +47,19 @@ export default function CategoryRecipes() {
   const categoryId = currentCategory?.id;
 
   // Get recipes for this category using RecipeSpark API
-  const { data: recipesData, isLoading } = useQuery<Recipe[]>({
+  const { data: recipesResponse, isLoading } = useQuery<RecipeResponse>({
     queryKey: [`/api/recipespark/recipes?categoryId=${categoryId}&pageNumber=${page}&pageSize=12`],
     enabled: !!categoryId,
   });
 
-  const recipes = recipesData || [];
-  // Since API returns simple array, create basic pagination info
+  const recipes = recipesResponse?.data || [];
   const totalRecipes = recipes.length;
-  const pagination = {
-    page: 1,
-    pageSize: totalRecipes,
-    total: totalRecipes,
+  const pagination = recipesResponse?.pagination || {
+    currentPage: 1,
     totalPages: 1,
     hasNext: false,
     hasPrevious: false,
+    total: totalRecipes,
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -220,7 +231,7 @@ export default function CategoryRecipes() {
                     Previous
                   </Button>
                   <span className="text-tool-gray">
-                    Page {pagination.page} of {pagination.totalPages}
+                    Page {pagination.currentPage} of {pagination.totalPages}
                   </span>
                   <Button
                     variant="outline"

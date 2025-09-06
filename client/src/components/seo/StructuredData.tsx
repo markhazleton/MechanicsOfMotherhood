@@ -66,8 +66,7 @@ export function generateRecipeStructuredData({ recipe, url, imageUrl }: RecipeSt
     "recipeCategory": recipe.recipeCategory?.name || "Main Course",
     "recipeCuisine": "American", // Default cuisine, could be made dynamic
     "recipeYield": recipe.servings?.toString() || "4",
-    "prepTime": "PT30M", // Default 30 minutes, could be made dynamic
-    "cookTime": "PT30M", // Default 30 minutes, could be made dynamic
+    "cookTime": "PT1H", // Default 1 hour, could be made dynamic
     "totalTime": "PT1H", // Default 1 hour, could be made dynamic
     "keywords": keywords,
     "recipeIngredient": ingredients,

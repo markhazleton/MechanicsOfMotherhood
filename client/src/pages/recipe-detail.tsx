@@ -1,6 +1,6 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { Clock, Users, Star, ChefHat, ArrowLeft, BookOpen, Timer } from "lucide-react";
+import { Clock, Users, Star, ChefHat, ArrowLeft, BookOpen } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner";
@@ -19,8 +19,7 @@ import {
   generateRecipeKeywords, 
   generateRecipeImageUrl,
   generateCanonicalUrl,
-  generateBreadcrumbs,
-  estimateCookingTimes
+  generateBreadcrumbs
 } from "@/utils/seo-helpers";
 import { generateRecipeStructuredData } from "@/components/seo/StructuredData";
 import type { Recipe } from "@/data/api-types";
@@ -99,7 +98,6 @@ export default function RecipeDetail() {
     url: currentUrl,
     imageUrl: recipeImageUrl
   });
-  const cookingTimes = estimateCookingTimes(recipe);
 
   return (
     <div className="min-h-screen bg-light-gray">
@@ -165,14 +163,9 @@ export default function RecipeDetail() {
               
               <div className="flex flex-wrap items-center gap-6 text-white/90">
                 <div className="flex items-center">
-                  <Timer className="w-5 h-5 mr-2" />
-                  <span className="font-semibold">Prep:</span>
-                  <span className="ml-1">30min</span>
-                </div>
-                <div className="flex items-center">
                   <Clock className="w-5 h-5 mr-2" />
-                  <span className="font-semibold">Cook:</span>
-                  <span className="ml-1">30min</span>
+                  <span className="font-semibold">Total Time:</span>
+                  <span className="ml-1">{totalTime}min</span>
                 </div>
                 <div className="flex items-center">
                   <Users className="w-5 h-5 mr-2" />

@@ -15,6 +15,13 @@ export default function Categories() {
   });
 
   const categories = apiData?.categories || [];
+  const recipes = apiData?.recipes || [];
+
+  // Calculate recipe counts for each category
+  const categoriesWithCounts = categories.map(category => ({
+    ...category,
+    recipeCount: recipes.filter(recipe => recipe.recipeCategoryID === category.id).length
+  }));
 
   if (isLoading) {
     return (
@@ -50,7 +57,7 @@ export default function Categories() {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {categories.map((category: any) => {
+            {categoriesWithCounts.map((category: any) => {
               const slug = getCategorySlug(category.name);
               return (
                 <Link
@@ -73,7 +80,7 @@ export default function Categories() {
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
                         <Badge className="bg-energetic-orange text-white">
-                          Recipes Available
+                          {category.recipeCount} Recipe{category.recipeCount !== 1 ? 's' : ''}
                         </Badge>
                         <ArrowRight size={16} className="text-tool-gray" />
                       </div>
@@ -85,7 +92,7 @@ export default function Categories() {
           </div>
 
           {/* Empty State */}
-          {categories.length === 0 && (
+          {categoriesWithCounts.length === 0 && (
             <div className="text-center py-12">
               <ChefHat size={64} className="mx-auto text-tool-gray mb-4" />
               <h3 className="text-xl font-bold text-industrial-blue mb-2">

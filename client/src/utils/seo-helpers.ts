@@ -206,12 +206,12 @@ export function estimateCookingTimes(recipe: Recipe) {
 
   switch (difficulty) {
     case "Easy":
-      return { prepTime: "PT15M", cookTime: "PT20M", totalTime: "PT35M" };
+      return { cookTime: "PT35M", totalTime: "PT35M" };
     case "Medium":
-      return { prepTime: "PT30M", cookTime: "PT45M", totalTime: "PT1H15M" };
+      return { cookTime: "PT1H15M", totalTime: "PT1H15M" };
     case "Hard":
-      return { prepTime: "PT45M", cookTime: "PT1H30M", totalTime: "PT2H15M" };
+      return { cookTime: "PT2H15M", totalTime: "PT2H15M" };
     default:
-      return { prepTime: "PT30M", cookTime: "PT30M", totalTime: "PT1H" };
+      return { cookTime: "PT1H", totalTime: "PT1H" };
   }
 }

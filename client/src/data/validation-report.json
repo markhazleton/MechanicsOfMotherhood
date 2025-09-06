@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-09-06T14:03:21.897Z",
+  "timestamp": "2025-09-06T16:06:51.699Z",
   "validation": {
     "errors": [],
     "warnings": [],
@@ -43,7 +43,7 @@
     "webCmsApi": "https://webspark.markhazleton.com/api/WebCMS"
   },
   "fetchMetadata": {
-    "fetchedAt": "2025-09-06T14:03:21.888Z",
+    "fetchedAt": "2025-09-06T16:06:51.690Z",
     "totalRecipes": 108,
     "totalCategories": 14,
     "totalWebsites": 1,
