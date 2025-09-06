@@ -78,8 +78,20 @@
             .join("?");
 
           if (isCustomDomain) {
-            // Custom domain - use root path, remove leading slash from decoded
-            window.history.replaceState(null, null, decoded + l.hash);
+            // Custom domain - ensure leading slash so path is absolute
+            // Previous implementation omitted leading slash which could create a relative URL during the
+            // initial redirect hydration window, occasionally triggering a transient DOM NotFoundError
+            // in React's head management (Helmet) on first paint. This resolves that race.
+            var absolutePath = decoded.startsWith("/")
+              ? decoded
+              : "/" + decoded;
+            try {
+              window.history.replaceState(null, null, absolutePath + l.hash);
+            } catch (e) {
+              // Fail silently; better to proceed than throw inside bootstrap.
+              // eslint-disable-next-line no-console
+              console.warn("History replace failed", e);
+            }
           } else {
             // GitHub Pages sub-path - preserve original behavior
             window.history.replaceState(

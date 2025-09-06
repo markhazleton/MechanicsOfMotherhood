@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "npm run fetch-data && vite build && node scripts/inject-build-version.js",
+    "build": "npm run clean && npm run build:github && npm run prerender",
+    "build:prerender": "npm run prerender",
     "build:static": "vite build && node scripts/inject-build-version.js",
     "build:with-data": "npm run fetch-data && npm run build:static",
     "build:seo": "npm run generate:sitemap && npm run build",
@@ -25,6 +26,7 @@
     "seo:build": "npm run generate:sitemap && npm run build",
     "seo:validate": "echo 'SEO validation tools would run here - check lighthouse, structured data testing, etc.'",
     "deploy:check": "npm run check && npm run validate-data && npm run build:github && npm run preview:github",
+    "prerender": "node scripts/prerender.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui"

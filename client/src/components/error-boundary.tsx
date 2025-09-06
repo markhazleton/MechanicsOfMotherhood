@@ -10,6 +10,7 @@ interface Props {
 interface State {
   hasError: boolean;
   error?: Error;
+  transient?: boolean;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
@@ -34,6 +35,19 @@ export class ErrorBoundary extends Component<Props, State> {
       // Placeholder for production logging integration
       // navigator.sendBeacon('/__log', JSON.stringify({ error: error.message, stack: error.stack, errorId }));
     }
+
+    // Heuristic: Certain deep-link hydration races (notably history.replaceState timing) can surface
+    // a transient DOMException named 'NotFoundError'. In that case, attempt a single silent retry
+    // instead of showing the full error UI, as a refresh normally succeeds. We schedule a microtask
+    // to clear the error state if no new errors have appeared.
+    if ((error as any).name === 'NotFoundError') {
+      queueMicrotask(() => {
+        // Only reset if we're still showing this exact error
+        if (this.state.error === error) {
+            this.setState({ hasError: false, error: undefined, transient: false });
+        }
+      });
+    }
   }
 
   handleReset = () => {
@@ -42,9 +56,14 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      if (this.props.fallback) {
-        return this.props.fallback;
+      if (this.state.transient) {
+        return (
+          <div className="min-h-screen flex items-center justify-center text-sm text-gray-500">
+            <div>Recovering…</div>
+          </div>
+        );
       }
+      if (this.props.fallback) return this.props.fallback;
 
       return (
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex items-center justify-center">

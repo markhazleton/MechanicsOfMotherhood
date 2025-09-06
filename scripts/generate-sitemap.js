@@ -92,33 +92,45 @@ function generateSitemap() {
     });
   });
   
-  // Recipe pages
+  // Recipe pages (fallback to derived slug if recipeURL missing)
   recipes.forEach(recipe => {
-    if (recipe.name && recipe.recipeURL) {
-      const slug = recipe.recipeURL.replace('/recipe/', '');
-      urls.push({
-        loc: `${SITE_URL}/recipe/${slug}`,
-        lastmod: formatDate(recipe.modifiedDT || recipe.lastViewDT),
-        changefreq: 'monthly',
-        priority: '0.8'
-      });
+    if (!recipe || !recipe.name) return;
+    let slug = '';
+    if (recipe.recipeURL && recipe.recipeURL.startsWith('/recipe/')) {
+      slug = recipe.recipeURL.replace('/recipe/', '').replace(/\/$/, '');
+    } else {
+      slug = nameToSlug(recipe.name);
     }
+    if (!slug) return;
+    urls.push({
+      loc: `${SITE_URL}/recipe/${slug}`,
+      lastmod: formatDate(recipe.modifiedDT || recipe.lastViewDT),
+      changefreq: 'monthly',
+      priority: '0.8'
+    });
   });
   
-  // Category pages
+  // Category pages (normalize provided url if present)
   categories.forEach(category => {
-    if (category.name && category.isActive) {
-      const slug = nameToSlug(category.name);
-      urls.push({
-        loc: `${SITE_URL}/recipes/category/${slug}`,
-        lastmod: new Date().toISOString().split('T')[0],
-        changefreq: 'weekly',
-        priority: '0.7'
-      });
-    }
+    if (!category || !category.name || !category.isActive) return;
+    let raw = category.url || `/recipes/category/${nameToSlug(category.name)}`;
+    raw = raw.replace(/https?:\/\/[^/]+/, '');
+    const normalized = raw.startsWith('/') ? raw : '/' + raw;
+    urls.push({
+      loc: `${SITE_URL}${normalized}`,
+      lastmod: new Date().toISOString().split('T')[0],
+      changefreq: 'weekly',
+      priority: '0.7'
+    });
   });
-  
-  return urls;
+
+  // De-duplicate URLs
+  const seen = new Set();
+  return urls.filter(u => {
+    if (seen.has(u.loc)) return false;
+    seen.add(u.loc);
+    return true;
+  });
 }
 
 // Generate XML sitemap

@@ -3,91 +3,59 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mechanics of Motherhood</title>
-    <script>
-      // GitHub Pages SPA redirect
-      // https://github.com/rafgraph/spa-github-pages
-      // Modified to handle both custom domain and GitHub Pages sub-path deployments
-
-      var l = window.location;
-      var isCustomDomain =
-        l.hostname === "mechanicsofmotherhood.com" ||
-        l.hostname === "www.mechanicsofmotherhood.com";
-
-      if (isCustomDomain) {
-        // Custom domain - redirect with proper SPA format and enhanced character escaping
-        l.replace(
-          l.protocol +
-            "//" +
-            l.hostname +
-            (l.port ? ":" + l.port : "") +
-            "/?/" +
-            l.pathname
-              .slice(1)
-              .replace(/&/g, "~and~")
-              .replace(/\(/g, "~lp~")
-              .replace(/\)/g, "~rp~")
-              .replace(/:/g, "~colon~")
-              .replace(/%/g, "~percent~")
-              .replace(/\+/g, "~plus~")
-              .replace(/=/g, "~eq~") +
-            (l.search
-              ? "&" +
-                l.search
-                  .slice(1)
-                  .replace(/&/g, "~and~")
-                  .replace(/\(/g, "~lp~")
-                  .replace(/\)/g, "~rp~")
-                  .replace(/:/g, "~colon~")
-                  .replace(/%/g, "~percent~")
-                  .replace(/\+/g, "~plus~")
-                  .replace(/=/g, "~eq~")
-              : "") +
-            l.hash
-        );
-      } else {
-        // GitHub Pages sub-path - use original logic with enhanced escaping
-        var pathSegmentsToKeep = 1;
-        l.replace(
-          l.protocol +
-            "//" +
-            l.hostname +
-            (l.port ? ":" + l.port : "") +
-            l.pathname
-              .split("/")
-              .slice(0, 1 + pathSegmentsToKeep)
-              .join("/") +
-            "/?/" +
-            l.pathname
-              .slice(1)
-              .split("/")
-              .slice(pathSegmentsToKeep)
-              .join("/")
-              .replace(/&/g, "~and~")
-              .replace(/\(/g, "~lp~")
-              .replace(/\)/g, "~rp~")
-              .replace(/:/g, "~colon~")
-              .replace(/%/g, "~percent~")
-              .replace(/\+/g, "~plus~")
-              .replace(/=/g, "~eq~") +
-            (l.search
-              ? "&" +
-                l.search
-                  .slice(1)
-                  .replace(/&/g, "~and~")
-                  .replace(/\(/g, "~lp~")
-                  .replace(/\)/g, "~rp~")
-                  .replace(/:/g, "~colon~")
-                  .replace(/%/g, "~percent~")
-                  .replace(/\+/g, "~plus~")
-                  .replace(/=/g, "~eq~")
-              : "") +
-            l.hash
-        );
+    <title>Page Not Found - Mechanics of Motherhood</title>
+    <meta name="robots" content="noindex" />
+    <style>
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        margin: 0;
+        display: flex;
+        min-height: 100vh;
+        align-items: center;
+        justify-content: center;
+        background: #f8fafc;
+        color: #334;
       }
+      .wrap {
+        max-width: 480px;
+        padding: 2rem;
+        text-align: center;
+      }
+      a {
+        color: #0d6ea9;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .hint {
+        font-size: 0.75rem;
+        color: #667;
+        margin-top: 2rem;
+      }
+    </style>
+    <script>
+      (function () {
+        var path = window.location.pathname;
+        var knownPattern =
+          /^(\/recipe\/|\/recipes\/category\/|\/recipes$|\/categories$|\/$)/.test(
+            path
+          );
+        if (knownPattern) {
+          // If this was supposed to be prerendered but isn't present (maybe cache race), go to root for hydration
+          window.location.replace("/");
+        }
+      })();
     </script>
   </head>
   <body>
-    <p>Redirecting...</p>
+    <div class="wrap">
+      <h1>404 - Page Not Found</h1>
+      <p>The page you requested was not found.</p>
+      <p><a href="/">Return to Home</a></p>
+      <p class="hint">
+        If you followed an old link, the content may have moved.
+      </p>
+    </div>
   </body>
 </html>
