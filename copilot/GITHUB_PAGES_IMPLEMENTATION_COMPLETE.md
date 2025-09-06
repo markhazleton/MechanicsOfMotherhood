@@ -140,7 +140,7 @@ The Mechanics of Motherhood website has been successfully prepared and optimized
 1. **Push to main branch** triggers automatic deployment
 2. **Build job** runs with validation and optimization
 3. **Deploy job** publishes to GitHub Pages (main branch only)
-4. **Site available** at `https://[username].github.io/MechanicsOfMotherhood/`
+4. **Site available** at `https://markhazleton.github.io/MechanicsOfMotherhood/`
 
 ## 📚 Documentation Created
 

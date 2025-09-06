@@ -1,12 +1,12 @@
 # Mechanics of Motherhood (MoM) - Recipe Management Platform
 
-[![Deploy to GitHub Pages](https://github.com/sharesmallbiz-support/MechanicsOfMotherhood/actions/workflows/deploy.yml/badge.svg)](https://github.com/sharesmallbiz-support/MechanicsOfMotherhood/actions/workflows/deploy.yml)
+[![Deploy to GitHub Pages](https://github.com/markhazleton/MechanicsOfMotherhood/actions/workflows/deploy.yml/badge.svg)](https://github.com/markhazleton/MechanicsOfMotherhood/actions/workflows/deploy.yml)
 
 ## 🚀 Live Site
 
 **Primary Domain**: <https://mechanicsofmotherhood.com>
 
-**GitHub Pages Fallback** (legacy path – used only if custom domain DNS not active): <https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/>
+**GitHub Pages Fallback** (legacy path – used only if custom domain DNS not active): <https://markhazleton.github.io/MechanicsOfMotherhood/>
 
 The site auto-detects the custom domain at build/runtime (via `CNAME`) and serves assets from the root path when on `mechanicsofmotherhood.com`.
 
@@ -65,7 +65,7 @@ Mechanics of Motherhood (MoM) is a modern, responsive recipe management web appl
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/sharesmallbiz-support/MechanicsOfMotherhood.git
+   git clone https://github.com/markhazleton/MechanicsOfMotherhood.git
    cd MechanicsOfMotherhood
    ```
 
@@ -218,14 +218,14 @@ VITE_API_URL= (leave empty for static mode)
    - WEBCMS_API_BASE: `https://webspark.markhazleton.com/api/WebCMS/WebCMSApi`
    - WEBCMS_AUTH_TOKEN: (secret token if available)
 4. **Push to `main` branch** - deployment is automatic via GitHub Actions
-5. **Site will be available** at your custom domain (if CNAME + DNS configured) or fallback `https://[your-username].github.io/MechanicsOfMotherhood/`
+5. **Site will be available** at your custom domain (if CNAME + DNS configured) or fallback `https://markhazleton.github.io/MechanicsOfMotherhood/`
 
 #### Custom Domain Setup Summary
 
 1. Add `CNAME` file (already present) containing apex and optional www.
 2. Configure DNS (Cloudflare or registrar):
    - A records (apex) → GitHub Pages IPs: 185.199.108.153 / 185.199.109.153 / 185.199.110.153 / 185.199.111.153
-   - CNAME `www` → `<username>.github.io`
+   - CNAME `www` → `markhazleton.github.io`
 3. Enable custom domain in GitHub Pages settings and enforce HTTPS after certificate issuance.
 4. (Optional) Add `VITE_CUSTOM_DOMAIN` repository variable to make sitemap builds explicit (the build already infers from CNAME if not set).
 
@@ -358,4 +358,6 @@ For questions, issues, or contributions, please:
 
 ---
 
-**Built with ❤️ for working mothers everywhere** 👩‍💻👶
+**Built with ❤️ for working mothers everywhere by [Mark Hazleton](https://markhazleton.com)** 👩‍💻👶
+
+*Developed by Mark Hazleton • [markhazleton.com](https://markhazleton.com) • [GitHub](https://github.com/markhazleton)*

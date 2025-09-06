@@ -4,7 +4,9 @@ A modern recipe management platform designed for working mothers.
 
 ## Live Demo
 
-Visit the live demo: [https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/](https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/)
+**🌐 Primary Site**: [https://mechanicsofmotherhood.com](https://mechanicsofmotherhood.com)
+
+**📱 GitHub Pages Fallback**: [https://markhazleton.github.io/MechanicsOfMotherhood/](https://markhazleton.github.io/MechanicsOfMotherhood/)
 
 ## Features
 
@@ -25,10 +27,10 @@ Visit the live demo: [https://sharesmallbiz-support.github.io/MechanicsOfMotherh
 
 ## Technology Stack
 
-- React 18 + TypeScript
+- React 19 + TypeScript
 - Vite for build tooling
 - Tailwind CSS + Shadcn/ui
 - TanStack React Query
 - Wouter for routing
 
-Built with ❤️ for working mothers everywhere.
+Built with ❤️ for working mothers everywhere by [Mark Hazleton](https://markhazleton.com).

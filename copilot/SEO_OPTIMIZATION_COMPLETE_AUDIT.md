@@ -42,7 +42,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/sitemap.xml
+Sitemap: https://mechanicsofmotherhood.com/sitemap.xml
 
 # Disallow build artifacts and admin paths (if any)
 Disallow: /assets/
@@ -54,7 +54,7 @@ Disallow: /404.html
 
 **Priority URLs:**
 
-- Homepage: `https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/`
+- Homepage: `https://mechanicsofmotherhood.com/`
 - Recipe listings: `/recipes`
 - Category pages: `/recipes/category/{slug}`
 - Individual recipes: `/recipe/{slug}`

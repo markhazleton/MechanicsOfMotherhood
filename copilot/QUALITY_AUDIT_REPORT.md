@@ -4,7 +4,7 @@
 
 *Date: August 17, 2025*  
 *Audited by: Expert Solutions Architect*  
-*Repository: sharesmallbiz-support/MechanicsOfMotherhood*
+*Repository: markhazleton/MechanicsOfMotherhood*
 
 ## Executive Summary
 
