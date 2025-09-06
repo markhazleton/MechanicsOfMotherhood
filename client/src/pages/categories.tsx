@@ -3,6 +3,8 @@ import { Link } from "wouter";
 import { ArrowRight, ChefHat } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
+import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
+import { generateBreadcrumbs } from "@/utils/seo-helpers";
 import LoadingSpinner from "@/components/loading-spinner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +25,8 @@ export default function Categories() {
     recipeCount: recipes.filter(recipe => recipe.recipeCategoryID === category.id).length
   }));
 
+  const breadcrumbs = generateBreadcrumbs('/categories');
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-light-gray">
@@ -38,9 +42,15 @@ export default function Categories() {
   return (
     <div className="min-h-screen bg-light-gray">
       <Navigation />
+      {/* Breadcrumb Navigation */}
+      <div className="bg-white border-b border-medium-gray">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <BreadcrumbNav items={breadcrumbs} />
+        </div>
+      </div>
       
-      {/* Header */}
-      <section className="bg-white py-12 border-b border-medium-gray">
+  {/* Header */}
+  <section className="bg-white py-12 border-b border-medium-gray">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="font-mechanical text-4xl font-bold text-industrial-blue mb-4">

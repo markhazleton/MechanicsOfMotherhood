@@ -2,13 +2,22 @@ import { Clock } from "lucide-react";
 import { Link } from "wouter";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
+import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
+import { generateBreadcrumbs } from "@/utils/seo-helpers";
 
 export default function Blog() {
+  const breadcrumbs = generateBreadcrumbs('/blog');
   return (
     <div className="min-h-screen bg-light-gray">
       <Navigation />
+      {/* Breadcrumb Navigation */}
+      <div className="bg-white border-b border-medium-gray">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <BreadcrumbNav items={breadcrumbs} />
+        </div>
+      </div>
       
-      {/* Header */}
+  {/* Header */}
       <section className="bg-gradient-to-r from-industrial-blue to-workshop-teal text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="font-mechanical text-4xl md:text-5xl font-bold mb-4">

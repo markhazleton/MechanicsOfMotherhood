@@ -64,6 +64,34 @@ const ANALYTICS_CONFIG = {
   },
 };
 
+// Build version helper (meta tag produced at build time)
+function getBuildMeta() {
+  if (typeof document === "undefined")
+    return {} as { build_version?: string; build_time?: string };
+  const meta = document.querySelector(
+    'meta[name="app-build"]'
+  ) as HTMLMetaElement | null;
+  if (!meta?.content) return {};
+  const content = meta.content;
+  // Content format: ISO-TIMESTAMP-HASH (our injector concatenates with final dash+hash)
+  const lastDash = content.lastIndexOf("-");
+  let buildTime = content;
+  let hash = "";
+  if (lastDash > 0) {
+    buildTime = content.substring(0, lastDash);
+    hash = content.substring(lastDash + 1);
+  }
+  return {
+    build_version: hash || content,
+    build_time: buildTime,
+  };
+}
+
+// Merge build meta into event payload
+function withBuildMeta<T extends Record<string, any>>(data: T): T {
+  return { ...data, ...getBuildMeta() };
+}
+
 /**
  * Initialize Google Analytics Enhanced Features
  */
@@ -122,7 +150,7 @@ export function trackPageView(
     }
   }
 
-  window.gtag("event", ANALYTICS_EVENTS.PAGE_VIEW, pageViewData);
+  window.gtag("event", ANALYTICS_EVENTS.PAGE_VIEW, withBuildMeta(pageViewData));
 }
 
 /**
@@ -158,7 +186,7 @@ export function trackRecipeInteraction(
     ...additionalData,
   };
 
-  window.gtag("event", action, eventData);
+  window.gtag("event", action, withBuildMeta(eventData));
 }
 
 /**
@@ -177,22 +205,26 @@ export function trackRecipeView(recipeData: {
   if (typeof window === "undefined" || !window.gtag) return;
 
   // Enhanced ecommerce item view
-  window.gtag("event", "view_item", {
-    currency: "USD",
-    value: 1.0, // Assign value for engagement tracking
-    items: [
-      {
-        item_id: recipeData.id.toString(),
-        item_name: recipeData.name,
-        item_category: recipeData.category || "Recipe",
-        ...(recipeData.difficulty
-          ? { item_category2: recipeData.difficulty }
-          : {}),
-        price: 1.0,
-        quantity: 1,
-      },
-    ],
-  });
+  window.gtag(
+    "event",
+    "view_item",
+    withBuildMeta({
+      currency: "USD",
+      value: 1.0, // Assign value for engagement tracking
+      items: [
+        {
+          item_id: recipeData.id.toString(),
+          item_name: recipeData.name,
+          item_category: recipeData.category || "Recipe",
+          ...(recipeData.difficulty
+            ? { item_category2: recipeData.difficulty }
+            : {}),
+          price: 1.0,
+          quantity: 1,
+        },
+      ],
+    })
+  );
 
   // Custom recipe view event
   trackRecipeInteraction(ANALYTICS_EVENTS.RECIPE_VIEW, recipeData, {
@@ -210,12 +242,16 @@ export function trackSearch(
 ): void {
   if (typeof window === "undefined" || !window.gtag) return;
 
-  window.gtag("event", ANALYTICS_EVENTS.SEARCH_PERFORMED, {
-    search_term: searchTerm,
-    search_type: searchType,
-    results_count: resultsCount,
-    engagement_value: resultsCount > 0 ? "high" : "low",
-  });
+  window.gtag(
+    "event",
+    ANALYTICS_EVENTS.SEARCH_PERFORMED,
+    withBuildMeta({
+      search_term: searchTerm,
+      search_type: searchType,
+      results_count: resultsCount,
+      engagement_value: resultsCount > 0 ? "high" : "low",
+    })
+  );
 }
 
 /**
@@ -228,19 +264,27 @@ export function trackCategoryView(
 ): void {
   if (typeof window === "undefined" || !window.gtag) return;
 
-  window.gtag("event", ANALYTICS_EVENTS.RECIPE_CATEGORY_VIEW, {
-    category_name: categoryName,
-    category_slug: categorySlug,
-    category_recipe_count: recipeCount,
-    engagement_type: "category_exploration",
-  });
+  window.gtag(
+    "event",
+    ANALYTICS_EVENTS.RECIPE_CATEGORY_VIEW,
+    withBuildMeta({
+      category_name: categoryName,
+      category_slug: categorySlug,
+      category_recipe_count: recipeCount,
+      engagement_type: "category_exploration",
+    })
+  );
 
   // Enhanced ecommerce category view
-  window.gtag("event", "view_item_list", {
-    item_list_id: categorySlug,
-    item_list_name: categoryName,
-    items: [], // Would be populated with actual recipe items
-  });
+  window.gtag(
+    "event",
+    "view_item_list",
+    withBuildMeta({
+      item_list_id: categorySlug,
+      item_list_name: categoryName,
+      items: [], // Would be populated with actual recipe items
+    })
+  );
 }
 
 /**
@@ -253,12 +297,16 @@ export function trackButtonClick(
 ): void {
   if (typeof window === "undefined" || !window.gtag) return;
 
-  window.gtag("event", ANALYTICS_EVENTS.BUTTON_CLICK, {
-    button_name: buttonName,
-    button_context: buttonContext,
-    click_location: window.location.pathname,
-    ...additionalData,
-  });
+  window.gtag(
+    "event",
+    ANALYTICS_EVENTS.BUTTON_CLICK,
+    withBuildMeta({
+      button_name: buttonName,
+      button_context: buttonContext,
+      click_location: window.location.pathname,
+      ...additionalData,
+    })
+  );
 }
 
 /**
@@ -271,13 +319,18 @@ export function trackNavigationClick(
 ): void {
   if (typeof window === "undefined" || !window.gtag) return;
 
-  window.gtag("event", ANALYTICS_EVENTS.NAVIGATION_CLICK, {
-    link_text: linkText,
-    link_url: linkUrl,
-    navigation_section: navigationSection,
-    outbound:
-      linkUrl.startsWith("http") && !linkUrl.includes(window.location.hostname),
-  });
+  window.gtag(
+    "event",
+    ANALYTICS_EVENTS.NAVIGATION_CLICK,
+    withBuildMeta({
+      link_text: linkText,
+      link_url: linkUrl,
+      navigation_section: navigationSection,
+      outbound:
+        linkUrl.startsWith("http") &&
+        !linkUrl.includes(window.location.hostname),
+    })
+  );
 }
 
 /**
@@ -289,12 +342,16 @@ export function trackEngagementMilestone(
 ): void {
   if (typeof window === "undefined" || !window.gtag) return;
 
-  window.gtag("event", ANALYTICS_EVENTS.CONTENT_ENGAGEMENT, {
-    engagement_type: milestoneType,
-    engagement_value: milestoneValue,
-    page_path: window.location.pathname,
-    timestamp: new Date().toISOString(),
-  });
+  window.gtag(
+    "event",
+    ANALYTICS_EVENTS.CONTENT_ENGAGEMENT,
+    withBuildMeta({
+      engagement_type: milestoneType,
+      engagement_value: milestoneValue,
+      page_path: window.location.pathname,
+      timestamp: new Date().toISOString(),
+    })
+  );
 }
 
 /**
@@ -308,14 +365,18 @@ export function trackRecipeCompletion(recipeData: {
 }): void {
   if (typeof window === "undefined" || !window.gtag) return;
 
-  window.gtag("event", ANALYTICS_EVENTS.RECIPE_COMPLETE_VIEW, {
-    recipe_id: recipeData.id.toString(),
-    recipe_name: recipeData.name,
-    time_spent: recipeData.timeSpent,
-    sections_viewed: recipeData.sectionsViewed.join(","),
-    completion_rate: (recipeData.sectionsViewed.length / 4) * 100, // Assuming 4 main sections
-    value: 5.0, // Higher value for completed views
-  });
+  window.gtag(
+    "event",
+    ANALYTICS_EVENTS.RECIPE_COMPLETE_VIEW,
+    withBuildMeta({
+      recipe_id: recipeData.id.toString(),
+      recipe_name: recipeData.name,
+      time_spent: recipeData.timeSpent,
+      sections_viewed: recipeData.sectionsViewed.join(","),
+      completion_rate: (recipeData.sectionsViewed.length / 4) * 100, // Assuming 4 main sections
+      value: 5.0, // Higher value for completed views
+    })
+  );
 }
 
 /**
@@ -327,11 +388,15 @@ export function trackFormSubmission(
 ): void {
   if (typeof window === "undefined" || !window.gtag) return;
 
-  window.gtag("event", ANALYTICS_EVENTS.FORM_SUBMIT, {
-    form_name: formName,
-    form_location: window.location.pathname,
-    ...formData,
-  });
+  window.gtag(
+    "event",
+    ANALYTICS_EVENTS.FORM_SUBMIT,
+    withBuildMeta({
+      form_name: formName,
+      form_location: window.location.pathname,
+      ...formData,
+    })
+  );
 }
 
 /**
@@ -346,12 +411,16 @@ export function trackConversion(
 ): void {
   if (typeof window === "undefined" || !window.gtag) return;
 
-  window.gtag("event", "conversion", {
-    conversion_type: conversionType,
-    conversion_value: conversionValue,
-    currency: "USD",
-    value: conversionValue,
-  });
+  window.gtag(
+    "event",
+    "conversion",
+    withBuildMeta({
+      conversion_type: conversionType,
+      conversion_value: conversionValue,
+      currency: "USD",
+      value: conversionValue,
+    })
+  );
 }
 
 /**

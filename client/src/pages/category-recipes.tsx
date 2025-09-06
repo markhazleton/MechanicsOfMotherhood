@@ -4,6 +4,8 @@ import { useRoute, Link } from "wouter";
 import { Search, ArrowLeft, Users, Star, ArrowRight } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
+import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
+import { generateBreadcrumbs } from "@/utils/seo-helpers";
 import LoadingSpinner from "@/components/loading-spinner";
 import MarkdownContent from "@/components/markdown-content";
 import { Input } from "@/components/ui/input";
@@ -104,6 +106,11 @@ export default function CategoryRecipes() {
     return (
       <div className="min-h-screen bg-light-gray">
         <Navigation />
+        <div className="bg-white border-b border-medium-gray">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <BreadcrumbNav items={generateBreadcrumbs('/categories')} />
+          </div>
+        </div>
         <section className="bg-white py-12 border-b border-medium-gray">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center py-12">
@@ -137,6 +144,12 @@ export default function CategoryRecipes() {
   return (
     <div className="min-h-screen bg-light-gray">
       <Navigation />
+      {/* Breadcrumb Navigation */}
+      <div className="bg-white border-b border-medium-gray">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <BreadcrumbNav items={generateBreadcrumbs(`/recipes/category/${categorySlug}`, undefined, currentCategory?.name)} />
+        </div>
+      </div>
       
       {/* Header */}
       <section className="bg-white py-12 border-b border-medium-gray">

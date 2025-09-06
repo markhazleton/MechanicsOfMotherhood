@@ -1,9 +1,39 @@
 import { Settings, Utensils, Facebook, Instagram, Youtube } from "lucide-react";
+import { useEffect, useState } from 'react';
 import { Link } from "wouter";
 import logoIcon from "@/assets/MOM-Logo-Icon.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const [buildInfo, setBuildInfo] = useState<{hash:string; date:string} | null>(null);
+
+  useEffect(() => {
+    // Read meta tag first (fast path)
+    const meta = document.querySelector('meta[name="app-build"]') as HTMLMetaElement | null;
+    if (meta?.content) {
+      const parts = meta.content.split('-');
+      if (parts.length > 1) {
+        const iso = parts.slice(0, parts.length - 1).join('-');
+        const last = parts[parts.length - 1] || '';
+        const shortHash = last.slice(0,10);
+        const parsedDate = new Date(iso);
+        setBuildInfo({ hash: shortHash, date: isNaN(parsedDate.getTime()) ? iso : parsedDate.toLocaleString() });
+      }
+      return;
+    }
+    // Fallback: attempt fetch of build-version.json (non-blocking)
+    fetch('/build-version.json', { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.hash || data?.buildTime) {
+          setBuildInfo({
+            hash: (data.hash || '').slice(0,10),
+            date: data.buildTime ? new Date(data.buildTime).toLocaleString() : ''
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <footer className="bg-industrial-blue text-white py-16">
@@ -153,10 +183,15 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-300 text-sm mb-4 md:mb-0" data-testid="copyright-text">
             © {currentYear} Mechanics of Motherhood. All rights reserved.
           </p>
+          {buildInfo && (
+            <div className="text-xs text-gray-400 font-mono" data-testid="build-info">
+              build {buildInfo.hash} • {buildInfo.date}
+            </div>
+          )}
           <div className="flex space-x-6 text-sm">
             <a href="#" className="text-gray-300 hover:text-white transition-colors" data-testid="footer-link-privacy">
               Privacy Policy

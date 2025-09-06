@@ -3,7 +3,8 @@ import { Link } from 'wouter';
 
 interface BreadcrumbItem {
   name: string;
-  href?: string;
+  href?: string; // preferred
+  url?: string;  // legacy support
 }
 
 interface BreadcrumbProps {
@@ -27,6 +28,8 @@ export default function BreadcrumbNav({ items, className = '' }: BreadcrumbProps
         {allItems.map((item, index) => {
           const isLast = index === allItems.length - 1;
           const isHome = index === 0;
+          // Support legacy "url" property to avoid undefined href
+          const target = item.href ?? item.url ?? '#';
 
           return (
             <li key={index} className="flex items-center">
@@ -47,7 +50,7 @@ export default function BreadcrumbNav({ items, className = '' }: BreadcrumbProps
                 </span>
               ) : (
                 <Link 
-                  href={item.href!}
+                  href={target}
                   className="flex items-center hover:text-workshop-teal transition-colors truncate max-w-[150px]"
                   title={item.name}
                 >

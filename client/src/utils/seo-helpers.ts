@@ -1,4 +1,5 @@
 import type { Recipe } from "@/data/api-types";
+import { getCategorySlug } from "@/utils/slugify";
 
 /**
  * SEO utility functions for the Mechanics of Motherhood website
@@ -118,30 +119,36 @@ export function generateBreadcrumbs(
   recipe?: Recipe,
   categoryName?: string
 ) {
-  const breadcrumbs: Array<{ name: string; url: string }> = [];
+  // Standard breadcrumb contract used by BreadcrumbNav: { name, href }
+  const breadcrumbs: Array<{ name: string; href: string }> = [];
 
   if (path.includes("/recipes/category/")) {
-    breadcrumbs.push({ name: "Recipe Manual", url: "/recipes" });
+    breadcrumbs.push({ name: "Recipe Manual", href: "/recipes" });
     if (categoryName) {
-      breadcrumbs.push({ name: categoryName, url: path });
+      breadcrumbs.push({ name: categoryName, href: path });
     }
   } else if (path.includes("/recipe/")) {
-    breadcrumbs.push({ name: "Recipe Manual", url: "/recipes" });
+    breadcrumbs.push({ name: "Recipe Manual", href: "/recipes" });
     if (recipe?.recipeCategory?.name) {
+      const categorySlug = getCategorySlug(recipe.recipeCategory.name);
       breadcrumbs.push({
         name: recipe.recipeCategory.name,
-        url: `/recipes/category/${recipe.recipeCategory.name
-          .toLowerCase()
-          .replace(/\s+/g, "-")}`,
+        href: `/recipes/category/${categorySlug}`,
       });
     }
     if (recipe?.name) {
-      breadcrumbs.push({ name: recipe.name, url: path });
+      breadcrumbs.push({ name: recipe.name, href: path });
     }
   } else if (path === "/recipes") {
-    breadcrumbs.push({ name: "Recipe Manual", url: "/recipes" });
+    breadcrumbs.push({ name: "Recipe Manual", href: "/recipes" });
+  } else if (path === "/categories") {
+    breadcrumbs.push({ name: "Categories", href: "/categories" });
   } else if (path === "/blog") {
-    breadcrumbs.push({ name: "Maintenance Log", url: "/blog" });
+    breadcrumbs.push({ name: "Maintenance Log", href: "/blog" });
+  } else if (path === "/") {
+    // Home gets no additional crumb beyond Workshop (added in component)
+  } else if (path === "/404" || path === "*") {
+    breadcrumbs.push({ name: "Not Found", href: path });
   }
 
   return breadcrumbs;
