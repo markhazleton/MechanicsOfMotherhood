@@ -62,7 +62,7 @@ function writeHtml(
   dehydratedState: any
 ) {
   // Sanitize the route path for filesystem compatibility (remove invalid characters)
-  const sanitizedRoutePath = routePath.replace(/[<>:"|?*]/g, '-');
+  const sanitizedRoutePath = routePath.replace(/[<>:"|?*]/g, "-");
   const outDir = path.join(distRoot, sanitizedRoutePath);
   mkdirSync(outDir, { recursive: true });
   const stateJson = escapeJson(JSON.stringify(dehydratedState));
@@ -94,7 +94,7 @@ async function run() {
     if (r.recipeURL && r.recipeURL.startsWith("/recipe/")) {
       slug = r.recipeURL.replace("/recipe/", "").replace(/\/$/, "");
       // Sanitize slug to remove invalid filesystem characters
-      slug = slug.replace(/[<>:"|?*]/g, '-');
+      slug = slug.replace(/[<>:"|?*]/g, "-");
     }
     routes.add("/recipe/" + slug);
   });
