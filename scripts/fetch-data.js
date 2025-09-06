@@ -300,6 +300,18 @@ export interface ApiData {
 }
 
 /**
+ * Sanitize recipe URL for filesystem compatibility
+ */
+function sanitizeRecipeUrl(url) {
+  if (!url) return url;
+  
+  // Remove invalid filesystem characters: < > : " | ? * and parentheses
+  return url.replace(/[<>:"|?*()[\]]/g, '-')
+           .replace(/-+/g, '-')  // Replace multiple dashes with single dash
+           .replace(/^-|-$/g, ''); // Remove leading/trailing dashes
+}
+
+/**
  * Apply automatic data quality fixes
  */
 function applyDataQualityFixes(data, validationResult) {
@@ -420,11 +432,25 @@ async function main() {
   
   try {
     // Fetch all data in parallel where possible
-    const [recipes, categories, websites] = await Promise.all([
+    const [rawRecipes, categories, websites] = await Promise.all([
       fetchAllRecipes(),
       fetchAllCategories(),
       fetchWebsites()
     ]);
+    
+    // Sanitize recipe URLs to prevent filesystem issues
+    const recipes = rawRecipes.map(recipe => {
+      if (recipe.recipeURL) {
+        const originalUrl = recipe.recipeURL;
+        recipe.recipeURL = sanitizeRecipeUrl(originalUrl);
+        
+        // Log if we made changes
+        if (originalUrl !== recipe.recipeURL) {
+          console.log(`🔧 Sanitized recipe URL: "${recipe.name}" from "${originalUrl}" to "${recipe.recipeURL}"`);
+        }
+      }
+      return recipe;
+    });
     
     // Extract menu items from website data instead of separate API calls
     const menuItems = {};
@@ -458,7 +484,7 @@ async function main() {
     
     // Prepare combined data
     const combinedData = {
-      recipes,
+      recipes, // Using sanitized recipes array
       categories,
       websites,
       menuItems,

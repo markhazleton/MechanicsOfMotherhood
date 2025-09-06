@@ -157,7 +157,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mechanicsofmotherhood.com/recipe/crock-pot-bbq-boston-butt-(pork)</loc>
+    <loc>https://mechanicsofmotherhood.com/recipe/crock-pot-bbq-boston-butt-pork</loc>
     <lastmod>2022-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -211,7 +211,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mechanicsofmotherhood.com/recipe/grilled-bratwurst---peppers</loc>
+    <loc>https://mechanicsofmotherhood.com/recipe/grilled-bratwurst-peppers</loc>
     <lastmod>2024-09-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -445,7 +445,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mechanicsofmotherhood.com/recipe/sassy-pork-roast-w--white-beans</loc>
+    <loc>https://mechanicsofmotherhood.com/recipe/sassy-pork-roast-w-white-beans</loc>
     <lastmod>2022-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -541,7 +541,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mechanicsofmotherhood.com/recipe/sprouts---squash</loc>
+    <loc>https://mechanicsofmotherhood.com/recipe/sprouts-squash</loc>
     <lastmod>2022-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -631,7 +631,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mechanicsofmotherhood.com/recipe/viking-white-lady:-a-nordic-twist-on-a-classic</loc>
+    <loc>https://mechanicsofmotherhood.com/recipe/viking-white-lady-a-nordic-twist-on-a-classic</loc>
     <lastmod>2025-02-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -676,84 +676,84 @@
     <loc>https://mechanicsofmotherhood.com/recipes/category/appetizer</loc>
     <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://mechanicsofmotherhood.com/recipes/category/bread</loc>
     <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://mechanicsofmotherhood.com/recipes/category/breakfast</loc>
     <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://mechanicsofmotherhood.com/recipes/category/dessert</loc>
     <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://mechanicsofmotherhood.com/recipes/category/dips</loc>
     <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://mechanicsofmotherhood.com/recipes/category/drink</loc>
     <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://mechanicsofmotherhood.com/recipes/category/main-course</loc>
     <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://mechanicsofmotherhood.com/recipes/category/quick-meals</loc>
     <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://mechanicsofmotherhood.com/recipes/category/salad</loc>
     <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://mechanicsofmotherhood.com/recipes/category/sauce</loc>
     <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://mechanicsofmotherhood.com/recipes/category/side-dishes</loc>
     <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://mechanicsofmotherhood.com/recipes/category/slow-cooker</loc>
     <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://mechanicsofmotherhood.com/recipes/category/soup</loc>
     <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://mechanicsofmotherhood.com/recipes/category/vegetable</loc>
     <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
   </url>
 </urlset>

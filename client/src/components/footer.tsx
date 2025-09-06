@@ -1,7 +1,7 @@
 import { Settings, Utensils, Facebook, Instagram, Youtube } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { Link } from "wouter";
-import logoIcon from "@/assets/MOM-Logo-Icon.png";
+const logoIcon = "/images/logos/MOM-Logo-Icon.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();

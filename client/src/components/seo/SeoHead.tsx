@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import * as HelmetAsync from 'react-helmet-async';
 
 interface SeoHeadProps {
   title?: string;
@@ -55,7 +55,7 @@ export default function SeoHead({
     || (runtimeOrigin && runtimePath ? `${runtimeOrigin}${runtimePath}` : 'https://mechanicsofmotherhood.com/');
 
   return (
-    <Helmet>
+  <HelmetAsync.Helmet>
       {/* Basic Meta Tags */}
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
@@ -106,6 +106,6 @@ export default function SeoHead({
       {/* DNS Prefetch for external resources */}
       <link rel="dns-prefetch" href="//fonts.googleapis.com" />
       <link rel="dns-prefetch" href="//fonts.gstatic.com" />
-    </Helmet>
+  </HelmetAsync.Helmet>
   );
 }

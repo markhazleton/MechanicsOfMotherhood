@@ -15,6 +15,8 @@ const cnamePath = path.join(publicDir, "CNAME");
 const hasCnameFile = fs.existsSync(cnamePath);
 const hasCustomDomain = !!process.env.VITE_CUSTOM_DOMAIN || hasCnameFile;
 
+const isSSR = process.argv.includes("--ssr");
+
 export default defineConfig({
   plugins: [react(), tailwind()],
   resolve: {
@@ -34,40 +36,37 @@ export default defineConfig({
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
     sourcemap: false, // Disable sourcemaps in production for GitHub Pages
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          // Core React functionality
-          "vendor-react": ["react", "react-dom"],
-
-          // Routing
-          "vendor-router": ["wouter"],
-
-          // State management
-          "vendor-query": ["@tanstack/react-query"],
-
-          // UI libraries - split into smaller chunks
-          "ui-radix-core": ["@radix-ui/react-slot", "@radix-ui/react-tooltip"],
-          "ui-radix-overlay": [
-            "@radix-ui/react-dialog",
-            "@radix-ui/react-toast",
-          ],
-          "ui-radix-layout": ["@radix-ui/react-separator"],
-
-          // Heavy dependencies split separately
-          "vendor-markdown": ["react-markdown"],
-          "vendor-helmet": ["react-helmet-async"],
-          "vendor-icons": ["lucide-react"],
-
-          // Styling utilities
-          "utils-style": ["clsx", "tailwind-merge", "class-variance-authority"],
+    rollupOptions: isSSR
+      ? {}
+      : {
+          output: {
+            manualChunks: {
+              "vendor-react": ["react", "react-dom"],
+              "vendor-router": ["wouter"],
+              "vendor-query": ["@tanstack/react-query"],
+              "ui-radix-core": [
+                "@radix-ui/react-slot",
+                "@radix-ui/react-tooltip",
+              ],
+              "ui-radix-overlay": [
+                "@radix-ui/react-dialog",
+                "@radix-ui/react-toast",
+              ],
+              "ui-radix-layout": ["@radix-ui/react-separator"],
+              "vendor-markdown": ["react-markdown"],
+              "vendor-helmet": ["react-helmet-async"],
+              "vendor-icons": ["lucide-react"],
+              "utils-style": [
+                "clsx",
+                "tailwind-merge",
+                "class-variance-authority",
+              ],
+            },
+            chunkFileNames: "assets/[name]-[hash].js",
+            entryFileNames: "assets/[name]-[hash].js",
+            assetFileNames: "assets/[name]-[hash].[ext]",
+          },
         },
-        // Optimize chunk file naming
-        chunkFileNames: "assets/[name]-[hash].js",
-        entryFileNames: "assets/[name]-[hash].js",
-        assetFileNames: "assets/[name]-[hash].[ext]",
-      },
-    },
     // Optimize build performance
     minify: "esbuild",
     target: "esnext",
@@ -85,6 +84,9 @@ export default defineConfig({
   preview: {
     port: 4173,
     host: true,
+  },
+  ssr: {
+    noExternal: ["react-helmet-async"],
   },
   test: {
     globals: true,

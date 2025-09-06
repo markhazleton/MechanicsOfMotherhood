@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import logoIcon from "@/assets/MOM-Logo-Icon.png";
+const logoIcon = "/images/logos/MOM-Logo-Icon.png";
 
 export default function Navigation() {
   const [location] = useLocation();

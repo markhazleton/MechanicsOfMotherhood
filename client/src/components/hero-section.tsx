@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Settings, Utensils, Play, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LoadingSpinner from "./loading-spinner";
-import logoIcon from "@/assets/MOM-Logo-Icon.png";
+const logoIcon = "/images/logos/MOM-Logo-Icon.png";
 import apiData from "@/data/api-data.json";
 
 export default function HeroSection() {
