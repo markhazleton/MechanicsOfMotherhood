@@ -17,9 +17,9 @@ Mechanics of Motherhood (MoM) is a modern, responsive recipe management web appl
 ### ✨ Recent Achievements (August–September 2025)
 
 - **🎯 Single Recipe Detail View**: Added comprehensive recipe detail pages with ingredients, instructions, nutrition info, and sharing capabilities
--- **🔗 Real API Integration**: Successfully connected to live RecipeSpark API at webspark.markhazleton.com with 100+ real recipes
+- **🔗 Real API Integration**: Successfully connected to live RecipeSpark API at webspark.markhazleton.com with 100+ real recipes
 - **📊 Dynamic Data Fetching**: Built automated system to fetch and cache real recipe data during build process
--- **�️ Custom Domain & Pages**: Now hosted at `mechanicsofmotherhood.com` with GitHub Pages fallback
+- **🌐 Custom Domain & Pages**: Now hosted at `mechanicsofmotherhood.com` with GitHub Pages fallback
 - **🔄 Hybrid Architecture**: Seamlessly switches between real API data and mock data based on availability
 - **🎨 Enhanced UI/UX**: Improved navigation, better responsive design, and industrial theme consistency
 - **⚡ Performance Optimized**: Fast loading times with efficient caching and pre-fetched data
@@ -28,7 +28,7 @@ Mechanics of Motherhood (MoM) is a modern, responsive recipe management web appl
 
 ### Frontend Stack
 
-- **Framework**: React 18 with TypeScript for type safety
+- **Framework**: React 19 with TypeScript for type safety
 - **Build Tool**: Vite for lightning-fast development and optimized production builds
 - **Routing**: Wouter for lightweight client-side routing
 - **State Management**: TanStack React Query for server state management and caching
@@ -144,7 +144,7 @@ Mechanics of Motherhood (MoM) is a modern, responsive recipe management web appl
 
 ### Project Structure
 
-```
+```text
 MechanicsOfMotherhood/
 ├── client/                 # Frontend React application
 │   ├── src/
