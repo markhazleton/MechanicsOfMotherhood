@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Clock, Users, TrendingUp, Star, ArrowRight, Settings } from "lucide-react";
+import { Users, TrendingUp, Star, ArrowRight, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,14 +29,8 @@ export default function FeaturedRecipes() {
   const categories = categoriesData || [];
   const recipes = featuredContent || [];
 
-  const getDifficultyIcon = (difficulty: string) => {
-    switch (difficulty) {
-      case "easy": return <TrendingUp size={14} />;
-      case "medium": return <TrendingUp size={14} />;
-      case "hard": return <TrendingUp size={14} />;
-      default: return <TrendingUp size={14} />;
-    }
-  };
+  // Difficulty removed – not supplied by API. Retained helper placeholder if reinstated later.
+  const getDifficultyIcon = () => <TrendingUp size={14} className="opacity-0" />; // visually nothing
 
   const getCategoryColor = (categoryName: string) => {
     return "#38B2AC"; // Default teal color since API doesn't have color field
@@ -78,7 +72,6 @@ export default function FeaturedRecipes() {
               data-testid={`category-button-${category.name.toLowerCase().replace(/\s+/g, '-')}`}
               onClick={() => navigate(`/recipes/category/${getCategorySlug(category.name)}`)}
             >
-              <Clock size={16} className="mr-2" />
               {category.name}
             </Button>
           ))}
@@ -94,17 +87,10 @@ export default function FeaturedRecipes() {
                 className="w-full h-48 object-cover"
               />
               <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <Badge
-                    className="text-white px-3 py-1 rounded-full text-sm font-medium"
-                    style={{ backgroundColor: getCategoryColor(recipe.recipeCategory?.name || "General") }}
-                  >
-                    <Clock size={14} className="mr-1" />
-                    60 MIN
-                  </Badge>
-                  <div className="flex items-center text-energetic-orange">
+                <div className="flex items-center justify-end mb-3">
+                  <div className="flex items-center text-energetic-orange" aria-label="Recipe rating">
                     <Star size={14} fill="currentColor" />
-                    <span className="ml-1 text-sm font-semibold">{recipe.averageRating || 5}</span>
+                    <span className="ml-1 text-sm font-semibold">{recipe.averageRating ?? '–'}</span>
                   </div>
                 </div>
                 <h3 className="font-bold text-xl mb-2 text-industrial-blue" data-testid={`recipe-title-${recipe.id}`}>
@@ -118,14 +104,10 @@ export default function FeaturedRecipes() {
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4 text-sm text-tool-gray">
+                  <div className="flex items-center text-sm text-tool-gray">
                     <span className="flex items-center">
                       <Users size={14} className="mr-1" />
-                      {recipe.servings || 4} servings
-                    </span>
-                    <span className="flex items-center">
-                      {getDifficultyIcon("easy")}
-                      <span className="ml-1 capitalize">easy</span>
+                      {recipe.servings ?? '–'}{recipe.servings ? ' servings' : ''}
                     </span>
                   </div>
                   <Link href={getRecipeUrl(recipe)}>

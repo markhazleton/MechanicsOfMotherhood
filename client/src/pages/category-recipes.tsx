@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
-import { Search, ArrowLeft, Clock, Users, Star, ArrowRight } from "lucide-react";
+import { Search, ArrowLeft, Users, Star, ArrowRight } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner";
@@ -196,14 +196,10 @@ export default function CategoryRecipes() {
                       className="w-full h-40 object-cover"
                     />
                     <CardContent className="p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <Badge className="bg-workshop-teal text-white text-xs">
-                          <Clock size={12} className="mr-1" />
-                          45min {/* Default total time since API doesn't provide prepTime/cookTime */}
-                        </Badge>
-                        <div className="flex items-center text-energetic-orange">
+                      <div className="flex items-center justify-end mb-2">
+                        <div className="flex items-center text-energetic-orange" aria-label="Recipe rating">
                           <Star size={12} fill="currentColor" />
-                          <span className="ml-1 text-xs">{recipe.averageRating || 5}</span>
+                          <span className="ml-1 text-xs">{recipe.averageRating ?? '–'}</span>
                         </div>
                       </div>
                       <h3 className="font-bold text-lg mb-2 text-industrial-blue line-clamp-2">

@@ -54,8 +54,7 @@ export function useAnalytics() {
         id: recipe.id,
         name: recipe.name,
         category: recipe.recipeCategory?.name,
-        difficulty: "easy", // Default since not in API
-        prepTime: 30, // Default prep time since not in API
+        // difficulty & prepTime removed: not in API
         servings: recipe.servings || 0,
         rating: recipe.averageRating || 0,
         description: recipe.description,
@@ -134,8 +133,7 @@ export function useAnalytics() {
           id: recipe.id,
           name: recipe.name,
           category: recipe.recipeCategory?.name,
-          difficulty: "easy",
-          prepTime: 30, // Default since not in API
+          // Removed synthetic difficulty & prepTime
           servings: recipe.servings || 0,
           rating: recipe.averageRating || 0,
         },

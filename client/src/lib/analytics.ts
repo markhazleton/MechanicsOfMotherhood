@@ -147,8 +147,12 @@ export function trackRecipeInteraction(
     recipe_id: recipeData.id.toString(),
     recipe_name: recipeData.name,
     recipe_category: recipeData.category || "unknown",
-    recipe_difficulty: recipeData.difficulty || "unknown",
-    recipe_prep_time: recipeData.prepTime || 0,
+    ...(recipeData.difficulty
+      ? { recipe_difficulty: recipeData.difficulty }
+      : {}),
+    ...(typeof recipeData.prepTime === "number"
+      ? { recipe_prep_time: recipeData.prepTime }
+      : {}),
     recipe_servings: recipeData.servings || 0,
     recipe_rating: recipeData.rating || 0,
     ...additionalData,
@@ -181,7 +185,9 @@ export function trackRecipeView(recipeData: {
         item_id: recipeData.id.toString(),
         item_name: recipeData.name,
         item_category: recipeData.category || "Recipe",
-        item_category2: recipeData.difficulty || "Unknown",
+        ...(recipeData.difficulty
+          ? { item_category2: recipeData.difficulty }
+          : {}),
         price: 1.0,
         quantity: 1,
       },

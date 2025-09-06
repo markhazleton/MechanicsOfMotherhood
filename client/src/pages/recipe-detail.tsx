@@ -1,6 +1,6 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { Clock, Users, Star, ChefHat, ArrowLeft, BookOpen } from "lucide-react";
+import { Users, Star, ChefHat, ArrowLeft, BookOpen } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner";
@@ -97,12 +97,7 @@ export default function RecipeDetail() {
     );
   }
 
-  const totalTime = 60; // Default total time since API doesn't have prepTime/cookTime
-  const difficultyColors: Record<string, string> = {
-    easy: "bg-green-100 text-green-800",
-    medium: "bg-yellow-100 text-yellow-800",
-    hard: "bg-red-100 text-red-800"
-  };
+  // Removed synthetic time & difficulty (no API fields). Could be reintroduced when backend supports them.
 
   // Parse ingredients and instructions from API strings and format as HTML
   const ingredientsHtml = recipe?.ingredients ? formatIngredientsAsHtml(recipe.ingredients) : '';
@@ -174,10 +169,7 @@ export default function RecipeDetail() {
                 <Badge className="bg-workshop-teal text-white">
                   {recipe?.recipeCategory?.name || "Recipe"}
                 </Badge>
-                <Badge className={`${difficultyColors["easy"]}`}>
-                  <ChefHat className="w-3 h-3 mr-1" />
-                  Easy
-                </Badge>
+                {/* Difficulty removed: no source field in API */}
               </div>
               
               <h1 className="font-mechanical text-4xl md:text-5xl font-bold mb-6">
@@ -185,11 +177,6 @@ export default function RecipeDetail() {
               </h1>
               
               <div className="flex flex-wrap items-center gap-6 text-white/90">
-                <div className="flex items-center">
-                  <Clock className="w-5 h-5 mr-2" />
-                  <span className="font-semibold">Total Time:</span>
-                  <span className="ml-1">{totalTime}min</span>
-                </div>
                 <div className="flex items-center">
                   <Users className="w-5 h-5 mr-2" />
                   <span className="font-semibold">Serves:</span>
@@ -300,20 +287,7 @@ export default function RecipeDetail() {
                     </div>
                   )}
 
-                  {/* Quick Stats Card */}
-                  <div className="mt-6 pt-6 border-t border-medium-gray">
-                    <h4 className="font-semibold text-industrial-blue mb-3">Quick Stats</h4>
-                    <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div className="text-center p-3 bg-light-gray rounded-lg">
-                        <div className="font-bold text-workshop-teal">{totalTime}min</div>
-                        <div className="text-tool-gray">Total Time</div>
-                      </div>
-                      <div className="text-center p-3 bg-light-gray rounded-lg">
-                        <div className="font-bold text-energetic-orange">Easy</div>
-                        <div className="text-tool-gray">Difficulty</div>
-                      </div>
-                    </div>
-                  </div>
+                  {/* Quick Stats removed: time & difficulty not provided by API */}
                 </CardContent>
               </Card>
             </div>

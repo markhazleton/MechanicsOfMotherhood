@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
-import { Search, Filter, Clock, Users, Star, ArrowRight } from "lucide-react";
+import { Search, Filter, Users, Star, ArrowRight } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner";
@@ -11,7 +11,6 @@ import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { getRecipes, getCategories, searchRecipes, getRecipeUrl } from "@/data/api-loader";
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
 import { generateCanonicalUrl, generateBreadcrumbs } from "@/utils/seo-helpers";
@@ -195,12 +194,8 @@ export default function Recipes() {
                       className="w-full h-40 object-cover"
                     />
                     <CardContent className="p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <Badge className="bg-workshop-teal text-white text-xs">
-                          <Clock size={12} className="mr-1" />
-                          60min
-                        </Badge>
-                        <div className="flex items-center text-energetic-orange">
+                      <div className="flex items-center justify-end mb-2">
+                        <div className="flex items-center text-energetic-orange" aria-label="Recipe rating">
                           <Star size={12} fill="currentColor" />
                           <span className="ml-1 text-xs">{recipe.averageRating || 5}</span>
                         </div>
