@@ -6,6 +6,10 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1"
     />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' https:; script-src 'self' https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com data:; img-src 'self' https: data:; connect-src 'self' https:; frame-ancestors 'self'; upgrade-insecure-requests"
+    />
     <title>Mechanics of Motherhood - Engineering Better Meals</title>
     <meta
       name="description"
@@ -19,19 +23,26 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- Google tag (gtag.js) -->
+    <!-- Google tag (deferred) -->
     <script
-      async
+      defer
       src="https://www.googletagmanager.com/gtag/js?id=G-M7TYR1V6KP"
     ></script>
     <script>
+      // Lazy-init GA after main thread idle to reduce hydration race potential
       window.dataLayer = window.dataLayer || [];
       function gtag() {
         dataLayer.push(arguments);
       }
-      gtag("js", new Date());
-
-      gtag("config", "G-M7TYR1V6KP");
+      function initGA() {
+        gtag("js", new Date());
+        gtag("config", "G-M7TYR1V6KP", { send_page_view: true });
+      }
+      if ("requestIdleCallback" in window) {
+        requestIdleCallback(initGA, { timeout: 3000 });
+      } else {
+        setTimeout(initGA, 1500);
+      }
     </script>
 
     <!-- Optimized Font Loading -->
@@ -51,61 +62,15 @@
         rel="stylesheet"
       />
     </noscript>
-    <!-- GitHub Pages SPA routing script -->
-    <script>
-      // Single Page Apps for GitHub Pages
-      // MIT License
-      // https://github.com/rafgraph/spa-github-pages
-      // Modified to handle both custom domain and GitHub Pages sub-path deployments
-      (function (l) {
-        if (l.search[1] === "/") {
-          var isCustomDomain =
-            l.hostname === "mechanicsofmotherhood.com" ||
-            l.hostname === "www.mechanicsofmotherhood.com";
-          var decoded = l.search
-            .slice(1)
-            .split("&")
-            .map(function (s) {
-              return s
-                .replace(/~and~/g, "&")
-                .replace(/~lp~/g, "(")
-                .replace(/~rp~/g, ")")
-                .replace(/~colon~/g, ":")
-                .replace(/~percent~/g, "%")
-                .replace(/~plus~/g, "+")
-                .replace(/~eq~/g, "=");
-            })
-            .join("?");
-
-          if (isCustomDomain) {
-            // Custom domain - ensure leading slash so path is absolute
-            // Previous implementation omitted leading slash which could create a relative URL during the
-            // initial redirect hydration window, occasionally triggering a transient DOM NotFoundError
-            // in React's head management (Helmet) on first paint. This resolves that race.
-            var absolutePath = decoded.startsWith("/")
-              ? decoded
-              : "/" + decoded;
-            try {
-              window.history.replaceState(null, null, absolutePath + l.hash);
-            } catch (e) {
-              // Fail silently; better to proceed than throw inside bootstrap.
-              // eslint-disable-next-line no-console
-              console.warn("History replace failed", e);
-            }
-          } else {
-            // GitHub Pages sub-path - preserve original behavior
-            window.history.replaceState(
-              null,
-              null,
-              l.pathname.slice(0, -1) + decoded + l.hash
-            );
-          }
-        }
-      })(window.location);
-    </script>
+    <!-- Removed legacy GitHub Pages SPA redirect script: prerendered static routes make it unnecessary -->
   </head>
   <body>
-    <div id="root"></div>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-black text-white px-4 py-2 rounded z-50"
+      >Skip to content</a
+    >
+    <div id="root" role="main" id="main"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

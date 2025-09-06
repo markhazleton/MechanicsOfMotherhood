@@ -24,7 +24,15 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
+    const isDomNotFound = (error as any).name === 'NotFoundError';
+    if (!isDomNotFound) {
+      console.error('Error caught by boundary:', error, errorInfo);
+    } else if (!this.state.hasError) {
+      // minimal log once in development for DOM race
+      if (!import.meta.env.PROD) {
+        console.warn('[transient-dom-race] NotFoundError suppressed');
+      }
+    }
     const errorId = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
     if (this.props.onErrorCapture) {
       try { this.props.onErrorCapture(error, errorInfo, errorId); } catch (e) {
@@ -40,11 +48,10 @@ export class ErrorBoundary extends Component<Props, State> {
     // a transient DOMException named 'NotFoundError'. In that case, attempt a single silent retry
     // instead of showing the full error UI, as a refresh normally succeeds. We schedule a microtask
     // to clear the error state if no new errors have appeared.
-    if ((error as any).name === 'NotFoundError') {
+    if (isDomNotFound) {
       queueMicrotask(() => {
-        // Only reset if we're still showing this exact error
         if (this.state.error === error) {
-            this.setState({ hasError: false, error: undefined, transient: false });
+          this.setState({ hasError: false, error: undefined, transient: false });
         }
       });
     }

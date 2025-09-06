@@ -17,7 +17,7 @@ export default function SeoHead({
   title = 'Mechanics of Motherhood - Engineering Better Meals',
   description = 'Engineering better meals for working mothers worldwide. Tested recipes, kitchen tools, and meal planning solutions.',
   keywords = [],
-  image = 'https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/images/logos/mom-og-image.png',
+  image = 'https://mechanicsofmotherhood.com/images/logos/mom-og-image.png',
   url,
   type = 'website',
   author,
@@ -43,13 +43,16 @@ export default function SeoHead({
 
   // Runtime canonical URL detection (custom domain or GitHub Pages)
   let runtimeOrigin: string | undefined;
+  let runtimePath: string | undefined;
   if (typeof window !== 'undefined') {
     try {
-      const { protocol, host } = window.location;
+      const { protocol, host, pathname } = window.location;
       runtimeOrigin = `${protocol}//${host}`;
+      runtimePath = pathname;
     } catch {/* ignore */}
   }
-  const canonical = url || (runtimeOrigin ? `${runtimeOrigin}${window.location.pathname}` : 'https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/');
+  const canonical = url
+    || (runtimeOrigin && runtimePath ? `${runtimeOrigin}${runtimePath}` : 'https://mechanicsofmotherhood.com/');
 
   return (
     <Helmet>

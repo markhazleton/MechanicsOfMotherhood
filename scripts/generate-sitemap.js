@@ -116,11 +116,12 @@ function generateSitemap() {
     let raw = category.url || `/recipes/category/${nameToSlug(category.name)}`;
     raw = raw.replace(/https?:\/\/[^/]+/, '');
     const normalized = raw.startsWith('/') ? raw : '/' + raw;
+    // TODO: when category objects include updated timestamp, replace with that value
     urls.push({
       loc: `${SITE_URL}${normalized}`,
       lastmod: new Date().toISOString().split('T')[0],
       changefreq: 'weekly',
-      priority: '0.7'
+      priority: '0.75'
     });
   });
 
