@@ -25,13 +25,12 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     const isDomNotFound = (error as any).name === 'NotFoundError';
+    // Suppress noisy React 19 DOM race errors (removeChild on detached node) that are non-fatal
     if (!isDomNotFound) {
       console.error('Error caught by boundary:', error, errorInfo);
-    } else if (!this.state.hasError) {
-      // minimal log once in development for DOM race
-      if (!import.meta.env.PROD) {
-        console.warn('[transient-dom-race] NotFoundError suppressed');
-      }
+    } else if (!import.meta.env.PROD) {
+      // Log once in development for awareness
+      console.warn('[suppressed] NotFoundError (likely hydration reconciliation race)');
     }
     const errorId = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
     if (this.props.onErrorCapture) {
@@ -43,18 +42,8 @@ export class ErrorBoundary extends Component<Props, State> {
       // Placeholder for production logging integration
       // navigator.sendBeacon('/__log', JSON.stringify({ error: error.message, stack: error.stack, errorId }));
     }
-
-    // Heuristic: Certain deep-link hydration races (notably history.replaceState timing) can surface
-    // a transient DOMException named 'NotFoundError'. In that case, attempt a single silent retry
-    // instead of showing the full error UI, as a refresh normally succeeds. We schedule a microtask
-    // to clear the error state if no new errors have appeared.
-    if (isDomNotFound) {
-      queueMicrotask(() => {
-        if (this.state.error === error) {
-          this.setState({ hasError: false, error: undefined, transient: false });
-        }
-      });
-    }
+    // For NotFoundError we avoid setting error state to prevent UI swap & loop
+    if (isDomNotFound) return;
   }
 
   handleReset = () => {

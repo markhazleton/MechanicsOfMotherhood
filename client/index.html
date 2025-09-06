@@ -8,7 +8,7 @@
     />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self' https:; script-src 'self' https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com data:; img-src 'self' https: data:; connect-src 'self' https:; frame-ancestors 'self'; upgrade-insecure-requests"
+      content="default-src 'self' https:; script-src 'self' https://www.googletagmanager.com https://static.cloudflareinsights.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data:; connect-src 'self' https:; upgrade-insecure-requests"
     />
     <title>Mechanics of Motherhood - Engineering Better Meals</title>
     <meta
@@ -66,11 +66,12 @@
   </head>
   <body>
     <a
-      href="#main"
+      href="#root"
       class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-black text-white px-4 py-2 rounded z-50"
       >Skip to content</a
     >
-    <div id="root" role="main" id="main"></div>
+    <!-- Root mount point (single id attribute to avoid hydration anomalies) -->
+    <div id="root" role="main"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
