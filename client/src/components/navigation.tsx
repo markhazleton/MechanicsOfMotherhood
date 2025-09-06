@@ -4,16 +4,23 @@ import { Settings, Utensils, Search, Home, BookOpen, Wrench, UserCheck, Menu, X 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import logoIcon from "@/assets/MOM-Logo-Icon.png";
 
 export default function Navigation() {
   const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const analytics = useAnalytics();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      analytics.trackSearch(searchQuery, 0, 'global');
+      analytics.trackFormSubmit('navigation_search', {
+        search_term: searchQuery,
+        current_page: location
+      });
       // TODO: Implement search functionality
       console.log("Search query:", searchQuery);
     }

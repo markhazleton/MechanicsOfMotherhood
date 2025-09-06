@@ -14,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { getRecipeBySlug } from "@/data/api-loader";
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
 import { formatIngredientsAsHtml, formatInstructionsAsHtml } from "@/utils/markdown-helpers";
+import { useRecipeAnalytics } from "@/hooks/useAnalytics";
 import { 
   generateRecipeDescription, 
   generateRecipeKeywords, 
@@ -38,6 +39,28 @@ export default function RecipeDetail() {
     },
     enabled: !!slug,
   });
+
+  // Initialize analytics for this recipe
+  const analytics = useRecipeAnalytics(recipe);
+
+  // Track recipe completion when user scrolls or navigates away
+  const handleBackClick = () => {
+    analytics.completeView();
+    analytics.trackButtonClick('back_to_recipes', 'recipe_detail', {
+      recipe_id: recipe?.id,
+      recipe_name: recipe?.name
+    });
+    navigate("/recipes");
+  };
+
+  // Analytics event handlers for recipe sections
+  const handleIngredientsView = () => {
+    analytics.trackIngredientView();
+  };
+
+  const handleInstructionsView = () => {
+    analytics.trackInstructionView();
+  };
 
   if (isLoading) {
     return (
@@ -138,7 +161,7 @@ export default function RecipeDetail() {
         <div className="absolute inset-0 flex items-end">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 w-full">
             <Button
-              onClick={() => navigate("/recipes")}
+              onClick={handleBackClick}
               variant="secondary"
               className="mb-6 bg-white/90 hover:bg-white text-industrial-blue"
             >
@@ -210,7 +233,7 @@ export default function RecipeDetail() {
                     Ingredients
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent onMouseEnter={handleIngredientsView}>
                   <div className="space-y-3">
                     {ingredientsHtml ? (
                       <div 
@@ -304,7 +327,7 @@ export default function RecipeDetail() {
                     Instructions
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent onMouseEnter={handleInstructionsView}>
                   <div className="space-y-6">
                     {instructionsHtml ? (
                       <div 

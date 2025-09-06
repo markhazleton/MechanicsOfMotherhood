@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { getRecipes, getCategories, searchRecipes, getRecipeUrl } from "@/data/api-loader";
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
 import { generateCanonicalUrl, generateBreadcrumbs } from "@/utils/seo-helpers";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import type { Recipe } from "@/data/api-types";
 
 export default function Recipes() {
@@ -22,6 +23,9 @@ export default function Recipes() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSearch, setActiveSearch] = useState("");
   const [, navigate] = useLocation();
+  
+  // Initialize analytics
+  const analytics = useAnalytics();
 
   // Use API loader for recipes and categories
   const { data: allRecipes, isLoading: recipesLoading } = useQuery<Recipe[]>({
@@ -51,6 +55,11 @@ export default function Recipes() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setActiveSearch(searchQuery);
+    
+    // Track search event
+    if (searchQuery.trim()) {
+      analytics.trackSearch(searchQuery, filteredRecipes.length, 'global');
+    }
   };
 
   // SEO data
@@ -215,7 +224,14 @@ export default function Recipes() {
                           variant="ghost"
                           size="sm"
                           className="text-energetic-orange hover:text-red-600 p-0 h-auto"
-                          onClick={() => navigate(getRecipeUrl(recipe))}
+                          onClick={() => {
+                            analytics.trackButtonClick('view_recipe', 'recipes_grid', {
+                              recipe_id: recipe.id,
+                              recipe_name: recipe.name,
+                              recipe_category: recipe.recipeCategory?.name
+                            });
+                            navigate(getRecipeUrl(recipe));
+                          }}
                           data-testid={`view-recipe-${recipe.id}`}
                         >
                           <ArrowRight size={14} className="mr-1" />

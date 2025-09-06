@@ -9,10 +9,12 @@ import { Link, useLocation } from "wouter";
 import { getFeaturedRecipes, getCategories, getRecipeUrl } from "@/data/api-loader";
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
 import { getCategorySlug } from "@/utils/slugify";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import type { Recipe, Category } from "@/data/api-types";
 
 export default function FeaturedRecipes() {
   const [, navigate] = useLocation();
+  const analytics = useAnalytics();
 
   const { data: featuredContent, isLoading } = useQuery({
     queryKey: ["featured-recipes"],
@@ -131,6 +133,13 @@ export default function FeaturedRecipes() {
                       variant="ghost"
                       size="sm"
                       className="text-energetic-orange hover:text-red-600 font-semibold"
+                      onClick={() => {
+                        analytics.trackButtonClick('build_recipe', 'featured_recipes', {
+                          recipe_id: recipe.id,
+                          recipe_name: recipe.name,
+                          recipe_category: recipe.recipeCategory?.name
+                        });
+                      }}
                       data-testid={`button-build-recipe-${recipe.id}`}
                     >
                       <ArrowRight size={16} className="mr-1" />
@@ -149,7 +158,12 @@ export default function FeaturedRecipes() {
             size="lg"
             className="gear-border bg-white hover:bg-gray-50 text-tool-gray px-8 py-4 rounded-xl font-semibold text-lg transition-all"
             data-testid="button-browse-workshop-manual"
-            onClick={() => navigate("/recipes")}
+            onClick={() => {
+              analytics.trackButtonClick('browse_full_manual', 'featured_recipes', {
+                source: 'homepage'
+              });
+              navigate("/recipes");
+            }}
           >
             <Settings className="mr-2" size={20} />
             Browse Full Workshop Manual

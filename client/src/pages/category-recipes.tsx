@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import { Search, ArrowLeft, Clock, Users, Star, ArrowRight } from "lucide-react";
@@ -12,6 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getRecipesByCategory, getCategoryBySlug, getRecipeUrl } from "@/data/api-loader";
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import type { Recipe, ApiData } from "@/data/api-types";
 import { nameToSlug, getCategorySlug } from "@/utils/slugify";
 
@@ -33,6 +34,9 @@ export default function CategoryRecipes() {
   const categorySlug = params?.categorySlug;
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  
+  // Initialize analytics
+  const analytics = useAnalytics();
 
   // Get category details
   const { data: apiData } = useQuery<ApiData>({
@@ -64,9 +68,24 @@ export default function CategoryRecipes() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    // Track category search
+    if (searchQuery.trim()) {
+      analytics.trackSearch(searchQuery, recipes.length, 'category');
+    }
     // TODO: Implement search functionality
     console.log("Search:", searchQuery);
   };
+
+  // Track category view when data loads
+  useEffect(() => {
+    if (currentCategory && !isLoading) {
+      analytics.trackCategoryView(
+        currentCategory.name,
+        categorySlug || '',
+        totalRecipes
+      );
+    }
+  }, [currentCategory, isLoading, analytics, categorySlug, totalRecipes]);
 
   if (isLoading && !recipes.length) {
     return (
