@@ -18,7 +18,7 @@ export default function SeoHead({
   description = 'Engineering better meals for working mothers worldwide. Tested recipes, kitchen tools, and meal planning solutions.',
   keywords = [],
   image = 'https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/images/logos/mom-og-image.png',
-  url = 'https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/',
+  url,
   type = 'website',
   author,
   publishedTime,
@@ -41,6 +41,16 @@ export default function SeoHead({
     ...keywords
   ].join(', ');
 
+  // Runtime canonical URL detection (custom domain or GitHub Pages)
+  let runtimeOrigin: string | undefined;
+  if (typeof window !== 'undefined') {
+    try {
+      const { protocol, host } = window.location;
+      runtimeOrigin = `${protocol}//${host}`;
+    } catch {/* ignore */}
+  }
+  const canonical = url || (runtimeOrigin ? `${runtimeOrigin}${window.location.pathname}` : 'https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/');
+
   return (
     <Helmet>
       {/* Basic Meta Tags */}
@@ -48,13 +58,13 @@ export default function SeoHead({
       <meta name="description" content={description} />
       <meta name="keywords" content={allKeywords} />
       <meta name="author" content={author || 'Mechanics of Motherhood'} />
-      <link rel="canonical" href={url} />
+  <link rel="canonical" href={canonical} />
 
       {/* Open Graph Tags */}
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={image} />
-      <meta property="og:url" content={url} />
+  <meta property="og:url" content={canonical} />
       <meta property="og:type" content={type} />
       <meta property="og:site_name" content="Mechanics of Motherhood" />
       <meta property="og:locale" content="en_US" />

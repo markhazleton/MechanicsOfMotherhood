@@ -13,9 +13,23 @@ const __dirname = path.dirname(__filename);
 // Configuration: allow override via environment for custom domain support
 // If VITE_CUSTOM_DOMAIN (no protocol) provided, default to https scheme
 // e.g. VITE_CUSTOM_DOMAIN=mechanicsofmotherhood.com
-const customDomain = process.env.VITE_CUSTOM_DOMAIN;
+let customDomain = process.env.VITE_CUSTOM_DOMAIN;
+if (!customDomain) {
+  try {
+    const cnamePath = path.join(__dirname, '../client/public/CNAME');
+    if (fs.existsSync(cnamePath)) {
+      const cnameContent = fs.readFileSync(cnamePath, 'utf8').split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      // Prefer first non-empty line (apex) ignoring 'www.' duplicate if present
+      if (cnameContent.length) {
+        // Choose the shortest domain (often apex) as canonical
+        cnameContent.sort((a,b)=>a.length-b.length);
+        customDomain = cnameContent[0];
+      }
+    }
+  } catch {/* ignore */}
+}
 const SITE_URL = customDomain
-  ? `https://${customDomain}`
+  ? `https://${customDomain.replace(/\/$/, '')}`
   : 'https://sharesmallbiz-support.github.io/MechanicsOfMotherhood';
 const OUTPUT_PATH = path.join(__dirname, '../client/public/sitemap.xml');
 

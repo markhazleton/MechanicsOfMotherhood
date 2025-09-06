@@ -21,9 +21,22 @@ const NotFound = lazy(() => import("@/pages/not-found"));
 // Configure base path for GitHub Pages.
 // If a custom domain is configured (VITE_CUSTOM_DOMAIN), deploy at root.
 // Otherwise use the repository name sub-path.
-const basePath = import.meta.env.PROD
-  ? (import.meta.env.VITE_CUSTOM_DOMAIN ? "" : "/MechanicsOfMotherhood")
-  : "";
+let basePath = "";
+if (import.meta.env.PROD) {
+  // If running on the custom domain (no repo segment) use root, else repo base.
+  try {
+    const host = typeof window !== 'undefined' ? window.location.host : '';
+    // If the path already includes /MechanicsOfMotherhood assume sub-path deploy.
+    const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+    if (host && !pathname.startsWith('/MechanicsOfMotherhood')) {
+      basePath = ""; // custom domain root
+    } else {
+      basePath = "/MechanicsOfMotherhood"; // legacy GitHub Pages sub-path
+    }
+  } catch {
+    basePath = "/MechanicsOfMotherhood"; // safe fallback
+  }
+}
 
 function AppRouter() {
   return (

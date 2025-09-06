@@ -2,20 +2,24 @@
 
 [![Deploy to GitHub Pages](https://github.com/sharesmallbiz-support/MechanicsOfMotherhood/actions/workflows/deploy.yml/badge.svg)](https://github.com/sharesmallbiz-support/MechanicsOfMotherhood/actions/workflows/deploy.yml)
 
-## 🚀 Live Demo
+## 🚀 Live Site
 
-**Static Version**: [https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/](https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/)
+**Primary Domain**: <https://mechanicsofmotherhood.com>
+
+**GitHub Pages Fallback** (legacy path – used only if custom domain DNS not active): <https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/>
+
+The site auto-detects the custom domain at build/runtime (via `CNAME`) and serves assets from the root path when on `mechanicsofmotherhood.com`.
 
 ## 📖 Overview
 
 Mechanics of Motherhood (MoM) is a modern, responsive recipe management web application designed specifically for working mothers. Built with a sleek industrial design theme, it provides an intuitive platform for discovering, organizing, and sharing family-friendly recipes.
 
-### ✨ Recent Achievements (August 2025)
+### ✨ Recent Achievements (August–September 2025)
 
 - **🎯 Single Recipe Detail View**: Added comprehensive recipe detail pages with ingredients, instructions, nutrition info, and sharing capabilities
-- **� Real API Integration**: Successfully connected to live RecipeSpark API at webspark.markhazleton.com with 107+ real recipes
+-- **🔗 Real API Integration**: Successfully connected to live RecipeSpark API at webspark.markhazleton.com with 100+ real recipes
 - **📊 Dynamic Data Fetching**: Built automated system to fetch and cache real recipe data during build process
-- **�📱 Full Static Site Support**: Configured for GitHub Pages deployment with intelligent data fallback system
+-- **�️ Custom Domain & Pages**: Now hosted at `mechanicsofmotherhood.com` with GitHub Pages fallback
 - **🔄 Hybrid Architecture**: Seamlessly switches between real API data and mock data based on availability
 - **🎨 Enhanced UI/UX**: Improved navigation, better responsive design, and industrial theme consistency
 - **⚡ Performance Optimized**: Fast loading times with efficient caching and pre-fetched data
@@ -195,7 +199,7 @@ VITE_API_URL= (leave empty for static mode)
 
 ## 🚀 Deployment Options
 
-### GitHub Pages (Recommended - Automatic)
+### GitHub Pages + Custom Domain (Automatic)
 
 #### Prerequisites
 
@@ -214,7 +218,16 @@ VITE_API_URL= (leave empty for static mode)
    - WEBCMS_API_BASE: `https://webspark.markhazleton.com/api/WebCMS/WebCMSApi`
    - WEBCMS_AUTH_TOKEN: (secret token if available)
 4. **Push to `main` branch** - deployment is automatic via GitHub Actions
-5. **Site will be available** at `https://[your-username].github.io/MechanicsOfMotherhood/`
+5. **Site will be available** at your custom domain (if CNAME + DNS configured) or fallback `https://[your-username].github.io/MechanicsOfMotherhood/`
+
+#### Custom Domain Setup Summary
+
+1. Add `CNAME` file (already present) containing apex and optional www.
+2. Configure DNS (Cloudflare or registrar):
+   - A records (apex) → GitHub Pages IPs: 185.199.108.153 / 185.199.109.153 / 185.199.110.153 / 185.199.111.153
+   - CNAME `www` → `<username>.github.io`
+3. Enable custom domain in GitHub Pages settings and enforce HTTPS after certificate issuance.
+4. (Optional) Add `VITE_CUSTOM_DOMAIN` repository variable to make sitemap builds explicit (the build already infers from CNAME if not set).
 
 #### What Happens During Deployment
 
@@ -235,7 +248,7 @@ VITE_API_URL= (leave empty for static mode)
 - **Performance**: Includes caching for faster builds
 - **Quality gates**: TypeScript checking and data validation
 
-### Manual Static Deployment
+### Manual Static Deployment (Any Host)
 
 Perfect for other static hosting providers (Netlify, Vercel, etc.):
 
@@ -247,7 +260,7 @@ npm run build:github
 # Make sure to configure SPA routing redirects
 ```
 
-### Full-Stack Deployment
+### Full-Stack Deployment (Future / Optional)
 
 For servers or platforms supporting Node.js backends:
 
@@ -269,7 +282,7 @@ npm run build:static
 npm run preview
 ```
 
-## � Data Management System
+## 🗄️ Data Management System
 
 ### Real API Integration
 
@@ -307,7 +320,7 @@ npm run build:with-data
 
 For detailed setup instructions, see [DATA_SETUP.md](DATA_SETUP.md).
 
-## �🔄 API Compatibility
+## 🔄 API Compatibility
 
 The application supports multiple API formats for maximum flexibility:
 

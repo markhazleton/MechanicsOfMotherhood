@@ -1,4 +1,14 @@
 import type { Recipe } from '@/data/api-types';
+// Helper to derive the canonical site base at build/runtime.
+function getSiteBase() {
+  if (typeof window !== 'undefined') {
+    return `${window.location.protocol}//${window.location.host}`;
+  }
+  // Build-time fallback: prefer custom domain env, else GitHub Pages.
+  const envDomain = (process.env.VITE_CUSTOM_DOMAIN as string | undefined);
+  return envDomain ? `https://${envDomain}` : 'https://sharesmallbiz-support.github.io/MechanicsOfMotherhood';
+}
+const SITE_BASE = getSiteBase();
 
 interface RecipeStructuredDataProps {
   recipe: Recipe;
@@ -38,7 +48,7 @@ export function generateRecipeStructuredData({ recipe, url, imageUrl }: RecipeSt
     "@type": "Recipe",
     "name": recipe.name,
     "description": recipe.description || `Delicious ${recipe.name} recipe from Mechanics of Motherhood`,
-    "image": imageUrl || "https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/images/hero/default-recipe.jpg",
+  "image": imageUrl || `${SITE_BASE}/images/hero/default-recipe.jpg`,
     "author": {
       "@type": "Person",
       "name": recipe.authorNM || "Mechanics of Motherhood"
@@ -46,10 +56,10 @@ export function generateRecipeStructuredData({ recipe, url, imageUrl }: RecipeSt
     "publisher": {
       "@type": "Organization",
       "name": "Mechanics of Motherhood",
-      "url": "https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/",
+  "url": SITE_BASE + '/',
       "logo": {
         "@type": "ImageObject",
-        "url": "https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/images/logos/mom-logo.png"
+  "url": `${SITE_BASE}/images/logos/mom-logo.png`
       }
     },
     "url": url,
@@ -90,10 +100,10 @@ export function generateOrganizationStructuredData() {
     "name": "Mechanics of Motherhood",
     "alternateName": "MoM",
     "description": "Engineering better meals for working mothers worldwide",
-    "url": "https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/",
+  "url": SITE_BASE + '/',
     "logo": {
       "@type": "ImageObject",
-      "url": "https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/images/logos/mom-logo.png"
+  "url": `${SITE_BASE}/images/logos/mom-logo.png`
     },
     "sameAs": [
       // Add social media URLs when available
@@ -112,7 +122,7 @@ export function generateWebsiteStructuredData() {
     "@type": "WebSite",
     "name": "Mechanics of Motherhood",
     "alternateName": "MoM",
-    "url": "https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/",
+  "url": SITE_BASE + '/',
     "description": "Engineering better meals for working mothers worldwide",
     "publisher": {
       "@type": "Organization",
@@ -122,7 +132,7 @@ export function generateWebsiteStructuredData() {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": "https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/recipes?search={search_term_string}"
+  "urlTemplate": `${SITE_BASE}/recipes?search={search_term_string}`
       },
       "query-input": "required name=search_term_string"
     }

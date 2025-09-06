@@ -2,12 +2,18 @@ import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import tailwind from "@tailwindcss/vite";
 import path from "path";
+import fs from "fs";
 
 // Support custom domain deployment on GitHub Pages.
-// If VITE_CUSTOM_DOMAIN is set (e.g. mechanicsofmotherhood.com) we serve from root '/'.
-// Otherwise we retain the repository sub-path for user/organization pages.
+// Logic priority:
+// 1. If VITE_CUSTOM_DOMAIN env var set -> treat as custom domain (root base)
+// 2. Else if a CNAME file exists in public/ -> also treat as custom domain
+// 3. Else fall back to repository sub-path (for non custom-domain GitHub Pages)
 const repoBase = "/MechanicsOfMotherhood/";
-const hasCustomDomain = !!process.env.VITE_CUSTOM_DOMAIN;
+const publicDir = path.resolve(import.meta.dirname, "client", "public");
+const cnamePath = path.join(publicDir, "CNAME");
+const hasCnameFile = fs.existsSync(cnamePath);
+const hasCustomDomain = !!process.env.VITE_CUSTOM_DOMAIN || hasCnameFile;
 
 export default defineConfig({
   plugins: [react(), tailwind()],
@@ -18,7 +24,12 @@ export default defineConfig({
     },
   },
   root: path.resolve(import.meta.dirname, "client"),
-  base: process.env.NODE_ENV === "production" ? (hasCustomDomain ? "/" : repoBase) : "/",
+  base:
+    process.env.NODE_ENV === "production"
+      ? hasCustomDomain
+        ? "/"
+        : repoBase
+      : "/",
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
