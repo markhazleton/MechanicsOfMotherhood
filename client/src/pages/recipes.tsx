@@ -71,7 +71,7 @@ export default function Recipes() {
     : `Browse our collection of ${recipeCount}+ tested recipes for working mothers. Quick meals, family favorites, and kitchen organization tips.`;
 
   return (
-    <div className="min-h-screen bg-light-gray">
+  <div className="min-h-screen bg-[hsl(var(--light-gray))]">
       {/* SEO Head */}
       <SeoHead
         title={activeSearch ? `Search: ${activeSearch} - Recipe Manual` : 'Recipe Manual - Tested Recipes for Working Mothers'}
@@ -93,25 +93,25 @@ export default function Recipes() {
       <Navigation />
       
       {/* Breadcrumb Navigation */}
-      <div className="bg-white border-b border-medium-gray">
+  <div className="bg-white border-b border-[hsl(var(--color-border))]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <BreadcrumbNav items={breadcrumbs} />
         </div>
       </div>
       
       {/* Header */}
-      <section className="bg-white py-12 border-b border-medium-gray">
+  <section className="bg-white py-12 border-b border-[hsl(var(--color-border))]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h1 className="font-mechanical text-4xl font-bold text-industrial-blue mb-4">
+            <h1 className="font-mechanical text-4xl font-bold text-[hsl(var(--color-industrial-blue))] mb-4">
               Recipe Manual
             </h1>
-            <p className="text-tool-gray text-lg max-w-2xl mx-auto">
+            <p className="text-[hsl(var(--color-tool-gray))] text-lg max-w-2xl mx-auto">
               Your complete collection of tested, perfected recipes for working mothers
             </p>
             {activeSearch && (
               <div className="mt-4 text-center">
-                <span className="text-workshop-teal font-semibold">
+                <span className="text-[hsl(var(--color-workshop-teal))] font-semibold">
                   Showing results for "{activeSearch}"
                 </span>
                 <button 
@@ -119,7 +119,7 @@ export default function Recipes() {
                     setActiveSearch("");
                     setSearchQuery("");
                   }}
-                  className="ml-2 text-energetic-orange hover:underline text-sm"
+                  className="ml-2 text-[hsl(var(--color-energetic-orange))] hover:underline text-sm"
                 >
                   Clear search
                 </button>
@@ -150,7 +150,7 @@ export default function Recipes() {
                 onChange={(e) => {
                   setSelectedCategory(e.target.value);
                 }}
-                className="px-4 py-2 border border-medium-gray rounded-lg focus:ring-2 focus:ring-workshop-teal"
+                className="px-4 py-2 border border-[hsl(var(--color-border))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--color-workshop-teal))]"
                 data-testid="category-filter"
                 title="Filter recipes by category"
               >
@@ -166,7 +166,7 @@ export default function Recipes() {
               <Link href="/categories">
                 <Button
                   variant="outline"
-                  className="px-4 py-2 border-workshop-teal text-workshop-teal hover:bg-workshop-teal hover:text-white"
+                  className="px-4 py-2 border-[hsl(var(--color-workshop-teal))] text-[hsl(var(--color-workshop-teal))] hover:bg-[hsl(var(--color-workshop-teal))] hover:text-white"
                   data-testid="browse-categories-button"
                 >
                   <Filter className="w-4 h-4 mr-2" />
@@ -195,22 +195,22 @@ export default function Recipes() {
                     />
                     <CardContent className="p-4">
                       <div className="flex items-center justify-end mb-2">
-                        <div className="flex items-center text-energetic-orange" aria-label="Recipe rating">
+                        <div className="flex items-center text-[hsl(var(--color-energetic-orange))]" aria-label="Recipe rating">
                           <Star size={12} fill="currentColor" />
                           <span className="ml-1 text-xs">{recipe.averageRating || 5}</span>
                         </div>
                       </div>
-                      <h3 className="font-bold text-lg mb-2 text-industrial-blue line-clamp-2">
+                      <h3 className="font-bold text-lg mb-2 text-[hsl(var(--color-industrial-blue))] line-clamp-2">
                         {recipe.name}
                       </h3>
-                      <div className="text-tool-gray text-sm mb-3 line-clamp-2">
+                      <div className="text-[hsl(var(--color-tool-gray))] text-sm mb-3 line-clamp-2">
                         <MarkdownContent 
                           content={recipe.description || ''}
                           summary={true}
                           className="text-sm"
                         />
                       </div>
-                      <div className="flex items-center justify-between text-xs text-tool-gray">
+                      <div className="flex items-center justify-between text-xs text-[hsl(var(--color-tool-gray))]">
                         <span className="flex items-center">
                           <Users size={12} className="mr-1" />
                           {recipe.servings}
@@ -218,7 +218,7 @@ export default function Recipes() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-energetic-orange hover:text-red-600 p-0 h-auto"
+                          className="text-[hsl(var(--color-energetic-orange))] hover:text-red-600 p-0 h-auto"
                           onClick={() => {
                             analytics.trackButtonClick('view_recipe', 'recipes_grid', {
                               recipe_id: recipe.id,
@@ -239,7 +239,7 @@ export default function Recipes() {
               </div>
 
               {/* Show results count */}
-              <div className="text-center mt-8 text-tool-gray">
+              <div className="text-center mt-8 text-[hsl(var(--color-tool-gray))]">
                 Showing {filteredRecipes.length} recipe{filteredRecipes.length !== 1 ? 's' : ''}
                 {activeSearch && ` for "${activeSearch}"`}
                 {selectedCategory && ` in ${categories?.find(c => c.id.toString() === selectedCategory)?.name}`}

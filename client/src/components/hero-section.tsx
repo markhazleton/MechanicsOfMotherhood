@@ -10,7 +10,7 @@ export default function HeroSection() {
   const isLoading = !stats;
 
   return (
-    <section className="bg-gradient-to-br from-industrial-blue via-tool-gray to-workshop-teal py-20">
+  <section className="bg-gradient-to-br from-[hsl(var(--color-industrial-blue))] via-[hsl(var(--color-tool-gray))] to-[hsl(var(--color-workshop-teal))] py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="flex justify-center items-center mb-8">
           <div className="relative">
@@ -34,10 +34,10 @@ export default function HeroSection() {
           Engineering Better Meals • The Mother of All Solutions
         </p>
         
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <Button 
             size="lg"
-            className="gear-border bg-energetic-orange hover:bg-red-600 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105"
+      className="btn-brand-primary px-8 py-4 text-lg transition-all duration-300 transform hover:scale-105"
             data-testid="button-start-cooking"
           >
             <Wrench className="mr-2" size={20} />
@@ -46,7 +46,7 @@ export default function HeroSection() {
           <Button
             variant="outline"
             size="lg"
-            className="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/20 transition-all"
+      className="btn-brand-outline px-8 py-4 text-lg"
             data-testid="button-watch-tutorial"
           >
             <Play className="mr-2" size={20} />

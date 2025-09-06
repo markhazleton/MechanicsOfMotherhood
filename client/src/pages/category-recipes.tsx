@@ -91,7 +91,7 @@ export default function CategoryRecipes() {
 
   if (isLoading && !recipes.length) {
     return (
-      <div className="min-h-screen bg-light-gray">
+  <div className="min-h-screen bg-[hsl(var(--light-gray))]">
         <Navigation />
         <div className="py-16">
           <LoadingSpinner />
@@ -104,26 +104,26 @@ export default function CategoryRecipes() {
   // Handle case where category doesn't exist
   if (!isLoading && categorySlug && !currentCategory) {
     return (
-      <div className="min-h-screen bg-light-gray">
+  <div className="min-h-screen bg-[hsl(var(--light-gray))]">
         <Navigation />
-        <div className="bg-white border-b border-medium-gray">
+  <div className="bg-white border-b border-[hsl(var(--color-border))]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <BreadcrumbNav items={generateBreadcrumbs('/categories')} />
           </div>
         </div>
-        <section className="bg-white py-12 border-b border-medium-gray">
+  <section className="bg-white py-12 border-b border-[hsl(var(--color-border))]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center py-12">
               <div className="text-6xl mb-4">🔧</div>
-              <h1 className="text-3xl font-bold text-industrial-blue mb-4">
+              <h1 className="text-3xl font-bold text-[hsl(var(--color-industrial-blue))] mb-4">
                 Category Not Found
               </h1>
-              <p className="text-tool-gray mb-6">
+              <p className="text-[hsl(var(--color-tool-gray))] mb-6">
                 The category "{categorySlug}" doesn't exist in our workshop.
               </p>
               <div className="space-x-4">
                 <Link href="/categories">
-                  <Button className="bg-workshop-teal text-white hover:bg-workshop-teal/90">
+                  <Button className="bg-[hsl(var(--color-workshop-teal))] text-white hover:bg-[hsl(var(--color-workshop-teal))/0.9]">
                     Browse All Categories
                   </Button>
                 </Link>
@@ -142,21 +142,21 @@ export default function CategoryRecipes() {
   }
 
   return (
-    <div className="min-h-screen bg-light-gray">
+  <div className="min-h-screen bg-[hsl(var(--light-gray))]">
       <Navigation />
       {/* Breadcrumb Navigation */}
-      <div className="bg-white border-b border-medium-gray">
+  <div className="bg-white border-b border-[hsl(var(--color-border))]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <BreadcrumbNav items={generateBreadcrumbs(`/recipes/category/${categorySlug}`, undefined, currentCategory?.name)} />
         </div>
       </div>
       
       {/* Header */}
-      <section className="bg-white py-12 border-b border-medium-gray">
+  <section className="bg-white py-12 border-b border-[hsl(var(--color-border))]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-6">
             <Link href="/categories">
-              <Button variant="ghost" className="mb-4 text-tool-gray hover:text-industrial-blue">
+              <Button variant="ghost" className="mb-4 text-[hsl(var(--color-tool-gray))] hover:text-[hsl(var(--color-industrial-blue))]">
                 <ArrowLeft size={16} className="mr-2" />
                 Back to Categories
               </Button>
@@ -164,11 +164,11 @@ export default function CategoryRecipes() {
           </div>
           
           <div className="text-center mb-8">
-            <h1 className="font-mechanical text-4xl font-bold text-industrial-blue mb-4">
+            <h1 className="font-mechanical text-4xl font-bold text-[hsl(var(--color-industrial-blue))] mb-4">
               {currentCategory?.name || 'Category'} Recipes
             </h1>
             {currentCategory?.description && (
-              <p className="text-tool-gray text-lg max-w-2xl mx-auto">
+              <p className="text-[hsl(var(--color-tool-gray))] text-lg max-w-2xl mx-auto">
                 {currentCategory.description}
               </p>
             )}
@@ -178,7 +178,7 @@ export default function CategoryRecipes() {
           <div className="flex flex-col lg:flex-row gap-6 items-center justify-center">
             <form onSubmit={handleSearch} className="flex-1 max-w-md">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-tool-gray" size={16} />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[hsl(var(--color-tool-gray))]" size={16} />
                 <Input
                   type="text"
                   placeholder="Search recipes in this category..."
@@ -210,22 +210,22 @@ export default function CategoryRecipes() {
                     />
                     <CardContent className="p-4">
                       <div className="flex items-center justify-end mb-2">
-                        <div className="flex items-center text-energetic-orange" aria-label="Recipe rating">
+                        <div className="flex items-center text-[hsl(var(--color-energetic-orange))]" aria-label="Recipe rating">
                           <Star size={12} fill="currentColor" />
                           <span className="ml-1 text-xs">{recipe.averageRating ?? '–'}</span>
                         </div>
                       </div>
-                      <h3 className="font-bold text-lg mb-2 text-industrial-blue line-clamp-2">
+                      <h3 className="font-bold text-lg mb-2 text-[hsl(var(--color-industrial-blue))] line-clamp-2">
                         {recipe.name}
                       </h3>
-                      <div className="text-tool-gray text-sm mb-3 line-clamp-2">
+                      <div className="text-[hsl(var(--color-tool-gray))] text-sm mb-3 line-clamp-2">
                         <MarkdownContent 
                           content={recipe.description || ''}
                           summary={true}
                           className="text-sm"
                         />
                       </div>
-                      <div className="flex items-center justify-between text-xs text-tool-gray">
+                      <div className="flex items-center justify-between text-xs text-[hsl(var(--color-tool-gray))]">
                         <span className="flex items-center">
                           <Users size={12} className="mr-1" />
                           {recipe.servings}
@@ -234,7 +234,7 @@ export default function CategoryRecipes() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-energetic-orange hover:text-red-600 p-0 h-auto"
+                            className="text-[hsl(var(--color-energetic-orange))] hover:text-red-600 p-0 h-auto"
                             data-testid={`view-recipe-${recipe.id}`}
                           >
                             <ArrowRight size={14} className="mr-1" />
@@ -258,7 +258,7 @@ export default function CategoryRecipes() {
                   >
                     Previous
                   </Button>
-                  <span className="text-tool-gray">
+                  <span className="text-[hsl(var(--color-tool-gray))]">
                     Page {pagination.currentPage} of {pagination.totalPages}
                   </span>
                   <Button
@@ -275,14 +275,14 @@ export default function CategoryRecipes() {
           ) : (
             <div className="text-center py-12">
               <div className="text-6xl mb-4">🍽️</div>
-              <h3 className="text-xl font-bold text-industrial-blue mb-2">
+              <h3 className="text-xl font-bold text-[hsl(var(--color-industrial-blue))] mb-2">
                 No Recipes Found
               </h3>
-              <p className="text-tool-gray mb-6">
+              <p className="text-[hsl(var(--color-tool-gray))] mb-6">
                 We don't have any recipes in this category yet.
               </p>
               <Link href="/recipes">
-                <Button className="bg-workshop-teal text-white hover:bg-workshop-teal/90">
+                <Button className="bg-[hsl(var(--color-workshop-teal))] text-white hover:bg-[hsl(var(--color-workshop-teal))/0.9]">
                   Browse All Recipes
                 </Button>
               </Link>

@@ -35,8 +35,8 @@ export default function Navigation() {
   const NavLink = ({ href, label, icon: Icon }: { href: string; label: string; icon: any }) => (
     <Link
       href={href}
-      className={`flex items-center space-x-2 text-tool-gray hover:text-energetic-orange font-medium transition-colors ${
-        location === href ? "text-energetic-orange" : ""
+      className={`flex items-center space-x-2 text-[hsl(var(--color-tool-gray))] hover:text-[hsl(var(--color-energetic-orange))] font-medium transition-colors ${
+        location === href ? "text-[hsl(var(--color-energetic-orange))]" : ""
       }`}
       data-testid={`nav-link-${label.toLowerCase().replace(" ", "-")}`}
     >
@@ -66,12 +66,12 @@ export default function Navigation() {
               {/* Fallback to original icons if image fails to load */}
               <div className="hidden">
                 <Settings className="text-tool-gray text-3xl animate-spin-slow" />
-                <Utensils className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-energetic-orange text-sm" />
+                <Utensils className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[hsl(var(--color-energetic-orange))] text-sm" />
               </div>
             </div>
             <div className="flex flex-col">
-              <h1 className="font-mechanical text-2xl font-bold text-industrial-blue">MoM</h1>
-              <span className="text-xs text-tool-gray font-industrial -mt-1">MECHANICS OF MOTHERHOOD</span>
+              <h1 className="font-mechanical text-2xl font-bold text-[hsl(var(--color-industrial-blue))]">MoM</h1>
+              <span className="text-xs text-[hsl(var(--color-tool-gray))] font-industrial -mt-1">MECHANICS OF MOTHERHOOD</span>
             </div>
           </Link>
 

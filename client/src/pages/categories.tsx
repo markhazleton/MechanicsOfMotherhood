@@ -40,23 +40,23 @@ export default function Categories() {
   }
 
   return (
-    <div className="min-h-screen bg-light-gray">
+  <div className="min-h-screen bg-[hsl(var(--light-gray))]">
       <Navigation />
       {/* Breadcrumb Navigation */}
-      <div className="bg-white border-b border-medium-gray">
+  <div className="bg-white border-b border-[hsl(var(--color-border))]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <BreadcrumbNav items={breadcrumbs} />
         </div>
       </div>
       
   {/* Header */}
-  <section className="bg-white py-12 border-b border-medium-gray">
+  <section className="bg-white py-12 border-b border-[hsl(var(--color-border))]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="font-mechanical text-4xl font-bold text-industrial-blue mb-4">
+            <h1 className="font-mechanical text-4xl font-bold text-[hsl(var(--color-industrial-blue))] mb-4">
               Recipe Categories
             </h1>
-            <p className="text-tool-gray text-lg max-w-2xl mx-auto">
+            <p className="text-[hsl(var(--color-tool-gray))] text-lg max-w-2xl mx-auto">
               Browse our organized collection of tested recipes by category
             </p>
           </div>
@@ -76,7 +76,7 @@ export default function Categories() {
                   data-testid={`category-card-${category.id}`}
                 >
                   <Card className="gear-border bg-white rounded-xl overflow-hidden mechanical-shadow hover:transform hover:scale-105 transition-all duration-300 cursor-pointer">
-                    <div className="bg-gradient-to-br from-workshop-teal to-industrial-blue p-8 text-white">
+                    <div className="bg-gradient-to-br from-[hsl(var(--color-workshop-teal))] to-[hsl(var(--color-industrial-blue))] p-8 text-white">
                       <ChefHat size={32} className="mb-4" />
                       <h3 className="font-bold text-xl mb-2">
                         {category.name}
@@ -105,7 +105,7 @@ export default function Categories() {
           {categoriesWithCounts.length === 0 && (
             <div className="text-center py-12">
               <ChefHat size={64} className="mx-auto text-tool-gray mb-4" />
-              <h3 className="text-xl font-bold text-industrial-blue mb-2">
+                      <h3 className="text-xl font-bold text-[hsl(var(--color-industrial-blue))] mb-2">
                 No Categories Available
               </h3>
               <p className="text-tool-gray">

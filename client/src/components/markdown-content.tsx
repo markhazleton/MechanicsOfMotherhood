@@ -38,18 +38,18 @@ export function MarkdownContent({
 
   // Render as markdown using ReactMarkdown
   return (
-    <div className={className}>
+    <div className={`prose prose-brand ${className}`}>
       <ReactMarkdown
         components={{
           // Custom components for better styling
           p: ({ children }) => <p className="mb-4 leading-relaxed">{children}</p>,
-          strong: ({ children }) => <strong className="font-semibold text-industrial-blue">{children}</strong>,
-          em: ({ children }) => <em className="italic text-tool-gray">{children}</em>,
-          ul: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-1 text-tool-gray">{children}</ul>,
-          ol: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-1 text-tool-gray">{children}</ol>,
-          h1: ({ children }) => <h1 className="text-2xl font-bold text-industrial-blue mb-4">{children}</h1>,
-          h2: ({ children }) => <h2 className="text-xl font-semibold text-industrial-blue mb-3">{children}</h2>,
-          h3: ({ children }) => <h3 className="text-lg font-medium text-industrial-blue mb-2">{children}</h3>,
+          strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+          em: ({ children }) => <em className="italic">{children}</em>,
+          ul: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-1">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-1">{children}</ol>,
+          h1: ({ children }) => <h1 className="text-2xl font-bold mb-4">{children}</h1>,
+          h2: ({ children }) => <h2 className="text-xl font-semibold mb-3">{children}</h2>,
+          h3: ({ children }) => <h3 className="text-lg font-medium mb-2">{children}</h3>,
         }}
       >
         {displayContent}

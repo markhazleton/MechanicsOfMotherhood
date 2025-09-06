@@ -167,15 +167,14 @@
 }
 
 /* Base layer remains minimal - only essential defaults */
+/* Removed unused legacy CSS custom properties (--background/--foreground) after v4 migration audit */
 :root {
-  /* Legacy support - can be removed after full migration verification */
-  --background: hsl(0 0% 100%);
-  --foreground: hsl(210 25% 7.8431%);
+  /* Keep only tokens still referenced directly (light-gray used in markup) */
   --light-gray: hsl(210 20% 98%);
+  /* Transitional note: prefer using brand tokens via arbitrary values e.g. text-[hsl(var(--color-tool-gray))] */
 }
 
 .dark {
-  /* Dark mode overrides - values only, following v4 best practices */
   --color-background: hsl(0 0% 0%);
   --color-foreground: hsl(200 6.6667% 91.1765%);
   --color-card: hsl(228 9.8039% 10%);
@@ -195,15 +194,11 @@
   --color-border: hsl(210 5.2632% 14.902%);
   --color-input: hsl(207.6923 27.6596% 18.4314%);
   --color-ring: hsl(202.8169 89.1213% 53.1373%);
-
-  /* Chart colors remain consistent in dark mode */
   --color-chart-1: hsl(203.8863 88.2845% 53.1373%);
   --color-chart-2: hsl(159.7826 100% 36.0784%);
   --color-chart-3: hsl(42.029 92.8251% 56.2745%);
   --color-chart-4: hsl(147.1429 78.5047% 41.9608%);
   --color-chart-5: hsl(341.4894 75.2% 50.9804%);
-
-  /* Sidebar dark mode */
   --color-sidebar: hsl(228 9.8039% 10%);
   --color-sidebar-foreground: hsl(0 0% 85.098%);
   --color-sidebar-primary: hsl(202.8169 89.1213% 53.1373%);
@@ -212,10 +207,6 @@
   --color-sidebar-accent-foreground: hsl(203.7736 87.6033% 52.549%);
   --color-sidebar-border: hsl(205.7143 15.7895% 26.0784%);
   --color-sidebar-ring: hsl(202.8169 89.1213% 53.1373%);
-
-  /* Legacy support */
-  --background: hsl(0 0% 0%);
-  --foreground: hsl(200 6.6667% 91.1765%);
   --light-gray: hsl(228 9.8039% 10%);
 }
 
@@ -441,6 +432,72 @@
 }
 
 @layer utilities {
+  /* Brand color utility shortcuts (Tailwind v4 arbitrary value wrappers) */
+  .text-brand-teal {
+    color: hsl(var(--color-workshop-teal));
+  }
+  .bg-brand-teal {
+    background-color: hsl(var(--color-workshop-teal));
+  }
+  .border-brand-teal {
+    border-color: hsl(var(--color-workshop-teal));
+  }
+  .text-brand-orange {
+    color: hsl(var(--color-energetic-orange));
+  }
+  .bg-brand-orange {
+    background-color: hsl(var(--color-energetic-orange));
+  }
+  .border-brand-orange {
+    border-color: hsl(var(--color-energetic-orange));
+  }
+  .text-brand-blue {
+    color: hsl(var(--color-industrial-blue));
+  }
+  .bg-brand-blue {
+    background-color: hsl(var(--color-industrial-blue));
+  }
+  .border-brand-blue {
+    border-color: hsl(var(--color-industrial-blue));
+  }
+  .text-brand-tool {
+    color: hsl(var(--color-tool-gray));
+  }
+
+  /* Composite button style examples (semantic shortcuts) */
+  .btn-brand-primary {
+    background-color: hsl(var(--color-workshop-teal));
+    color: #fff;
+    transition: color 0.2s, background-color 0.2s, filter 0.2s;
+  }
+  .btn-brand-primary:hover {
+    filter: brightness(0.95);
+  }
+  .btn-brand-outline {
+    border: 1px solid hsl(var(--color-workshop-teal));
+    color: hsl(var(--color-workshop-teal));
+    background: transparent;
+    transition: color 0.2s, background-color 0.2s, border-color 0.2s;
+  }
+  .btn-brand-outline:hover {
+    background-color: hsl(var(--color-workshop-teal));
+    color: #fff;
+  }
+
+  /* Prose theme overrides (centralized) */
+  .prose-brand {
+    --tw-prose-body: hsl(var(--color-tool-gray));
+    --tw-prose-headings: hsl(var(--color-industrial-blue));
+    --tw-prose-links: hsl(var(--color-workshop-teal));
+    --tw-prose-bold: hsl(var(--color-industrial-blue));
+    --tw-prose-counters: hsl(var(--color-tool-gray));
+    --tw-prose-bullets: hsl(var(--color-workshop-teal));
+    --tw-prose-quotes: hsl(var(--color-industrial-blue));
+    --tw-prose-code: hsl(var(--color-industrial-blue));
+    --tw-prose-hr: hsl(var(--color-border));
+    --tw-prose-th-borders: hsl(var(--color-border));
+    --tw-prose-td-borders: hsl(var(--color-border));
+  }
   /* Animation utilities */
   .animate-spin-slow {
     animation: var(--animate-spin-slow);

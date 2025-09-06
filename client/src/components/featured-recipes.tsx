@@ -51,13 +51,13 @@ export default function FeaturedRecipes() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-4">
-            <Settings className="text-tool-gray text-2xl mr-3" />
-            <h2 className="font-industrial text-3xl md:text-4xl font-bold text-industrial-blue">
+            <Settings className="text-brand-tool text-2xl mr-3" />
+            <h2 className="font-industrial text-3xl md:text-4xl font-bold text-brand-blue">
               MoM's Kitchen Workshop
             </h2>
-            <Settings className="text-tool-gray text-2xl ml-3" />
+            <Settings className="text-brand-tool text-2xl ml-3" />
           </div>
-          <p className="text-tool-gray text-lg max-w-2xl mx-auto">
+          <p className="text-brand-tool text-lg max-w-2xl mx-auto">
             Precision-engineered recipes for the modern working mother. Every dish tested, timed, and perfected.
           </p>
         </div>
@@ -68,7 +68,7 @@ export default function FeaturedRecipes() {
             <Button
               key={category.id}
               variant="outline"
-              className="bg-kitchen-warm hover:bg-energetic-orange hover:text-white text-tool-gray px-6 py-3 rounded-full font-medium transition-all duration-300 border border-medium-gray"
+              className="bg-kitchen-warm hover:bg-brand-orange hover:text-white text-brand-tool px-6 py-3 rounded-full font-medium transition-all duration-300 border border-medium-gray"
               data-testid={`category-button-${category.name.toLowerCase().replace(/\s+/g, '-')}`}
               onClick={() => navigate(`/recipes/category/${getCategorySlug(category.name)}`)}
             >
@@ -88,15 +88,15 @@ export default function FeaturedRecipes() {
               />
               <CardContent className="p-6">
                 <div className="flex items-center justify-end mb-3">
-                  <div className="flex items-center text-energetic-orange" aria-label="Recipe rating">
+                  <div className="flex items-center text-brand-orange" aria-label="Recipe rating">
                     <Star size={14} fill="currentColor" />
                     <span className="ml-1 text-sm font-semibold">{recipe.averageRating ?? '–'}</span>
                   </div>
                 </div>
-                <h3 className="font-bold text-xl mb-2 text-industrial-blue" data-testid={`recipe-title-${recipe.id}`}>
+                <h3 className="font-bold text-xl mb-2 text-brand-blue" data-testid={`recipe-title-${recipe.id}`}>
                   {recipe.name}
                 </h3>
-                <div className="text-tool-gray mb-4">
+                <div className="text-brand-tool mb-4">
                   <MarkdownContent 
                     content={recipe.description || "Delicious recipe from MoM's kitchen workshop"}
                     summary={true}
@@ -104,7 +104,7 @@ export default function FeaturedRecipes() {
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center text-sm text-tool-gray">
+                  <div className="flex items-center text-sm text-brand-tool">
                     <span className="flex items-center">
                       <Users size={14} className="mr-1" />
                       {recipe.servings ?? '–'}{recipe.servings ? ' servings' : ''}
@@ -114,7 +114,7 @@ export default function FeaturedRecipes() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-energetic-orange hover:text-red-600 font-semibold"
+                      className="text-brand-orange hover:text-[hsl(var(--color-energetic-orange))/0.8] font-semibold"
                       onClick={() => {
                         analytics.trackButtonClick('build_recipe', 'featured_recipes', {
                           recipe_id: recipe.id,
@@ -138,7 +138,7 @@ export default function FeaturedRecipes() {
           <Button
             variant="outline"
             size="lg"
-            className="gear-border bg-white hover:bg-gray-50 text-tool-gray px-8 py-4 rounded-xl font-semibold text-lg transition-all"
+            className="gear-border bg-white hover:bg-gray-50 text-brand-tool px-8 py-4 rounded-xl font-semibold text-lg transition-all"
             data-testid="button-browse-workshop-manual"
             onClick={() => {
               analytics.trackButtonClick('browse_full_manual', 'featured_recipes', {
