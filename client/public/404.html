@@ -8,15 +8,23 @@
       // GitHub Pages SPA redirect
       // https://github.com/rafgraph/spa-github-pages
       // Modified to handle both custom domain and GitHub Pages sub-path deployments
-      
+
       var l = window.location;
-      var isCustomDomain = l.hostname === 'mechanicsofmotherhood.com' || l.hostname === 'www.mechanicsofmotherhood.com';
-      
+      var isCustomDomain =
+        l.hostname === "mechanicsofmotherhood.com" ||
+        l.hostname === "www.mechanicsofmotherhood.com";
+
       if (isCustomDomain) {
         // Custom domain - redirect directly without sub-path
         l.replace(
-          l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-          '/?' + l.pathname.slice(1) + (l.search ? '&' + l.search.slice(1) : '') + l.hash
+          l.protocol +
+            "//" +
+            l.hostname +
+            (l.port ? ":" + l.port : "") +
+            "/?" +
+            l.pathname.slice(1) +
+            (l.search ? "&" + l.search.slice(1) : "") +
+            l.hash
         );
       } else {
         // GitHub Pages sub-path - use original logic

@@ -10,6 +10,7 @@ The home page URL for categories was leading to 404 errors on the production sit
 The problem was in the **base path configuration** in `App.tsx`. The site is deployed on a custom domain (`mechanicsofmotherhood.com`) but the React Router was still using the GitHub Pages sub-path base path (`/MechanicsOfMotherhood`) because the hostname detection logic was flawed.
 
 ### Original Problematic Logic
+
 ```typescript
 // This logic was checking pathname instead of hostname directly
 if (host && !pathname.startsWith('/MechanicsOfMotherhood')) {
@@ -22,6 +23,7 @@ if (host && !pathname.startsWith('/MechanicsOfMotherhood')) {
 ## ✅ Fixed Components
 
 ### 1. **App.tsx** - Router Base Path Configuration
+
 **BEFORE**: Unreliable hostname detection using pathname check
 **AFTER**: Direct hostname matching for custom domain
 
@@ -35,6 +37,7 @@ if (host === 'mechanicsofmotherhood.com' || host === 'www.mechanicsofmotherhood.
 ```
 
 ### 2. **404.html** - SPA Redirect Logic
+
 **BEFORE**: Only handled GitHub Pages sub-path routing
 **AFTER**: Detects custom domain and uses appropriate redirect logic
 
@@ -50,6 +53,7 @@ if (isCustomDomain) {
 ```
 
 ### 3. **index.html** - Initial Route Handling
+
 **BEFORE**: Assumed GitHub Pages sub-path structure
 **AFTER**: Handles both custom domain and GitHub Pages deployments
 
@@ -64,7 +68,9 @@ if (isCustomDomain) {
 ```
 
 ### 4. **site.webmanifest** - PWA Configuration
-**BEFORE**: 
+
+**BEFORE**:
+
 ```json
 "start_url": "/MechanicsOfMotherhood/",
 "scope": "/MechanicsOfMotherhood/",
@@ -72,6 +78,7 @@ if (isCustomDomain) {
 ```
 
 **AFTER**:
+
 ```json
 "start_url": "/",
 "scope": "/",
@@ -81,6 +88,7 @@ if (isCustomDomain) {
 ## 🎯 Impact of Fix
 
 ### **Resolved Issues**
+
 - ✅ Category URLs now work correctly: `/recipes/category/drink`
 - ✅ All recipe category pages are accessible
 - ✅ PWA manifest correctly configured for custom domain
@@ -88,6 +96,7 @@ if (isCustomDomain) {
 - ✅ 404 handling properly redirects to React app
 
 ### **Maintained Compatibility**
+
 - ✅ GitHub Pages sub-path deployment still supported as fallback
 - ✅ All existing functionality preserved
 - ✅ TypeScript compilation passes
@@ -96,15 +105,19 @@ if (isCustomDomain) {
 ## 🚀 Deployment Status
 
 ### **Local Testing**
+
 - Build completes successfully: `npm run build:static`
 - Preview server runs without errors: `npm run preview`
 - TypeScript check passes: `npm run check`
 
 ### **Production Deployment**
+
 The fix is ready for deployment via the existing GitHub Actions workflow. The changes will automatically resolve the 404 issues for all category URLs on the live site.
 
 ### **Verification Steps**
+
 After deployment, verify these URLs work correctly:
+
 - `https://mechanicsofmotherhood.com/recipes/category/drink`
 - `https://mechanicsofmotherhood.com/recipes/category/appetizer`
 - `https://mechanicsofmotherhood.com/recipes/category/main-course`
@@ -113,18 +126,21 @@ After deployment, verify these URLs work correctly:
 ## 📋 Quality Assurance Review
 
 ### **Code Quality**
+
 - ✅ No breaking changes introduced
-- ✅ Maintains backward compatibility 
+- ✅ Maintains backward compatibility
 - ✅ Follows existing code patterns
 - ✅ TypeScript types preserved
 - ✅ No new dependencies required
 
 ### **Performance Impact**
+
 - ✅ No performance degradation
 - ✅ Build size remains similar
 - ✅ Runtime routing logic is more efficient
 
 ### **Security Considerations**
+
 - ✅ No security vulnerabilities introduced
 - ✅ URL validation maintained
 - ✅ Domain verification added for additional security

@@ -44,7 +44,9 @@
       // Modified to handle both custom domain and GitHub Pages sub-path deployments
       (function (l) {
         if (l.search[1] === "/") {
-          var isCustomDomain = l.hostname === 'mechanicsofmotherhood.com' || l.hostname === 'www.mechanicsofmotherhood.com';
+          var isCustomDomain =
+            l.hostname === "mechanicsofmotherhood.com" ||
+            l.hostname === "www.mechanicsofmotherhood.com";
           var decoded = l.search
             .slice(1)
             .split("&")
@@ -52,13 +54,17 @@
               return s.replace(/~and~/g, "&");
             })
             .join("?");
-          
+
           if (isCustomDomain) {
             // Custom domain - use root path
             window.history.replaceState(null, null, "/" + decoded + l.hash);
           } else {
             // GitHub Pages sub-path - preserve original behavior
-            window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
+            window.history.replaceState(
+              null,
+              null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+            );
           }
         }
       })(window.location);
