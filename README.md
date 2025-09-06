@@ -1,51 +1,71 @@
 # 🍳 Mechanics of Motherhood
 
-> **A modern recipe management platform designed for busy working mothers**
->
-> Transform your kitchen chaos into organized culinary success with 108+ curated recipes, smart categorization, and an intuitive mobile-first design.
+**A modern recipe management platform designed for busy working mothers**
+
+Transform your kitchen chaos into organized culinary success with 108+ curated recipes, smart categorization, and an intuitive mobile-first design.
+
+<div align="center">
 
 [![Live Site](https://img.shields.io/badge/🌐_Live_Site-mechanicsofmotherhood.com-2C3E50?style=for-the-badge)](https://mechanicsofmotherhood.com)
 [![Deploy Status](https://img.shields.io/github/actions/workflow/status/markhazleton/MechanicsOfMotherhood/deploy.yml?branch=main&style=for-the-badge&label=Deploy&logo=github)](https://github.com/markhazleton/MechanicsOfMotherhood/actions/workflows/deploy.yml)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](./LICENSE)
+[![License](https://img.shields.io/github/license/markhazleton/MechanicsOfMotherhood?style=for-the-badge)](./LICENSE)
 
 ![GitHub stars](https://img.shields.io/github/stars/markhazleton/MechanicsOfMotherhood?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/markhazleton/MechanicsOfMotherhood?style=social)
+
+</div>
 
 ---
 
 ## 🎯 Why Choose Mechanics of Motherhood?
 
-### 🚀 Production Ready
+<table>
+<tr>
+<td width="50%">
+
+### 🚀 **Production Ready**
 
 - **108+ Real Recipes** from live API
 - **100% Data Quality** Score
-- **Mobile-First** responsive design  
+- **Mobile-First** responsive design
 - **PWA-Ready** with offline support
 
-### 💡 Modern Architecture
+</td>
+<td width="50%">
+
+### 💡 **Modern Architecture**
 
 - **React 19** with TypeScript
 - **Vite** for lightning-fast builds
 - **TanStack Query** for data management
 - **Tailwind CSS** with industrial design
 
+</td>
+</tr>
+</table>
+
 ---
 
 ## 📸 Live Preview
 
+<div align="center">
+
 ### 🌐 **[Visit mechanicsofmotherhood.com →](https://mechanicsofmotherhood.com)**
 
-Experience the full application with real recipe data and interactive features
+*Experience the full application with real recipe data and interactive features*
 
 **Alternative Access:** [GitHub Pages Fallback](https://markhazleton.github.io/MechanicsOfMotherhood/)
+
+</div>
 
 ---
 
 ## ✨ Key Features
 
-### 🍳 Recipe Management
+<details open>
+<summary><b>🍳 Recipe Management</b></summary>
 
 - **108+ Curated Recipes** with detailed instructions and ingredients
 - **14 Recipe Categories** (Main Course, Desserts, Quick Meals, etc.)
@@ -54,7 +74,10 @@ Experience the full application with real recipe data and interactive features
 - **Print-Friendly** recipe cards
 - **Nutritional Information** for healthy meal planning
 
-### 📱 User Experience
+</details>
+
+<details>
+<summary><b>📱 User Experience</b></summary>
 
 - **Mobile-First Design** optimized for phones and tablets  
 - **Industrial Theme** with unique mechanical aesthetics
@@ -63,7 +86,10 @@ Experience the full application with real recipe data and interactive features
 - **Progressive Web App** capabilities
 - **Offline Support** with cached recipe data
 
-### 🔧 Technical Excellence
+</details>
+
+<details>
+<summary><b>🔧 Technical Excellence</b></summary>
 
 - **Real-Time API Integration** with fallback to mock data
 - **Automated Data Quality** validation and fixes
@@ -72,15 +98,17 @@ Experience the full application with real recipe data and interactive features
 - **Custom Domain** hosting with SSL certificates
 - **Performance Monitoring** and error tracking
 
+</details>
+
 ---
 
 ## 🚀 Quick Start
 
-### 🌐 Just Want to Use It?
+### 🌐 **Just Want to Use It?**
 
 Visit **[mechanicsofmotherhood.com](https://mechanicsofmotherhood.com)** - No installation required!
 
-### 👨‍💻 Want to Develop?
+### 👨‍💻 **Want to Develop?**
 
 ```bash
 # Clone the repository
@@ -98,7 +126,8 @@ npm run dev
 npm run build:github
 ```
 
-#### Development Commands
+<details>
+<summary>📋 <b>Development Commands</b></summary>
 
 ```bash
 # Data management
@@ -117,11 +146,34 @@ npm run dev                 # Start dev server with hot reload
 npm test                    # Run test suite
 ```
 
+</details>
+
 ---
 
 ## 🏗️ Architecture
 
-### Tech Stack
+<div align="center">
+
+```mermaid
+graph TD
+    A[User Browser] --> B[mechanicsofmotherhood.com]
+    B --> C[Static React SPA]
+    C --> D[TanStack Query]
+    D --> E[RecipeSpark API]
+    D --> F[WebCMS API]
+    E --> G[Recipe Data]
+    F --> H[Menu & Content]
+    C --> I[GitHub Pages CDN]
+    
+    style B fill:#38B2AC
+    style C fill:#61DAFB
+    style E fill:#ED8936
+    style F fill:#ED8936
+```
+
+</div>
+
+### 🛠️ **Tech Stack**
 
 | Layer | Technology | Purpose |
 |-------|------------|---------|
@@ -134,7 +186,7 @@ npm test                    # Run test suite
 | **Deployment** | GitHub Pages + Actions | Automated CI/CD deployment |
 | **Domain** | Custom DNS + SSL | Professional hosting setup |
 
-### Performance Metrics
+### 📊 **Performance Metrics**
 
 - ⚡ **Lighthouse Score:** 95+ across all categories
 - 🔄 **Build Time:** ~2.5 seconds for full production build  
@@ -148,27 +200,28 @@ npm test                    # Run test suite
 
 ```text
 MechanicsOfMotherhood/
-├── client/                    # React frontend application
-│   ├── public/               # Static assets & PWA manifest
+├── 📁 client/                    # React frontend application
+│   ├── 📁 public/               # Static assets & PWA manifest
 │   │   ├── CNAME                # Custom domain configuration
 │   │   ├── sitemap.xml          # SEO sitemap (auto-generated)
 │   │   └── robots.txt           # Search engine directives
-│   └── src/
-│       ├── components/       # Reusable UI components
-│       ├── pages/            # Route-specific components
-│       ├── data/             # API integration & types
-│       ├── hooks/            # Custom React hooks
-│       └── lib/              # Utilities & configurations
-├── scripts/                  # Build automation scripts
-├── .github/workflows/        # GitHub Actions CI/CD
-└── copilot/                  # Auto-generated documentation
+│   └── 📁 src/
+│       ├── 📁 components/       # Reusable UI components
+│       ├── 📁 pages/            # Route-specific components
+│       ├── 📁 data/             # API integration & types
+│       ├── 📁 hooks/            # Custom React hooks
+│       └── 📁 lib/              # Utilities & configurations
+├── 📁 scripts/                  # Build automation scripts
+├── 📁 .github/workflows/        # GitHub Actions CI/CD
+└── 📁 copilot/                  # Auto-generated documentation
 ```
 
 ---
 
 ## 🌟 Recent Achievements
 
-### Version 1.0 Highlights (August–September 2025)
+<details>
+<summary><b>🎉 Version 1.0 Highlights (August–September 2025)</b></summary>
 
 - ✅ **Real API Integration** - Connected to live RecipeSpark API with 108+ recipes
 - ✅ **Custom Domain Hosting** - Professional setup at mechanicsofmotherhood.com  
@@ -178,13 +231,15 @@ MechanicsOfMotherhood/
 - ✅ **Performance Optimization** - Fast loading with efficient caching
 - ✅ **GitHub Actions CI/CD** - Automated testing and deployment
 
+</details>
+
 ---
 
 ## 🤝 Contributing
 
 We welcome contributions from the community! Here's how you can help:
 
-### 🐛 Found a Bug or Have an Idea?
+### 🐛 **Found a Bug or Have an Idea?**
 
 **[→ Create an Issue](https://github.com/markhazleton/MechanicsOfMotherhood/issues)**
 
@@ -195,7 +250,7 @@ Please use our issue templates for:
 - 📚 Documentation improvements
 - 🤔 Questions and discussions
 
-### 🔧 Want to Contribute Code?
+### 🔧 **Want to Contribute Code?**
 
 1. **Fork** the repository
 2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
@@ -204,7 +259,8 @@ Please use our issue templates for:
 5. **Push** to your branch (`git push origin feature/amazing-feature`)
 6. **Open** a Pull Request
 
-#### Development Guidelines
+<details>
+<summary>📝 <b>Development Guidelines</b></summary>
 
 - **Code Style:** Follow existing TypeScript/React patterns
 - **Testing:** Add tests for new features
@@ -212,9 +268,13 @@ Please use our issue templates for:
 - **Performance:** Consider mobile performance impact
 - **Accessibility:** Ensure WCAG compliance
 
+</details>
+
 ---
 
 ## 📞 Support & Community
+
+<div align="center">
 
 | **Need Help?** | **Want to Discuss?** | **Found a Bug?** |
 |----------------|---------------------|------------------|
@@ -222,90 +282,7 @@ Please use our issue templates for:
 
 **All communication should go through the [GitHub Issues Board](https://github.com/markhazleton/MechanicsOfMotherhood/issues) for proper tracking and community visibility.**
 
----
-
-## 🗄️ Data Sources & API Integration
-
-### Real API Integration
-
-The application fetches live data from multiple sources:
-
-1. **RecipeSpark API**: `https://webspark.markhazleton.com/api/recipespark`
-   - 108+ recipes with ingredients, instructions, and ratings
-   - 14 categorized recipe collections
-   - Automated data quality validation
-
-2. **WebCMS API**: `https://webspark.markhazleton.com/api/WebCMS/WebCMSApi`
-   - Website content and structure
-   - Menu navigation data
-   - Dynamic content management
-
-3. **Mock Data Fallback**: High-quality sample data when APIs are unavailable
-
-### Data Quality Assurance
-
-- **Automated Validation** during build process
-- **Quality Score Tracking** (currently 100%)
-- **Data Relationship Verification**
-- **Automatic Error Correction** for common issues
-
----
-
-## 🚀 Deployment & Hosting
-
-### Production Hosting
-
-- **Primary Domain**: [mechanicsofmotherhood.com](https://mechanicsofmotherhood.com)
-- **GitHub Pages Fallback**: [markhazleton.github.io/MechanicsOfMotherhood](https://markhazleton.github.io/MechanicsOfMotherhood/)
-- **SSL Certificate**: Automatically managed by GitHub Pages
-- **CDN**: Global distribution via GitHub's CDN
-
-### Deployment Process
-
-The site automatically deploys when changes are pushed to the main branch:
-
-1. ✅ **Data Fetching** - Retrieves fresh recipe data from APIs
-2. ✅ **Quality Validation** - Ensures 100% data quality score
-3. ✅ **Sitemap Generation** - Creates SEO-optimized sitemap
-4. ✅ **TypeScript Compilation** - Type checking and compilation
-5. ✅ **Production Build** - Optimized bundles with code splitting
-6. ✅ **Deployment** - Automatic deployment to GitHub Pages
-
-### Custom Domain Setup
-
-The repository is configured for custom domain hosting with:
-
-- **CNAME Configuration** for apex and www domains
-- **DNS Settings** pointing to GitHub Pages
-- **Automatic SSL** certificate provisioning
-- **Build-time Domain Detection** for proper asset paths
-
----
-
-## 🧪 Testing & Quality Assurance
-
-### Build Validation
-
-```bash
-# Full production build test
-npm run build:github
-
-# Type checking
-npm run check
-
-# Data quality validation
-npm run validate-data
-
-# Preview production build
-npm run preview
-```
-
-### Performance Testing
-
-- **Lighthouse Audits** integrated into CI/CD
-- **Bundle Size Analysis** with warnings for large chunks
-- **Performance Budget** monitoring
-- **Mobile Performance** optimization
+</div>
 
 ---
 
@@ -313,7 +290,7 @@ npm run preview
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-### 🙏 Acknowledgments
+### 🙏 **Acknowledgments**
 
 - [Shadcn/ui](https://ui.shadcn.com/) for the beautiful component library
 - [Radix UI](https://www.radix-ui.com/) for accessible component primitives  
@@ -321,14 +298,20 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - [Tailwind CSS](https://tailwindcss.com/) for utility-first styling
 - [Vite](https://vitejs.dev/) for the blazing-fast build tool
 
-### Keywords
+### 🏷️ **Keywords**
 
 `recipe-management` `react` `typescript` `vite` `tailwindcss` `github-pages` `pwa` `mobile-first` `cooking` `food` `mothers` `family-recipes`
 
 ---
 
+<div align="center">
+
 **Built with ❤️ for working mothers everywhere**
+
+[🏠 Homepage](https://mechanicsofmotherhood.com) • [📱 Live Demo](https://mechanicsofmotherhood.com) • [📚 Documentation](https://github.com/markhazleton/MechanicsOfMotherhood/wiki) • [💬 Community](https://github.com/markhazleton/MechanicsOfMotherhood/discussions)
 
 **Developed by [Mark Hazleton](https://markhazleton.com)** • [GitHub](https://github.com/markhazleton) • [Website](https://markhazleton.com)
 
 ⭐ **Star this repo if you find it useful!** ⭐
+
+</div>
