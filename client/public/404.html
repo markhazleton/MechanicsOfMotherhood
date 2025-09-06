@@ -7,27 +7,40 @@
     <script>
       // GitHub Pages SPA redirect
       // https://github.com/rafgraph/spa-github-pages
-      var pathSegmentsToKeep = 1;
+      // Modified to handle both custom domain and GitHub Pages sub-path deployments
+      
       var l = window.location;
-      l.replace(
-        l.protocol +
-          "//" +
-          l.hostname +
-          (l.port ? ":" + l.port : "") +
-          l.pathname
-            .split("/")
-            .slice(0, 1 + pathSegmentsToKeep)
-            .join("/") +
-          "/?/" +
-          l.pathname
-            .slice(1)
-            .split("/")
-            .slice(pathSegmentsToKeep)
-            .join("/")
-            .replace(/&/g, "~and~") +
-          (l.search ? "&" + l.search.slice(1).replace(/&/g, "~and~") : "") +
-          l.hash
-      );
+      var isCustomDomain = l.hostname === 'mechanicsofmotherhood.com' || l.hostname === 'www.mechanicsofmotherhood.com';
+      
+      if (isCustomDomain) {
+        // Custom domain - redirect directly without sub-path
+        l.replace(
+          l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+          '/?' + l.pathname.slice(1) + (l.search ? '&' + l.search.slice(1) : '') + l.hash
+        );
+      } else {
+        // GitHub Pages sub-path - use original logic
+        var pathSegmentsToKeep = 1;
+        l.replace(
+          l.protocol +
+            "//" +
+            l.hostname +
+            (l.port ? ":" + l.port : "") +
+            l.pathname
+              .split("/")
+              .slice(0, 1 + pathSegmentsToKeep)
+              .join("/") +
+            "/?/" +
+            l.pathname
+              .slice(1)
+              .split("/")
+              .slice(pathSegmentsToKeep)
+              .join("/")
+              .replace(/&/g, "~and~") +
+            (l.search ? "&" + l.search.slice(1).replace(/&/g, "~and~") : "") +
+            l.hash
+        );
+      }
     </script>
   </head>
   <body>
