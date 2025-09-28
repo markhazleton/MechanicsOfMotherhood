@@ -40,27 +40,31 @@ export default defineConfig({
       ? {}
       : {
           output: {
-            manualChunks: {
-              "vendor-react": ["react", "react-dom"],
-              "vendor-router": ["wouter"],
-
-              "ui-radix-core": [
-                "@radix-ui/react-slot",
-                "@radix-ui/react-tooltip",
-              ],
-              "ui-radix-overlay": [
-                "@radix-ui/react-dialog",
-                "@radix-ui/react-toast",
-              ],
-              "ui-radix-layout": ["@radix-ui/react-separator"],
-              "vendor-markdown": ["react-markdown"],
-              "vendor-helmet": ["react-helmet-async"],
-              "vendor-icons": ["lucide-react"],
-              "utils-style": [
-                "clsx",
-                "tailwind-merge",
-                "class-variance-authority",
-              ],
+            manualChunks: (id) => {
+              if (id.includes("node_modules")) {
+                if (id.includes("react-markdown")) return "vendor-markdown";
+                if (id.includes("react-helmet-async")) return "vendor-helmet";
+                if (id.includes("wouter")) return "vendor-router";
+                if (id.includes("lucide-react")) return "vendor-icons";
+                if (/(react|react-dom)\\/.test(id)) return "vendor-react";
+                if (id.match(/@radix-ui\/react-(dialog|toast)/))
+                  return "ui-radix-overlay";
+                if (id.match(/@radix-ui\/react-(tooltip|slot)/))
+                  return "ui-radix-core";
+                if (id.match(/@radix-ui\/react-separator/))
+                  return "ui-radix-layout";
+                if (id.match(/(clsx|tailwind-merge|class-variance-authority)/))
+                  return "utils-style";
+                return "vendor";
+              }
+              // Page-level splits (recipe / blog heavy routes)
+              if (id.includes("pages/recipe-detail"))
+                return "page-recipe-detail";
+              if (id.includes("pages/category-recipes"))
+                return "page-category-recipes";
+              if (id.includes("pages/blog")) return "page-blog";
+              if (id.includes("analytics") || id.includes("useAnalytics"))
+                return "analytics";
             },
             chunkFileNames: "assets/[name]-[hash].js",
             entryFileNames: "assets/[name]-[hash].js",

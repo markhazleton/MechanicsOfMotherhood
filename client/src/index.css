@@ -72,6 +72,20 @@
   --color-destructive: var(--color-destructive-600);
   --color-destructive-foreground: 0 0% 100%;
 
+  /* Colors - Warning (Amber) */
+  --color-warning-50: hsl(38 100% 97%);
+  --color-warning-100: hsl(38 97% 92%);
+  --color-warning-200: hsl(38 96% 85%);
+  --color-warning-300: hsl(38 94% 76%);
+  --color-warning-400: hsl(38 92% 65%);
+  --color-warning-500: hsl(38 90% 55%);
+  --color-warning-600: hsl(32 85% 48%);
+  --color-warning-700: hsl(28 75% 40%);
+  --color-warning-800: hsl(25 70% 33%);
+  --color-warning-900: hsl(22 65% 28%);
+  --color-warning: var(--color-warning-500);
+  --color-warning-foreground: 0 0% 0%;
+
   /* Semantic Colors */
   --color-background: hsl(0 0% 100%);
   --color-foreground: var(--color-neutral-900);
@@ -234,6 +248,78 @@
   .text-destructive-foreground {
     color: hsl(var(--color-destructive-foreground));
   }
+  .bg-warning-soft {
+    background-color: hsl(var(--color-warning-50));
+  }
+  .text-warning-700 {
+    color: hsl(var(--color-warning-700));
+  }
+  .border-warning-300 {
+    border-color: hsl(var(--color-warning-300));
+  }
+  .hover\:bg-warning-100:hover {
+    background-color: hsl(var(--color-warning-100));
+  }
+
+  /* Shared hero gradient utility */
+  .bg-hero-brand-accent {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--color-brand-800) / 0.95) 0%,
+      hsl(var(--color-neutral-800) / 0.92) 45%,
+      hsl(var(--color-brand-700) / 0.9) 100%
+    );
+  }
+  .dark .bg-hero-brand-accent {
+    background-image: linear-gradient(
+      140deg,
+      hsl(var(--color-brand-800) / 0.88) 0%,
+      hsl(var(--color-neutral-700) / 0.75) 42%,
+      hsl(var(--color-brand-600) / 0.82) 100%
+    );
+  }
+  .hero-overlay {
+    position: relative;
+  }
+  .hero-overlay::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* Layer order: pattern noise -> radial tint -> vertical fade */
+    background:
+      /* Subtle cross-hatch / noise pattern (pure CSS, no network) */ repeating-linear-gradient(
+        45deg,
+        hsl(var(--color-brand-900) / 0.04) 0 2px,
+        transparent 2px 6px
+      ),
+      radial-gradient(
+        circle at 50% 30%,
+        hsl(var(--color-brand-50) / 0.25),
+        transparent 60%
+      ),
+      linear-gradient(
+        to bottom,
+        hsl(var(--color-background) / 0) 0%,
+        hsl(var(--color-background) / 0.9) 90%
+      );
+    mix-blend-mode: normal;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero-overlay > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Hero display title embellishment for future image/pattern layering */
+  .hero-title {
+    text-shadow: 0 1px 2px hsl(var(--color-neutral-900) / 0.15),
+      0 2px 8px hsl(var(--color-neutral-900) / 0.12);
+  }
+  .dark .hero-title {
+    text-shadow: 0 2px 4px hsl(var(--color-neutral-900) / 0.6),
+      0 4px 16px hsl(var(--color-neutral-900) / 0.4);
+  }
 
   /* Button semantic variants (used via classNames or future CVA extension) */
   .btn {
@@ -329,6 +415,37 @@
       --color-secondary: 220 27% 16%;
       --color-secondary-foreground: 220 14% 96%;
       --color-ring: var(--color-brand-500);
+      /* Dark adjusted success/destructive/warning for contrast */
+      --color-success-50: hsl(170 55% 11%);
+      --color-success-100: hsl(170 55% 14%);
+      --color-success-200: hsl(170 55% 18%);
+      --color-success-300: hsl(170 55% 24%);
+      --color-success-400: hsl(170 55% 30%);
+      --color-success-500: hsl(170 60% 38%);
+      --color-success-600: hsl(170 65% 46%);
+      --color-success-700: hsl(170 70% 60%);
+      --color-success-800: hsl(170 75% 72%);
+      --color-success-900: hsl(170 80% 82%);
+      --color-destructive-50: hsl(0 65% 12%);
+      --color-destructive-100: hsl(0 70% 16%);
+      --color-destructive-200: hsl(0 72% 22%);
+      --color-destructive-300: hsl(0 74% 30%);
+      --color-destructive-400: hsl(0 76% 38%);
+      --color-destructive-500: hsl(0 78% 46%);
+      --color-destructive-600: hsl(0 82% 55%);
+      --color-destructive-700: hsl(0 85% 65%);
+      --color-destructive-800: hsl(0 88% 75%);
+      --color-destructive-900: hsl(0 92% 82%);
+      --color-warning-50: hsl(38 60% 12%);
+      --color-warning-100: hsl(38 65% 16%);
+      --color-warning-200: hsl(38 65% 20%);
+      --color-warning-300: hsl(38 70% 28%);
+      --color-warning-400: hsl(38 75% 36%);
+      --color-warning-500: hsl(38 80% 44%);
+      --color-warning-600: hsl(38 85% 54%);
+      --color-warning-700: hsl(38 88% 64%);
+      --color-warning-800: hsl(38 90% 72%);
+      --color-warning-900: hsl(38 95% 80%);
     }
   }
   /* Typography plugin brand variant (legacy placeholder `prose-brand` now implemented)

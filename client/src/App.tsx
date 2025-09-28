@@ -9,13 +9,14 @@ import { ErrorBoundary } from "@/components/error-boundary";
 import { logError } from '@/utils/error-logger';
 
 // Direct imports (SSR-friendly; trade-off: larger initial bundle, acceptable for full SSG)
-import Home from "@/pages/home";
-import Recipes from "@/pages/recipes";
-import RecipeDetail from "@/pages/recipe-detail";
-import Categories from "@/pages/categories";
-import CategoryRecipes from "@/pages/category-recipes";
-import Blog from "@/pages/blog";
-import NotFound from "@/pages/not-found";
+import Home from "@/pages/home"; 
+import Recipes from "@/pages/recipes"; 
+import Categories from "@/pages/categories"; 
+import NotFound from "@/pages/not-found"; 
+// Lazy loaded heavy/less critical routes 
+const RecipeDetail = React.lazy(() => import('./pages/recipe-detail')); 
+const CategoryRecipes = React.lazy(() => import('./pages/category-recipes')); 
+const Blog = React.lazy(() => import('./pages/blog')); 
 
 // Configure base path for GitHub Pages.
 // If a custom domain is configured, deploy at root.
@@ -85,7 +86,7 @@ function AppRouter({ ssrPath }: AppRouterProps) {
           <Switch>
             <Route path="/" component={Home} />
             <Route path="/recipes" component={Recipes} />
-            <Route path="/recipe/:slug" component={RecipeDetail} />
+            <Route path="/recipe/:slug" component={RecipeDetail} /> 
             <Route path="/categories" component={Categories} />
             <Route path="/recipes/category/:categorySlug" component={CategoryRecipes} />
             <Route path="/blog" component={Blog} />
