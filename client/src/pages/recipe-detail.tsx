@@ -70,17 +70,17 @@ export default function RecipeDetail() {
 
   if (error || !recipe) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-surface-base text-text-base">
         <Navigation />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="font-mechanical text-3xl font-bold text-blue-900 mb-4">
+            <h1 className="font-mechanical heading-xl text-text-strong mb-4">
               Recipe Not Found
             </h1>
-            <p className="text-gray-600 mb-8">
+            <p className="text-text-muted mb-8">
               {error || "The recipe you're looking for doesn't exist or has been removed."}
             </p>
-            <Button onClick={() => navigate("/recipes")} className="bg-teal-600 hover:bg-teal-700 text-white">
+            <Button onClick={() => navigate("/recipes")} variant="brand">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Recipes
             </Button>
@@ -112,7 +112,7 @@ export default function RecipeDetail() {
   });
 
   return (
-    <div className="recipe-detail-page min-h-screen bg-white">
+  <div className="recipe-detail-page min-h-screen bg-surface-base text-text-base">
       {/* SEO Head */}
       <SeoHead
         title={recipe.name}
@@ -132,7 +132,7 @@ export default function RecipeDetail() {
       </div>
       
       {/* Breadcrumb Navigation */}
-  <div className="bg-white border-b border-gray-200">
+  <div className="bg-surface-subtle border-b border-border-subtle">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <BreadcrumbNav items={breadcrumbs} />
         </div>
@@ -140,7 +140,7 @@ export default function RecipeDetail() {
       
       {/* Hero Section */}
     <section className="relative recipe-hero-section no-print">
-  <div className="h-96 bg-gradient-to-r from-blue-900/20 to-teal-700/20 relative overflow-hidden">
+  <div className="h-96 bg-gradient-to-r from-brand-900/25 to-accent-600/25 relative overflow-hidden">
           <img
             src={getRecipeImageUrl(recipe)}
             alt={getRecipeImageAlt(recipe)}
@@ -153,8 +153,8 @@ export default function RecipeDetail() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 w-full">
             <Button
               onClick={handleBackClick}
-              variant="secondary"
-              className="mb-6 bg-white/90 hover:bg-white text-blue-900"
+              variant="subtle"
+              className="mb-6 bg-white/90 hover:bg-white text-brand-800 dark:text-brand-100"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Recipes
@@ -162,7 +162,7 @@ export default function RecipeDetail() {
             
             <div className="text-white">
               <div className="flex items-center gap-2 mb-4">
-                <Badge className="bg-teal-600 text-white">
+                <Badge variant="brand" className="bg-accent-solid text-white">
                   {recipe?.recipeCategory?.name || "Recipe"}
                 </Badge>
                 {/* Difficulty removed: no source field in API */}
@@ -179,7 +179,7 @@ export default function RecipeDetail() {
                   <span className="ml-1">{recipe?.servings || 4}</span>
                 </div>
                 <div className="flex items-center">
-                  <Star className="w-5 h-5 mr-2 fill-current text-orange-500" />
+                  <Star className="w-5 h-5 mr-2 fill-current text-accent-600" />
                   <span className="font-semibold">{recipe?.averageRating || 5}/5</span>
                   <span className="ml-1 text-sm">({recipe?.ratingCount || 0} reviews)</span>
                 </div>
@@ -204,12 +204,12 @@ export default function RecipeDetail() {
           </div>
           
           {/* Description Card */}
-      <Card className="shadow-md hover:shadow-lg transition-shadow border border-gray-200 mb-8">
+      <Card className="shadow-md hover:shadow-lg transition-shadow border border-border-subtle bg-surface-card mb-8">
             <CardContent className="p-6">
-        <div className="prose prose-lg max-w-none prose-headings:text-blue-900 prose-links:text-teal-600 prose-strong:text-blue-900 prose-em:text-gray-700 prose-p:text-gray-700 prose-p:leading-relaxed">
+        <div className="prose prose-lg max-w-none prose-headings:text-text-strong prose-links:text-brand-600 hover:prose-links:text-accent-600 prose-strong:text-text-strong prose-em:text-text-muted prose-p:text-text-base prose-p:leading-relaxed">
                 <MarkdownContent 
                   content={recipe?.description || "No description available for this recipe."}
-                  className="text-gray-700"
+                  className="text-text-base"
                 />
               </div>
             </CardContent>
@@ -219,9 +219,9 @@ export default function RecipeDetail() {
             
             {/* Ingredients */}
             <div className="lg:col-span-1">
-              <Card className="shadow-md hover:shadow-lg transition-shadow border border-gray-200">
+              <Card className="shadow-md hover:shadow-lg transition-shadow border border-border-subtle bg-surface-card">
                 <CardHeader>
-                  <CardTitle className="font-mechanical text-2xl text-blue-900 flex items-center">
+                  <CardTitle className="font-mechanical heading-lg text-text-strong flex items-center">
                     <BookOpen className="w-6 h-6 mr-2" />
                     Ingredients
                   </CardTitle>
@@ -236,20 +236,20 @@ export default function RecipeDetail() {
                     ) : ingredientsList && ingredientsList.length > 0 ? (
                       ingredientsList.map((ingredient: string, index: number) => (
                         <div key={index} className="flex items-start">
-                          <div className="w-2 h-2 bg-teal-600 rounded-full mt-2 mr-3 flex-shrink-0" />
-                          <span className="text-gray-700 leading-relaxed">{ingredient}</span>
+                          <div className="w-2 h-2 bg-accent-600 rounded-full mt-2 mr-3 flex-shrink-0" />
+                          <span className="text-text-base leading-relaxed">{ingredient}</span>
                         </div>
                       ))
                     ) : (
-                      <p className="text-gray-600 italic">No ingredients listed</p>
+                      <p className="text-text-muted italic">No ingredients listed</p>
                     )}
                   </div>
 
                   {/* SEO Keywords as Tags */}
                   {recipe?.seO_Keywords && (
-                    <div className="mt-6 pt-6 border-t border-neutral-300 recipe-tags">
-                      <h4 className="font-semibold text-blue-900 mb-3 flex items-center">
-                        <span className="w-2 h-2 bg-teal-600 rounded-full mr-2"></span>
+                    <div className="mt-6 pt-6 border-t border-border-subtle recipe-tags">
+                      <h4 className="font-semibold text-text-strong mb-3 flex items-center">
+                        <span className="w-2 h-2 bg-accent-600 rounded-full mr-2"></span>
                         Recipe Tags
                       </h4>
                       <div className="flex flex-wrap gap-2">
@@ -265,10 +265,10 @@ export default function RecipeDetail() {
                             
                             // Cycle through different badge styles for visual variety
                             const badgeStyles = [
-                              "bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100",
-                              "bg-orange-50 text-orange-600 border-orange-200 hover:bg-orange-100",
-                              "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100",
-                              "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
+                              "bg-accent-soft text-accent-700 border-accent-300 hover:bg-accent-100",
+                              "bg-brand-soft text-brand-700 border-brand-300 hover:bg-brand-100",
+                              "bg-surface-subtle text-text-strong border-border-subtle hover:bg-surface-alt",
+                              "bg-success-soft text-success-700 border-success-300 hover:bg-success-100"
                             ];
                             
                             const styleIndex = index % badgeStyles.length;
@@ -300,9 +300,9 @@ export default function RecipeDetail() {
 
             {/* Instructions */}
             <div className="lg:col-span-2">
-              <Card className="shadow-md hover:shadow-lg transition-shadow border border-gray-200">
+              <Card className="shadow-md hover:shadow-lg transition-shadow border border-border-subtle bg-surface-card">
                 <CardHeader>
-                  <CardTitle className="font-mechanical text-2xl text-blue-900 flex items-center">
+                  <CardTitle className="font-mechanical heading-lg text-text-strong flex items-center">
                     <ChefHat className="w-6 h-6 mr-2" />
                     Instructions
                   </CardTitle>
@@ -317,16 +317,16 @@ export default function RecipeDetail() {
                     ) : instructionsList && instructionsList.length > 0 ? (
                       instructionsList.map((instruction: string, index: number) => (
                         <div key={index} className="flex">
-                          <div className="flex-shrink-0 w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-bold text-sm mr-4">
+                          <div className="flex-shrink-0 w-8 h-8 bg-accent-600 text-white rounded-full flex items-center justify-center font-bold text-sm mr-4">
                             {index + 1}
                           </div>
                           <div className="flex-1">
-                            <p className="text-gray-700 leading-relaxed">{instruction}</p>
+                            <p className="text-text-base leading-relaxed">{instruction}</p>
                           </div>
                         </div>
                       ))
                     ) : (
-                      <p className="text-gray-600 italic">No instructions provided</p>
+                      <p className="text-text-muted italic">No instructions provided</p>
                     )}
                   </div>
 
@@ -335,8 +335,8 @@ export default function RecipeDetail() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 additional-recipe-info">
                     <div>
-                      <h4 className="font-semibold text-blue-900 mb-2">Cooking Tips</h4>
-                      <ul className="text-sm text-gray-600 space-y-1">
+                      <h4 className="font-semibold text-text-strong mb-2">Cooking Tips</h4>
+                      <ul className="text-sm text-text-muted space-y-1">
                         <li>• Read through all instructions before starting</li>
                         <li>• Prep all ingredients before cooking</li>
                         <li>• Adjust seasonings to taste</li>
@@ -344,8 +344,8 @@ export default function RecipeDetail() {
                       </ul>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-blue-900 mb-2">Storage</h4>
-                      <ul className="text-sm text-gray-600 space-y-1">
+                      <h4 className="font-semibold text-text-strong mb-2">Storage</h4>
+                      <ul className="text-sm text-text-muted space-y-1">
                         <li>• Store leftovers in refrigerator</li>
                         <li>• Best consumed within 2-3 days</li>
                         <li>• Can be frozen for up to 3 months</li>
@@ -363,15 +363,16 @@ export default function RecipeDetail() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 size="lg" 
-                className="bg-teal-600 hover:bg-teal-700 text-white px-8"
+                variant="brand"
+                className="px-8"
                 onClick={() => window.print()}
               >
                 Print Recipe
               </Button>
               <Button 
                 size="lg" 
-                variant="outline" 
-                className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white px-8 share-actions"
+                variant="outlineBrand" 
+                className="px-8 share-actions hover:bg-accent-600 hover:text-white hover:border-accent-600"
                 onClick={() => {
                   navigator.share?.({
                     title: recipe?.name || "Recipe",

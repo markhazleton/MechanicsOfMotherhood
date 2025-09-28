@@ -73,7 +73,7 @@ function AppRouter({ ssrPath }: AppRouterProps) {
       {/* Skip Link */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] bg-blue-900 text-white px-4 py-2 rounded shadow-md"
+  className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] bg-brand-900 text-white px-4 py-2 rounded shadow-md"
       >
         Skip to content
       </a>

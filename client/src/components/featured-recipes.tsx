@@ -29,17 +29,17 @@ export default function FeaturedRecipes() {
   };
 
   return (
-  <section id="recipes" className="py-16 bg-white">
+  <section id="recipes" className="py-16 bg-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-4">
-            <Settings className="text-teal-600 text-2xl mr-3" />
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-blue-900">
+            <Settings className="text-brand-600 text-2xl mr-3" />
+            <h2 className="heading-lg text-brand-900">
               MoM's Kitchen Workshop
             </h2>
-            <Settings className="text-teal-600 text-2xl ml-3" />
+            <Settings className="text-brand-600 text-2xl ml-3" />
           </div>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Precision-engineered recipes for the modern working mother. Every dish tested, timed, and perfected.
           </p>
         </div>
@@ -49,8 +49,8 @@ export default function FeaturedRecipes() {
           {categories.map((category: Category) => (
             <Button
               key={category.id}
-              variant="outline"
-              className="bg-orange-50 hover:bg-orange-500 hover:text-white text-gray-700 px-6 py-3 rounded-full font-medium transition-all duration-300 border border-orange-200"
+              variant="outlineBrand"
+              className="px-6 py-3 rounded-full font-medium transition-all duration-300"
               data-testid={`category-button-${category.name.toLowerCase().replace(/\s+/g, '-')}`}
               onClick={() => navigate(`/recipes/category/${getCategorySlug(category.name)}`)}
             >
@@ -62,7 +62,7 @@ export default function FeaturedRecipes() {
         {/* Recipe Grid */}
         <div className="grid grid-cols-1 md:grid-2 lg:grid-cols-3 gap-8">
           {recipes.map((recipe: Recipe) => (
-            <Card key={recipe.id} className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg motion-safe:hover:scale-[1.02] motion-safe:transform transition-all duration-300 border border-slate-100" data-testid={`recipe-card-${recipe.id}`}>
+            <Card key={recipe.id} className="bg-surface-elevated rounded-xl overflow-hidden shadow hover:shadow-lg motion-safe:hover:scale-[1.02] motion-safe:transform transition-all duration-300 border border-border" data-testid={`recipe-card-${recipe.id}`}>
               <img
                 src={getRecipeImageUrl(recipe)}
                 alt={getRecipeImageAlt(recipe)}
@@ -70,15 +70,15 @@ export default function FeaturedRecipes() {
               />
               <CardContent className="p-6">
                 <div className="flex items-center justify-end mb-3">
-                  <div className="flex items-center text-orange-500" aria-label="Recipe rating">
+                  <div className="flex items-center text-accent-600" aria-label="Recipe rating">
                     <Star size={14} fill="currentColor" />
                     <span className="ml-1 text-sm font-semibold">{recipe.averageRating ?? '–'}</span>
                   </div>
                 </div>
-                <h3 className="font-semibold text-xl mb-2 text-blue-900" data-testid={`recipe-title-${recipe.id}`}>
+                <h3 className="font-semibold text-xl mb-2 text-brand-900" data-testid={`recipe-title-${recipe.id}`}>
                   {recipe.name}
                 </h3>
-                <div className="text-gray-600 mb-4">
+                <div className="text-muted-foreground mb-4">
                   <MarkdownContent 
                     content={recipe.description || "Delicious recipe from MoM's kitchen workshop"}
                     summary={true}
@@ -86,7 +86,7 @@ export default function FeaturedRecipes() {
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center text-sm text-gray-500">
+                  <div className="flex items-center text-sm text-muted-foreground">
                     <span className="flex items-center">
                       <Users size={14} className="mr-1" />
                       {recipe.servings ?? '–'}{recipe.servings ? ' servings' : ''}
@@ -96,7 +96,7 @@ export default function FeaturedRecipes() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-orange-500 hover:text-orange-600 font-semibold"
+                      className="text-accent-600 hover:text-accent-700 font-semibold"
                       onClick={() => {
                         analytics.trackButtonClick('build_recipe', 'featured_recipes', {
                           recipe_id: recipe.id,
@@ -118,9 +118,9 @@ export default function FeaturedRecipes() {
 
         <div className="text-center mt-12">
           <Button
-            variant="outline"
+            variant="outlineBrand"
             size="lg"
-            className="bg-white hover:bg-slate-50 text-gray-700 px-8 py-4 rounded-xl font-semibold text-lg transition-all border border-slate-200 shadow-sm"
+            className="px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-sm"
             data-testid="button-browse-workshop-manual"
             onClick={() => {
               analytics.trackButtonClick('browse_full_manual', 'featured_recipes', {

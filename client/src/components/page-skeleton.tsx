@@ -1,10 +1,10 @@
 export default function PageSkeleton() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-brand-50/40 to-white dark:from-neutral-800 dark:to-neutral-900">
       {/* Header */}
-      <div className="bg-blue-600 text-white py-4">
+      <div className="bg-brand-600 text-white py-4">
         <div className="container mx-auto px-4">
-          <div className="h-8 w-48 bg-blue-500 rounded animate-pulse"></div>
+          <div className="h-8 w-48 bg-brand-500 rounded animate-pulse"></div>
         </div>
       </div>
 
