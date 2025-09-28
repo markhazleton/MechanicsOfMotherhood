@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Settings, Utensils, Search, Home, BookOpen, Wrench, UserCheck, Menu, X } from "lucide-react";
+import { Settings, Utensils, Search, Home, BookOpen, Wrench, Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -35,8 +35,8 @@ export default function Navigation() {
   const NavLink = ({ href, label, icon: Icon }: { href: string; label: string; icon: any }) => (
     <Link
       href={href}
-      className={`flex items-center space-x-2 text-[hsl(var(--color-tool-gray))] hover:text-[hsl(var(--color-energetic-orange))] font-medium transition-colors ${
-        location === href ? "text-[hsl(var(--color-energetic-orange))]" : ""
+      className={`flex items-center gap-2 px-2 py-1 rounded-md font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-orange-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white hover:text-orange-500 text-gray-600 ${
+        location === href ? "text-orange-500" : ""
       }`}
       data-testid={`nav-link-${label.toLowerCase().replace(" ", "-")}`}
     >
@@ -46,7 +46,7 @@ export default function Navigation() {
   );
 
   return (
-    <nav className="bg-white shadow-lg mechanical-shadow sticky top-0 z-50">
+    <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -70,8 +70,8 @@ export default function Navigation() {
               </div>
             </div>
             <div className="flex flex-col">
-              <h1 className="font-mechanical text-2xl font-bold text-[hsl(var(--color-industrial-blue))]">MoM</h1>
-              <span className="text-xs text-[hsl(var(--color-tool-gray))] font-industrial -mt-1">MECHANICS OF MOTHERHOOD</span>
+              <h1 className="text-2xl font-extrabold tracking-tight text-blue-800">MoM</h1>
+              <span className="text-xs text-gray-500 font-semibold -mt-1 tracking-wide">MECHANICS OF MOTHERHOOD</span>
             </div>
           </Link>
 
@@ -86,13 +86,13 @@ export default function Navigation() {
           <div className="flex items-center space-x-4">
             {/* Desktop Search */}
             <form onSubmit={handleSearch} className="relative hidden md:block">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-tool-gray" size={16} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
               <Input
                 type="text"
                 placeholder="MoM's Tool Finder..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-medium-gray rounded-lg focus:ring-2 focus:ring-workshop-teal focus:border-transparent"
+                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 data-testid="search-input"
               />
             </form>
@@ -100,8 +100,8 @@ export default function Navigation() {
             {/* Mobile Menu */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="md:hidden" data-testid="mobile-menu-button">
-                  <Menu className="text-tool-gray" size={20} />
+                <Button variant="ghost" size="sm" className="md:hidden focus-visible:ring-2 focus-visible:ring-orange-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white" data-testid="mobile-menu-button">
+                  <Menu className="text-gray-600" size={20} />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
@@ -112,7 +112,7 @@ export default function Navigation() {
                   
                   {/* Mobile Search */}
                   <form onSubmit={handleSearch} className="relative mt-6">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-tool-gray" size={16} />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                     <Input
                       type="text"
                       placeholder="MoM's Tool Finder..."

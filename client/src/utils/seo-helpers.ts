@@ -8,7 +8,8 @@ import { getCategorySlug } from "@/utils/slugify";
 export const SITE_CONFIG = {
   name: "Mechanics of Motherhood",
   shortName: "MoM",
-  url: "https://sharesmallbiz-support.github.io/MechanicsOfMotherhood",
+  // Canonical base domain (custom domain)
+  url: "https://mechanicsofmotherhood.com",
   description:
     "Engineering better meals for working mothers worldwide. Tested recipes, kitchen tools, and meal planning solutions.",
   author: "Mechanics of Motherhood",
@@ -89,7 +90,14 @@ export function generateRecipeKeywords(recipe: Recipe): string[] {
 
   // Remove duplicates and empty strings
   const uniqueKeywords = keywords.filter((k) => k.trim());
-  return Array.from(new Set(uniqueKeywords));
+  const deduped = Array.from(
+    new Set(uniqueKeywords.map((k) => k.toLowerCase()))
+  );
+  // Reserved brand keywords ensure presence
+  ["mom", "mechanics of motherhood", "recipes"].forEach((r) => {
+    if (!deduped.includes(r)) deduped.push(r);
+  });
+  return deduped.slice(0, 20);
 }
 
 /**
@@ -221,4 +229,52 @@ export function estimateCookingTimes(recipe: Recipe) {
     default:
       return { cookTime: "PT1H", totalTime: "PT1H" };
   }
+}
+
+/** Normalize arbitrary keyword array (dedupe + add brand + cap length) */
+export function normalizeKeywords(list: string[]): string[] {
+  const base = (list || [])
+    .map((k) => k.trim())
+    .filter(Boolean)
+    .map((k) => k.toLowerCase());
+  const set = new Set(base);
+  ["mom", "mechanics of motherhood", "recipes"].forEach((r) => set.add(r));
+  return Array.from(set).slice(0, 20);
+}
+
+/** Convert relative image or path to absolute canonical URL */
+export function toAbsoluteUrl(path?: string): string | undefined {
+  if (!path) return undefined;
+  if (path.startsWith("http")) return path;
+  return `${SITE_CONFIG.url}${path.startsWith("/") ? "" : "/"}${path}`;
+}
+
+/** Structured data: generic ItemList */
+export function generateItemListStructuredData(
+  items: Array<{ name: string; url: string }>,
+  name: string
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name,
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      url: item.url,
+    })),
+  };
+}
+
+/** Structured data: Blog (blog index page) */
+export function generateBlogStructuredData() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "Mechanics of Motherhood Blog",
+    url: `${SITE_CONFIG.url}/blog`,
+    description:
+      "Tips, tricks, and stories from the Mechanics of Motherhood workshop",
+  };
 }

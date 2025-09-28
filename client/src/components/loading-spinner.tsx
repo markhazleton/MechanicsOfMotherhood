@@ -4,10 +4,10 @@ export default function LoadingSpinner() {
   return (
     <div className="flex items-center justify-center p-8">
       <div className="relative">
-    <Settings className="text-brand-tool text-4xl animate-spin-slow opacity-20" />
+  <Settings className="text-gray-400 text-4xl animate-spin-slow opacity-40" />
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="bg-white rounded-full p-2 mechanical-shadow">
-      <Utensils className="text-brand-orange text-lg animate-pulse" />
+      <div className="bg-white rounded-full p-2 shadow">
+    <Utensils className="text-orange-500 text-lg animate-pulse" />
           </div>
         </div>
       </div>

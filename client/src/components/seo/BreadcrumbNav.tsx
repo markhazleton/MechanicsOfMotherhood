@@ -21,7 +21,7 @@ export default function BreadcrumbNav({ items, className = '' }: BreadcrumbProps
 
   return (
     <nav 
-      className={`flex items-center space-x-2 text-sm text-brand-tool ${className}`}
+      className={`flex items-center space-x-2 text-sm text-gray-500 ${className}`}
       aria-label="Breadcrumb"
     >
       <ol className="flex items-center space-x-2">
@@ -35,14 +35,14 @@ export default function BreadcrumbNav({ items, className = '' }: BreadcrumbProps
             <li key={index} className="flex items-center">
               {index > 0 && (
                 <ChevronRight 
-                  className="w-4 h-4 text-brand-tool/60 mr-2" 
+                  className="w-4 h-4 text-gray-400 mr-2" 
                   aria-hidden="true" 
                 />
               )}
               
               {isLast ? (
                 <span 
-                  className="font-medium text-brand-blue truncate max-w-[200px]"
+                  className="font-medium text-blue-800 truncate max-w-[200px]"
                   aria-current="page"
                   title={item.name}
                 >
@@ -51,7 +51,7 @@ export default function BreadcrumbNav({ items, className = '' }: BreadcrumbProps
               ) : (
                 <Link 
                   href={target}
-                  className="flex items-center hover:text-brand-teal transition-colors truncate max-w-[150px]"
+                  className="flex items-center hover:text-teal-600 transition-colors truncate max-w-[150px]"
                   title={item.name}
                 >
                   {isHome && <Home className="w-4 h-4 mr-1" aria-hidden="true" />}

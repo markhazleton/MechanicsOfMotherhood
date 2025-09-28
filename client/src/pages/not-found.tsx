@@ -8,7 +8,7 @@ import { generateBreadcrumbs } from "@/utils/seo-helpers";
 export default function NotFound() {
   const breadcrumbs = generateBreadcrumbs('/404');
   return (
-  <div className="min-h-screen bg-[hsl(var(--light-gray))] flex flex-col">
+  <div className="min-h-screen bg-white flex flex-col">
       <Navigation />
   <div className="bg-white border-b border-[hsl(var(--color-border))]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">

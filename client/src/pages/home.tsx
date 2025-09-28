@@ -16,7 +16,7 @@ export default function Home() {
   const combinedStructuredData = [websiteStructuredData, organizationStructuredData];
 
   return (
-    <div className="min-h-screen bg-light-gray">
+    <div className="min-h-screen bg-white">
       {/* SEO Head for homepage */}
       <SeoHead
         title="Mechanics of Motherhood - Engineering Better Meals"

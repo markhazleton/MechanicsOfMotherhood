@@ -70,17 +70,17 @@ export default function RecipeDetail() {
 
   if (error || !recipe) {
     return (
-      <div className="min-h-screen bg-light-gray">
+      <div className="min-h-screen bg-white">
         <Navigation />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="font-mechanical text-3xl font-bold text-industrial-blue mb-4">
+            <h1 className="font-mechanical text-3xl font-bold text-blue-900 mb-4">
               Recipe Not Found
             </h1>
-            <p className="text-tool-gray mb-8">
+            <p className="text-gray-600 mb-8">
               {error || "The recipe you're looking for doesn't exist or has been removed."}
             </p>
-            <Button onClick={() => navigate("/recipes")} className="bg-workshop-teal hover:bg-workshop-teal/90">
+            <Button onClick={() => navigate("/recipes")} className="bg-teal-600 hover:bg-teal-700 text-white">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Recipes
             </Button>
@@ -112,7 +112,7 @@ export default function RecipeDetail() {
   });
 
   return (
-    <div className="min-h-screen bg-light-gray">
+    <div className="min-h-screen bg-white">
       {/* SEO Head */}
       <SeoHead
         title={recipe.name}
@@ -130,7 +130,7 @@ export default function RecipeDetail() {
       <Navigation />
       
       {/* Breadcrumb Navigation */}
-  <div className="bg-white border-b border-[hsl(var(--color-border))]">
+  <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <BreadcrumbNav items={breadcrumbs} />
         </div>
@@ -138,7 +138,7 @@ export default function RecipeDetail() {
       
       {/* Hero Section */}
       <section className="relative">
-  <div className="h-96 bg-gradient-to-r from-[hsl(var(--color-industrial-blue))/0.2] to-[hsl(var(--color-workshop-teal))/0.2] relative overflow-hidden">
+  <div className="h-96 bg-gradient-to-r from-blue-900/20 to-teal-700/20 relative overflow-hidden">
           <img
             src={getRecipeImageUrl(recipe)}
             alt={getRecipeImageAlt(recipe)}
@@ -152,7 +152,7 @@ export default function RecipeDetail() {
             <Button
               onClick={handleBackClick}
               variant="secondary"
-              className="mb-6 bg-white/90 hover:bg-white text-industrial-blue"
+              className="mb-6 bg-white/90 hover:bg-white text-blue-900"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Recipes
@@ -160,7 +160,7 @@ export default function RecipeDetail() {
             
             <div className="text-white">
               <div className="flex items-center gap-2 mb-4">
-                <Badge className="bg-[hsl(var(--color-workshop-teal))] text-white">
+                <Badge className="bg-teal-600 text-white">
                   {recipe?.recipeCategory?.name || "Recipe"}
                 </Badge>
                 {/* Difficulty removed: no source field in API */}
@@ -177,7 +177,7 @@ export default function RecipeDetail() {
                   <span className="ml-1">{recipe?.servings || 4}</span>
                 </div>
                 <div className="flex items-center">
-                  <Star className="w-5 h-5 mr-2 fill-current text-[hsl(var(--color-energetic-orange))]" />
+                  <Star className="w-5 h-5 mr-2 fill-current text-orange-500" />
                   <span className="font-semibold">{recipe?.averageRating || 5}/5</span>
                   <span className="ml-1 text-sm">({recipe?.ratingCount || 0} reviews)</span>
                 </div>
@@ -192,12 +192,12 @@ export default function RecipeDetail() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Description Card */}
-      <Card className="mechanical-shadow mb-8">
+      <Card className="shadow-md hover:shadow-lg transition-shadow border border-gray-200 mb-8">
             <CardContent className="p-6">
-        <div className="prose prose-lg max-w-none prose-gray prose-headings:text-[hsl(var(--color-industrial-blue))] prose-links:text-[hsl(var(--color-workshop-teal))] prose-strong:text-[hsl(var(--color-industrial-blue))] prose-em:text-[hsl(var(--color-tool-gray))] prose-p:text-[hsl(var(--color-tool-gray))] prose-p:leading-relaxed">
+        <div className="prose prose-lg max-w-none prose-headings:text-blue-900 prose-links:text-teal-600 prose-strong:text-blue-900 prose-em:text-gray-700 prose-p:text-gray-700 prose-p:leading-relaxed">
                 <MarkdownContent 
                   content={recipe?.description || "No description available for this recipe."}
-                  className="text-tool-gray"
+                  className="text-gray-700"
                 />
               </div>
             </CardContent>
@@ -207,9 +207,9 @@ export default function RecipeDetail() {
             
             {/* Ingredients */}
             <div className="lg:col-span-1">
-              <Card className="mechanical-shadow">
+              <Card className="shadow-md hover:shadow-lg transition-shadow border border-gray-200">
                 <CardHeader>
-                  <CardTitle className="font-mechanical text-2xl text-[hsl(var(--color-industrial-blue))] flex items-center">
+                  <CardTitle className="font-mechanical text-2xl text-blue-900 flex items-center">
                     <BookOpen className="w-6 h-6 mr-2" />
                     Ingredients
                   </CardTitle>
@@ -224,20 +224,20 @@ export default function RecipeDetail() {
                     ) : ingredientsList && ingredientsList.length > 0 ? (
                       ingredientsList.map((ingredient: string, index: number) => (
                         <div key={index} className="flex items-start">
-                          <div className="w-2 h-2 bg-[hsl(var(--color-workshop-teal))] rounded-full mt-2 mr-3 flex-shrink-0" />
-                          <span className="text-tool-gray leading-relaxed">{ingredient}</span>
+                          <div className="w-2 h-2 bg-teal-600 rounded-full mt-2 mr-3 flex-shrink-0" />
+                          <span className="text-gray-700 leading-relaxed">{ingredient}</span>
                         </div>
                       ))
                     ) : (
-                      <p className="text-tool-gray italic">No ingredients listed</p>
+                      <p className="text-gray-600 italic">No ingredients listed</p>
                     )}
                   </div>
 
                   {/* SEO Keywords as Tags */}
                   {recipe?.seO_Keywords && (
                     <div className="mt-6 pt-6 border-t border-medium-gray">
-                      <h4 className="font-semibold text-[hsl(var(--color-industrial-blue))] mb-3 flex items-center">
-                        <span className="w-2 h-2 bg-[hsl(var(--color-workshop-teal))] rounded-full mr-2"></span>
+                      <h4 className="font-semibold text-blue-900 mb-3 flex items-center">
+                        <span className="w-2 h-2 bg-teal-600 rounded-full mr-2"></span>
                         Recipe Tags
                       </h4>
                       <div className="flex flex-wrap gap-2">
@@ -253,10 +253,10 @@ export default function RecipeDetail() {
                             
                             // Cycle through different badge styles for visual variety
                             const badgeStyles = [
-                              "bg-[hsl(var(--color-workshop-teal))/0.1] text-[hsl(var(--color-workshop-teal))] border-[hsl(var(--color-workshop-teal))/0.2] hover:bg-[hsl(var(--color-workshop-teal))/0.2] hover:border-[hsl(var(--color-workshop-teal))/0.3]",
-                              "bg-[hsl(var(--color-energetic-orange))/0.1] text-[hsl(var(--color-energetic-orange))] border-[hsl(var(--color-energetic-orange))/0.2] hover:bg-[hsl(var(--color-energetic-orange))/0.2] hover:border-[hsl(var(--color-energetic-orange))/0.3]",
-                              "bg-[hsl(var(--color-industrial-blue))/0.1] text-[hsl(var(--color-industrial-blue))] border-[hsl(var(--color-industrial-blue))/0.2] hover:bg-[hsl(var(--color-industrial-blue))/0.2] hover:border-[hsl(var(--color-industrial-blue))/0.3]",
-                              "bg-cream/80 text-tool-gray border-medium-gray/50 hover:bg-kitchen-warm hover:border-medium-gray"
+                              "bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100",
+                              "bg-orange-50 text-orange-600 border-orange-200 hover:bg-orange-100",
+                              "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100",
+                              "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
                             ];
                             
                             const styleIndex = index % badgeStyles.length;
@@ -268,7 +268,7 @@ export default function RecipeDetail() {
                                 className={`
                                   text-xs font-medium border transition-all duration-200 cursor-default
                                   ${badgeStyles[styleIndex]}
-                                  hover:shadow-sm hover:scale-105 transform
+                                  hover:shadow-sm motion-safe:hover:scale-105 motion-safe:transform
                                   px-3 py-1.5 rounded-full
                                 `}
                                 title={cleanKeyword}
@@ -288,9 +288,9 @@ export default function RecipeDetail() {
 
             {/* Instructions */}
             <div className="lg:col-span-2">
-              <Card className="mechanical-shadow">
+              <Card className="shadow-md hover:shadow-lg transition-shadow border border-gray-200">
                 <CardHeader>
-                  <CardTitle className="font-mechanical text-2xl text-[hsl(var(--color-industrial-blue))] flex items-center">
+                  <CardTitle className="font-mechanical text-2xl text-blue-900 flex items-center">
                     <ChefHat className="w-6 h-6 mr-2" />
                     Instructions
                   </CardTitle>
@@ -305,16 +305,16 @@ export default function RecipeDetail() {
                     ) : instructionsList && instructionsList.length > 0 ? (
                       instructionsList.map((instruction: string, index: number) => (
                         <div key={index} className="flex">
-                          <div className="flex-shrink-0 w-8 h-8 bg-[hsl(var(--color-workshop-teal))] text-white rounded-full flex items-center justify-center font-bold text-sm mr-4">
+                          <div className="flex-shrink-0 w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-bold text-sm mr-4">
                             {index + 1}
                           </div>
                           <div className="flex-1">
-                            <p className="text-tool-gray leading-relaxed">{instruction}</p>
+                            <p className="text-gray-700 leading-relaxed">{instruction}</p>
                           </div>
                         </div>
                       ))
                     ) : (
-                      <p className="text-tool-gray italic">No instructions provided</p>
+                      <p className="text-gray-600 italic">No instructions provided</p>
                     )}
                   </div>
 
@@ -323,8 +323,8 @@ export default function RecipeDetail() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <h4 className="font-semibold text-[hsl(var(--color-industrial-blue))] mb-2">Cooking Tips</h4>
-                      <ul className="text-sm text-tool-gray space-y-1">
+                      <h4 className="font-semibold text-blue-900 mb-2">Cooking Tips</h4>
+                      <ul className="text-sm text-gray-600 space-y-1">
                         <li>• Read through all instructions before starting</li>
                         <li>• Prep all ingredients before cooking</li>
                         <li>• Adjust seasonings to taste</li>
@@ -332,8 +332,8 @@ export default function RecipeDetail() {
                       </ul>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-[hsl(var(--color-industrial-blue))] mb-2">Storage</h4>
-                      <ul className="text-sm text-tool-gray space-y-1">
+                      <h4 className="font-semibold text-blue-900 mb-2">Storage</h4>
+                      <ul className="text-sm text-gray-600 space-y-1">
                         <li>• Store leftovers in refrigerator</li>
                         <li>• Best consumed within 2-3 days</li>
                         <li>• Can be frozen for up to 3 months</li>
@@ -351,7 +351,7 @@ export default function RecipeDetail() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 size="lg" 
-                className="bg-[hsl(var(--color-workshop-teal))] hover:bg-[hsl(var(--color-workshop-teal))/0.9] text-white px-8"
+                className="bg-teal-600 hover:bg-teal-700 text-white px-8"
                 onClick={() => window.print()}
               >
                 Print Recipe
@@ -359,7 +359,7 @@ export default function RecipeDetail() {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-[hsl(var(--color-energetic-orange))] text-[hsl(var(--color-energetic-orange))] hover:bg-[hsl(var(--color-energetic-orange))] hover:text-white px-8"
+                className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white px-8"
                 onClick={() => {
                   navigator.share?.({
                     title: recipe?.name || "Recipe",
