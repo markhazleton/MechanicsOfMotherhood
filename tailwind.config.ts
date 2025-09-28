@@ -1,7 +1,11 @@
-// Tailwind v4 still supports a config file for content globs and plugins.
-// Design tokens now primarily live in CSS via @theme, but we retain plugins here.
+// Tailwind CSS v4 configuration
+// Only minimal config retained: content globs & plugin registration.
+// All design tokens are defined in `client/src/index.css` using the @theme directive.
+import tailwindcssAnimate from "tailwindcss-animate";
+import typography from "@tailwindcss/typography";
+
 export default {
   darkMode: "class",
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+  plugins: [tailwindcssAnimate, typography],
 };

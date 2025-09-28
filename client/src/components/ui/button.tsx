@@ -9,6 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        // Existing
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
@@ -18,6 +19,11 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // New semantic brand system variants
+        brand: "bg-brand-600 text-white hover:bg-brand-700",
+        accent: "bg-accent-500 text-white hover:bg-accent-600",
+        subtle: "bg-surface-elevated text-brand-700 hover:bg-surface-raised border border-border",
+        outlineBrand: "border border-brand-600 text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/30",
       },
       size: {
         default: "h-10 px-4 py-2",

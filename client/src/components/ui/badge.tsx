@@ -15,6 +15,10 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
+        // New semantic variants
+        brand: "border-transparent bg-brand-600 text-white hover:bg-brand-700",
+        accent: "border-transparent bg-accent-500 text-white hover:bg-accent-600",
+        subtle: "bg-surface-elevated text-brand-700 border-border hover:bg-surface-raised",
       },
     },
     defaultVariants: {

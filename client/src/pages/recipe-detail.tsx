@@ -112,7 +112,7 @@ export default function RecipeDetail() {
   });
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="recipe-detail-page min-h-screen bg-white">
       {/* SEO Head */}
       <SeoHead
         title={recipe.name}
@@ -127,7 +127,9 @@ export default function RecipeDetail() {
         structuredData={structuredData}
       />
       
-      <Navigation />
+      <div className="no-print">
+        <Navigation />
+      </div>
       
       {/* Breadcrumb Navigation */}
   <div className="bg-white border-b border-gray-200">
@@ -137,7 +139,7 @@ export default function RecipeDetail() {
       </div>
       
       {/* Hero Section */}
-      <section className="relative">
+    <section className="relative recipe-hero-section no-print">
   <div className="h-96 bg-gradient-to-r from-blue-900/20 to-teal-700/20 relative overflow-hidden">
           <img
             src={getRecipeImageUrl(recipe)}
@@ -190,6 +192,16 @@ export default function RecipeDetail() {
       {/* Recipe Content */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Print Header (only visible in print) */}
+          <div className="print-only recipe-print-header mb-6">
+            <h1 className="font-mechanical text-3xl font-bold">{recipe.name}</h1>
+            <div className="recipe-print-meta">
+              <span>Category: {recipe?.recipeCategory?.name || 'Recipe'}</span>
+              {recipe.servings && <span>Serves: {recipe.servings}</span>}
+              {recipe.averageRating && <span>Rating: {recipe.averageRating}/5</span>}
+            </div>
+            <img src={getRecipeImageUrl(recipe)} alt={getRecipeImageAlt(recipe)} className="recipe-print-image" />
+          </div>
           
           {/* Description Card */}
       <Card className="shadow-md hover:shadow-lg transition-shadow border border-gray-200 mb-8">
@@ -203,7 +215,7 @@ export default function RecipeDetail() {
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 recipe-content-grid">
             
             {/* Ingredients */}
             <div className="lg:col-span-1">
@@ -235,7 +247,7 @@ export default function RecipeDetail() {
 
                   {/* SEO Keywords as Tags */}
                   {recipe?.seO_Keywords && (
-                    <div className="mt-6 pt-6 border-t border-medium-gray">
+                    <div className="mt-6 pt-6 border-t border-neutral-300 recipe-tags">
                       <h4 className="font-semibold text-blue-900 mb-3 flex items-center">
                         <span className="w-2 h-2 bg-teal-600 rounded-full mr-2"></span>
                         Recipe Tags
@@ -321,7 +333,7 @@ export default function RecipeDetail() {
                   {/* Additional Recipe Info */}
                   <Separator className="my-8" />
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 additional-recipe-info">
                     <div>
                       <h4 className="font-semibold text-blue-900 mb-2">Cooking Tips</h4>
                       <ul className="text-sm text-gray-600 space-y-1">
@@ -347,7 +359,7 @@ export default function RecipeDetail() {
           </div>
 
           {/* Action Buttons */}
-          <div className="mt-12 text-center">
+          <div className="mt-12 text-center action-buttons no-print">
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 size="lg" 
@@ -359,7 +371,7 @@ export default function RecipeDetail() {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white px-8"
+                className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white px-8 share-actions"
                 onClick={() => {
                   navigator.share?.({
                     title: recipe?.name || "Recipe",

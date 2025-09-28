@@ -118,6 +118,182 @@
     font-weight: 600;
     padding: var(--spacing-3) var(--spacing-6);
   }
+
+  /* Semantic Heading Scale */
+  .heading-display {
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    display: block;
+    line-height: 1.05;
+    font-size: clamp(2.75rem, 6vw, 4.5rem);
+  }
+  .heading-xl {
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    font-size: 1.875rem;
+  }
+  @media (min-width: 768px) {
+    .heading-xl {
+      font-size: 2.25rem;
+    }
+  }
+  .heading-lg {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    font-size: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .heading-lg {
+      font-size: 1.875rem;
+    }
+  }
+  .heading-md {
+    font-weight: 600;
+    line-height: 1.2;
+    font-size: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .heading-md {
+      font-size: 1.5rem;
+    }
+  }
+  .heading-sm {
+    font-weight: 600;
+    font-size: 1.125rem;
+    line-height: 1.25;
+  }
+
+  /* Utility tokens mapping (alias layer) */
+  .text-brand-900 {
+    color: hsl(var(--color-brand-900));
+  }
+  .text-brand-600 {
+    color: hsl(var(--color-brand-600));
+  }
+  .bg-brand-600 {
+    background-color: hsl(var(--color-brand-600));
+  }
+  .bg-brand-700 {
+    background-color: hsl(var(--color-brand-700));
+  }
+  .bg-accent-500 {
+    background-color: hsl(var(--color-accent-500));
+  }
+  .bg-accent-600 {
+    background-color: hsl(var(--color-accent-600));
+  }
+
+  /* Button semantic variants (used via classNames or future CVA extension) */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    transition: color 0.15s, background-color 0.15s, border-color 0.15s,
+      box-shadow 0.15s;
+    position: relative;
+  }
+  .btn:focus-visible {
+    outline: 2px solid hsl(var(--color-ring));
+    outline-offset: 2px;
+  }
+  .btn-primary {
+    background-color: hsl(var(--color-brand-600));
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background-color: hsl(var(--color-brand-500));
+  }
+  .btn-accent {
+    background-color: hsl(var(--color-accent-500));
+    color: #fff;
+  }
+  .btn-accent:hover {
+    background-color: hsl(var(--color-accent-600));
+  }
+  .btn-outline-brand {
+    background-color: hsla(var(--color-background) / 0.9);
+    color: hsl(var(--color-brand-900));
+    border: 1px solid hsl(var(--color-border));
+  }
+  .btn-outline-brand:hover {
+    background-color: hsl(var(--color-accent-500));
+    color: #fff;
+  }
+
+  /* Badge semantic variants */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    line-height: 1;
+    font-weight: 600;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid hsl(var(--color-border));
+    transition: background-color 0.15s, color 0.15s;
+  }
+  .badge-brand {
+    background-color: hsl(var(--color-brand-600));
+    color: #fff;
+    border-color: transparent;
+  }
+  .badge-accent {
+    background-color: hsl(var(--color-accent-500));
+    color: #fff;
+    border-color: transparent;
+  }
+  .badge-outline {
+    background-color: transparent;
+    color: hsl(var(--color-neutral-700));
+    border-color: hsl(var(--color-neutral-300));
+  }
+
+  /* Inverted prose (for future dark surfaces) */
+  .prose.prose-invert-brand {
+    --tw-prose-body: hsl(var(--color-neutral-100));
+    --tw-prose-headings: hsl(var(--color-accent-200));
+    --tw-prose-links: hsl(var(--color-accent-300));
+    --tw-prose-links-hover: hsl(var(--color-accent-500));
+    --tw-prose-strong: hsl(var(--color-accent-200));
+    --tw-prose-bullets: hsl(var(--color-accent-300));
+    --tw-prose-quotes: hsl(var(--color-neutral-100));
+    --tw-prose-code: hsl(var(--color-accent-300));
+    --tw-prose-pre-bg: hsl(var(--color-neutral-800));
+  }
+
+  /* Dark Mode Token Overrides */
+  @layer base {
+    :root.dark {
+      --color-background: 220 39% 7%;
+      --color-foreground: 220 14% 96%;
+      --color-card: 220 27% 12%;
+      --color-card-foreground: 220 14% 96%;
+      --color-border: 220 13% 33%;
+      --color-muted: 220 27% 12%;
+      --color-muted-foreground: 220 13% 70%;
+      --color-secondary: 220 27% 16%;
+      --color-secondary-foreground: 220 14% 96%;
+      --color-ring: var(--color-brand-500);
+    }
+  }
+  /* Typography plugin brand variant (legacy placeholder `prose-brand` now implemented)
+     We avoid @apply to keep build strict — rely on user adding both classes: `prose prose-brand`. */
+  .prose.prose-brand {
+    --tw-prose-body: hsl(var(--color-neutral-700));
+    --tw-prose-headings: hsl(var(--color-brand-900));
+    --tw-prose-links: hsl(var(--color-brand-600));
+    --tw-prose-links-hover: hsl(var(--color-brand-500));
+    --tw-prose-strong: hsl(var(--color-brand-900));
+    --tw-prose-bullets: hsl(var(--color-brand-600));
+    --tw-prose-quotes: hsl(var(--color-neutral-800));
+    --tw-prose-code: hsl(var(--color-brand-600));
+    --tw-prose-pre-bg: hsl(var(--color-neutral-100));
+  }
 }
 
 /* Legacy Compatibility */
@@ -137,3 +313,112 @@
 }
 
 /* Removed legacy brand utility classes (btn-brand-*, text-brand-*, bg-brand-*) now replaced by Tailwind palette utilities. */
+
+/* =============================
+   Print Styles
+   Goal: Clean 1–2 page printable recipe without navigation, hero chrome, or extraneous UI.
+   ============================= */
+@media print {
+  @page {
+    margin: 0.6in;
+  }
+  body {
+    background: #ffffff !important;
+    color: #111 !important;
+    font-size: 12pt;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  /* Hide interactive / navigational chrome */
+  nav,
+  footer,
+  header,
+  .navigation,
+  .breadcrumb,
+  .breadcrumb-nav,
+  .dark-mode-toggle,
+  .action-buttons,
+  .analytics-debug {
+    display: none !important;
+  }
+  /* Hero & gradient overlays */
+  .recipe-hero-section {
+    display: none !important;
+  }
+  /* Cards: flatten styling */
+  .recipe-detail-page .shadow,
+  .recipe-detail-page .shadow-md,
+  .recipe-detail-page .shadow-lg,
+  .recipe-detail-page [class*="shadow"] {
+    box-shadow: none !important;
+  }
+  .recipe-detail-page .border {
+    border-color: #ccc !important;
+  }
+  /* Grid -> single column */
+  .recipe-content-grid {
+    display: block !important;
+  }
+  .recipe-content-grid > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  /* Remove background tints */
+  .recipe-detail-page [class*="bg-"] {
+    background: #fff !important;
+  }
+  /* Typography adjustments */
+  .recipe-print-header h1 {
+    font-size: 2rem !important;
+    margin-bottom: 0.5rem;
+  }
+  .recipe-print-meta {
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .recipe-print-image {
+    max-height: 320px;
+    object-fit: cover;
+    width: 100%;
+    margin: 0 0 1rem 0;
+    border-radius: 4px;
+  }
+  /* Lists readability */
+  .ingredients-list li,
+  .instructions-list li,
+  .ingredients-list div,
+  .instructions-list div {
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+  /* Hide non-essential sections */
+  .recipe-tags,
+  .additional-recipe-info,
+  .additional-info,
+  .print-actions,
+  .share-actions {
+    display: none !important;
+  }
+  /* Buttons */
+  button {
+    display: none !important;
+  }
+  /* Link URLs (optional: comment out if not desired) */
+  a[href]:after {
+    content: "";
+  }
+}
+
+/* Default visibility for print helpers */
+.print-only {
+  display: none;
+}
