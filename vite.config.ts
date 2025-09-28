@@ -47,12 +47,16 @@ export default defineConfig({
                 if (id.includes("wouter")) return "vendor-router";
                 if (id.includes("lucide-react")) return "vendor-icons";
                 if (/(react|react-dom)\\/.test(id)) return "vendor-react";
-                if (id.match(/@radix-ui\/react-(dialog|toast)/))
-                  return "ui-radix-overlay";
-                if (id.match(/@radix-ui\/react-(tooltip|slot)/))
-                  return "ui-radix-core";
-                if (id.match(/@radix-ui\/react-separator/))
-                  return "ui-radix-layout";
+                // IMPORTANT: Do NOT split Radix UI packages into separate chunks.
+                // Splitting (especially react-slot / tooltip) created a circular dependency
+                // between the generated vendor chunk and the Radix chunk:
+                //   vendor -> ui-radix-core (for Slot export) AND ui-radix-core -> vendor (for React)
+                // During module evaluation the circular live binding left the React import undefined
+                // at first access (forwardRef), causing the runtime error:
+                //   TypeError: Cannot read properties of undefined (reading 'forwardRef')
+                // Keeping all @radix-ui modules inside the main vendor graph ensures
+                // stable evaluation order and removes the blank screen on production.
+                if (id.includes("@radix-ui/")) return "vendor";
                 if (id.match(/(clsx|tailwind-merge|class-variance-authority)/))
                   return "utils-style";
                 return "vendor";
