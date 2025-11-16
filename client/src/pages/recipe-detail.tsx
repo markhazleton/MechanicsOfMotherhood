@@ -3,6 +3,7 @@ import { Users, Star, ChefHat, ArrowLeft, BookOpen } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import MarkdownContent from "@/components/markdown-content";
+import { RecipeChat } from "@/components/recipe-chat";
 import SeoHead from "@/components/seo/SeoHead";
 import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -190,7 +191,7 @@ export default function RecipeDetail() {
       </section>
 
       {/* Recipe Content */}
-      <section className="py-16">
+      <section className="py-16 bg-warm-cream">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Print Header (only visible in print) */}
           <div className="print-only recipe-print-header mb-6">
@@ -204,12 +205,12 @@ export default function RecipeDetail() {
           </div>
           
           {/* Description Card */}
-      <Card className="shadow-md hover:shadow-lg transition-shadow border border-border-subtle bg-surface-card mb-8">
+      <Card className="mb-8">
             <CardContent className="p-6">
-        <div className="prose prose-lg max-w-none prose-headings:text-text-strong prose-links:text-brand-600 hover:prose-links:text-accent-600 prose-strong:text-text-strong prose-em:text-text-muted prose-p:text-text-base prose-p:leading-relaxed">
-                <MarkdownContent 
+        <div className="prose prose-lg max-w-none prose-headings:text-brand-800 prose-links:text-accent-600 hover:prose-links:text-accent-700 prose-strong:text-brand-900 prose-p:text-neutral-800 prose-p:leading-relaxed">
+                <MarkdownContent
                   content={recipe?.description || "No description available for this recipe."}
-                  className="text-text-base"
+                  className="text-neutral-800"
                 />
               </div>
             </CardContent>
@@ -219,37 +220,37 @@ export default function RecipeDetail() {
             
             {/* Ingredients */}
             <div className="lg:col-span-1">
-              <Card className="shadow-md hover:shadow-lg transition-shadow border border-border-subtle bg-surface-card">
-                <CardHeader>
-                  <CardTitle className="font-mechanical heading-lg text-text-strong flex items-center">
-                    <BookOpen className="w-6 h-6 mr-2" />
+              <Card>
+                <CardHeader className="bg-warm-peach/30">
+                  <CardTitle className="font-display heading-lg text-brand-800 flex items-center">
+                    <BookOpen className="w-6 h-6 mr-2 text-accent-600" />
                     Ingredients
                   </CardTitle>
                 </CardHeader>
-                <CardContent onMouseEnter={handleIngredientsView}>
+                <CardContent onMouseEnter={handleIngredientsView} className="pt-6">
                   <div className="space-y-3">
                     {ingredientsHtml ? (
-                      <div 
-                        className="ingredients-list"
+                      <div
+                        className="ingredients-list text-neutral-800"
                         dangerouslySetInnerHTML={{ __html: ingredientsHtml }}
                       />
                     ) : ingredientsList && ingredientsList.length > 0 ? (
                       ingredientsList.map((ingredient: string, index: number) => (
                         <div key={index} className="flex items-start">
-                          <div className="w-2 h-2 bg-accent-600 rounded-full mt-2 mr-3 flex-shrink-0" />
-                          <span className="text-text-base leading-relaxed">{ingredient}</span>
+                          <div className="w-2 h-2 bg-accent-500 rounded-full mt-2 mr-3 flex-shrink-0" />
+                          <span className="text-neutral-800 leading-relaxed">{ingredient}</span>
                         </div>
                       ))
                     ) : (
-                      <p className="text-text-muted italic">No ingredients listed</p>
+                      <p className="text-neutral-600 italic">No ingredients listed</p>
                     )}
                   </div>
 
                   {/* SEO Keywords as Tags */}
                   {recipe?.seO_Keywords && (
-                    <div className="mt-6 pt-6 border-t border-border-subtle recipe-tags">
-                      <h4 className="font-semibold text-text-strong mb-3 flex items-center">
-                        <span className="w-2 h-2 bg-accent-600 rounded-full mr-2"></span>
+                    <div className="mt-6 pt-6 border-t border-warm-peach/50 recipe-tags">
+                      <h4 className="font-semibold text-brand-800 mb-3 flex items-center">
+                        <span className="w-2 h-2 bg-accent-500 rounded-full mr-2"></span>
                         Recipe Tags
                       </h4>
                       <div className="flex flex-wrap gap-2">
@@ -263,26 +264,15 @@ export default function RecipeDetail() {
                             const cleanKeyword = keyword.trim();
                             if (!cleanKeyword) return null;
                             
-                            // Cycle through different badge styles for visual variety
-                            const badgeStyles = [
-                              "bg-accent-soft text-accent-700 border-accent-300 hover:bg-accent-100",
-                              "bg-brand-soft text-brand-700 border-brand-300 hover:bg-brand-100",
-                              "bg-surface-subtle text-text-strong border-border-subtle hover:bg-surface-alt",
-                              "bg-success-soft text-success-700 border-success-300 hover:bg-success-100"
-                            ];
-                            
-                            const styleIndex = index % badgeStyles.length;
-                            
+                            // Cycle through different badge variants for visual variety
+                            const badgeVariants = ["subtle", "outline", "subtle", "outline"] as const;
+                            const variantIndex = index % badgeVariants.length;
+
                             return (
-                              <Badge 
-                                key={index} 
-                                variant="outline" 
-                                className={`
-                                  text-xs font-medium border transition-all duration-200 cursor-default
-                                  ${badgeStyles[styleIndex]}
-                                  hover:shadow-sm motion-safe:hover:scale-105 motion-safe:transform
-                                  px-3 py-1.5 rounded-full
-                                `}
+                              <Badge
+                                key={index}
+                                variant={badgeVariants[variantIndex]}
+                                className="cursor-default hover:shadow-sm motion-safe:hover:scale-105 motion-safe:transform"
                                 title={cleanKeyword}
                               >
                                 {cleanKeyword}
@@ -300,43 +290,46 @@ export default function RecipeDetail() {
 
             {/* Instructions */}
             <div className="lg:col-span-2">
-              <Card className="shadow-md hover:shadow-lg transition-shadow border border-border-subtle bg-surface-card">
-                <CardHeader>
-                  <CardTitle className="font-mechanical heading-lg text-text-strong flex items-center">
-                    <ChefHat className="w-6 h-6 mr-2" />
+              <Card>
+                <CardHeader className="bg-warm-peach/30">
+                  <CardTitle className="font-display heading-lg text-brand-800 flex items-center">
+                    <ChefHat className="w-6 h-6 mr-2 text-accent-600" />
                     Instructions
                   </CardTitle>
                 </CardHeader>
-                <CardContent onMouseEnter={handleInstructionsView}>
+                <CardContent onMouseEnter={handleInstructionsView} className="pt-6">
                   <div className="space-y-6">
                     {instructionsHtml ? (
-                      <div 
-                        className="instructions-list"
+                      <div
+                        className="instructions-list text-neutral-800"
                         dangerouslySetInnerHTML={{ __html: instructionsHtml }}
                       />
                     ) : instructionsList && instructionsList.length > 0 ? (
                       instructionsList.map((instruction: string, index: number) => (
                         <div key={index} className="flex">
-                          <div className="flex-shrink-0 w-8 h-8 bg-accent-600 text-white rounded-full flex items-center justify-center font-bold text-sm mr-4">
+                          <div className="flex-shrink-0 w-8 h-8 bg-accent-500 text-white rounded-full flex items-center justify-center font-bold text-sm mr-4 shadow-sm">
                             {index + 1}
                           </div>
                           <div className="flex-1">
-                            <p className="text-text-base leading-relaxed">{instruction}</p>
+                            <p className="text-neutral-800 leading-relaxed">{instruction}</p>
                           </div>
                         </div>
                       ))
                     ) : (
-                      <p className="text-text-muted italic">No instructions provided</p>
+                      <p className="text-neutral-600 italic">No instructions provided</p>
                     )}
                   </div>
 
                   {/* Additional Recipe Info */}
-                  <Separator className="my-8" />
-                  
+                  <Separator className="my-8 bg-warm-peach/50" />
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 additional-recipe-info">
                     <div>
-                      <h4 className="font-semibold text-text-strong mb-2">Cooking Tips</h4>
-                      <ul className="text-sm text-text-muted space-y-1">
+                      <h4 className="font-semibold text-brand-800 mb-2 flex items-center">
+                        <span className="w-2 h-2 bg-accent-500 rounded-full mr-2"></span>
+                        Cooking Tips
+                      </h4>
+                      <ul className="text-sm text-neutral-700 space-y-1">
                         <li>• Read through all instructions before starting</li>
                         <li>• Prep all ingredients before cooking</li>
                         <li>• Adjust seasonings to taste</li>
@@ -344,8 +337,11 @@ export default function RecipeDetail() {
                       </ul>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-text-strong mb-2">Storage</h4>
-                      <ul className="text-sm text-text-muted space-y-1">
+                      <h4 className="font-semibold text-brand-800 mb-2 flex items-center">
+                        <span className="w-2 h-2 bg-accent-500 rounded-full mr-2"></span>
+                        Storage
+                      </h4>
+                      <ul className="text-sm text-neutral-700 space-y-1">
                         <li>• Store leftovers in refrigerator</li>
                         <li>• Best consumed within 2-3 days</li>
                         <li>• Can be frozen for up to 3 months</li>
@@ -356,6 +352,16 @@ export default function RecipeDetail() {
                 </CardContent>
               </Card>
             </div>
+          </div>
+
+          {/* Talk to MoM Chat Feature */}
+          <div className="mt-12 no-print">
+            <RecipeChat
+              recipeId={recipe.id}
+              recipeName={recipe.name}
+              recipeIngredients={recipe.ingredients}
+              recipeInstructions={recipe.instructions}
+            />
           </div>
 
           {/* Action Buttons */}

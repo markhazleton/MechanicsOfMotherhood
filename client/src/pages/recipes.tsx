@@ -60,7 +60,7 @@ export default function Recipes() {
     : `Browse our collection of ${recipeCount}+ tested recipes for working mothers. Quick meals, family favorites, and kitchen organization tips.`;
 
   return (
-  <div className="min-h-screen bg-surface">
+  <div className="min-h-screen bg-warm-cream">
       {/* SEO Head */}
       <SeoHead
         title={activeSearch ? `Search: ${activeSearch} - Recipe Manual` : 'Recipe Manual - Tested Recipes for Working Mothers'}
@@ -82,20 +82,20 @@ export default function Recipes() {
       <Navigation />
       
       {/* Breadcrumb Navigation */}
-  <div className="bg-surface border-b border-border">
+  <div className="bg-white/50 border-b border-warm-peach/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <BreadcrumbNav items={breadcrumbs} />
         </div>
       </div>
-      
+
       {/* Header */}
-  <section className="bg-surface py-12 border-b border-border">
+  <section className="bg-gradient-to-b from-warm-peach/20 to-transparent py-16 border-b border-warm-peach/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h1 className="heading-xl text-brand-900 mb-4">
+            <h1 className="font-display heading-xl text-brand-800 mb-4">
               Recipe Manual
             </h1>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <p className="text-neutral-700 text-lg max-w-2xl mx-auto">
               Your complete collection of tested, perfected recipes for working mothers
             </p>
             {activeSearch && (
@@ -139,7 +139,7 @@ export default function Recipes() {
                 onChange={(e) => {
                   setSelectedCategory(e.target.value);
                 }}
-                className="px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-brand-500 bg-surface-elevated"
+                className="px-4 py-2 border-2 border-warm-peach/50 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 bg-white text-neutral-800 font-semibold shadow-sm hover:border-accent-300 transition-colors"
                 data-testid="category-filter"
                 title="Filter recipes by category"
               >
@@ -168,42 +168,42 @@ export default function Recipes() {
       </section>
 
       {/* Recipes Grid */}
-      <section className="py-16">
+      <section className="py-16 bg-warm-cream">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredRecipes.map((recipe: Recipe) => (
-              <Card key={recipe.id} className="bg-surface-elevated rounded-xl overflow-hidden shadow hover:shadow-lg motion-safe:hover:scale-[1.02] motion-safe:transform transition-all duration-300 border border-border" data-testid={`recipe-card-${recipe.id}`}>
+              <Card key={recipe.id} className="overflow-hidden group cursor-pointer motion-safe:hover:scale-[1.02] motion-safe:transform transition-all duration-300" data-testid={`recipe-card-${recipe.id}`}>
                 <img
                   src={getRecipeImageUrl(recipe)}
                   alt={getRecipeImageAlt(recipe)}
                   className="w-full h-40 object-cover"
                 />
-                <CardContent className="p-4">
+                <CardContent className="p-5">
                   <div className="flex items-center justify-end mb-2">
-                    <div className="flex items-center text-accent-600" aria-label="Recipe rating">
-                      <Star size={12} fill="currentColor" />
-                      <span className="ml-1 text-xs">{recipe.averageRating || 5}</span>
+                    <div className="flex items-center text-accent-500" aria-label="Recipe rating">
+                      <Star size={14} fill="currentColor" />
+                      <span className="ml-1 text-xs font-semibold">{recipe.averageRating || 5}/5</span>
                     </div>
                   </div>
-                  <h3 className="font-semibold text-lg mb-2 text-brand-900 line-clamp-2">
+                  <h3 className="font-display font-semibold text-lg mb-2 text-brand-800 line-clamp-2 group-hover:text-accent-600 transition-colors">
                     {recipe.name}
                   </h3>
-                  <div className="text-muted-foreground text-sm mb-3 line-clamp-2">
-                    <MarkdownContent 
+                  <div className="text-neutral-700 text-sm mb-4 line-clamp-2">
+                    <MarkdownContent
                       content={recipe.description || ''}
                       summary={true}
                       className="text-sm"
                     />
                   </div>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span className="flex items-center">
-                      <Users size={12} className="mr-1" />
-                      {recipe.servings}
+                  <div className="flex items-center justify-between text-xs border-t border-warm-peach/30 pt-3">
+                    <span className="flex items-center text-neutral-600 font-semibold">
+                      <Users size={14} className="mr-1 text-accent-500" />
+                      Serves {recipe.servings}
                     </span>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-accent-600 hover:text-accent-700 p-0 h-auto"
+                      className="text-accent-600 hover:text-accent-700 hover:bg-warm-peach/50 p-0 h-auto px-2 py-1 font-semibold"
                       onClick={() => {
                         analytics.trackButtonClick('view_recipe', 'recipes_grid', {
                           recipe_id: recipe.id,
@@ -214,8 +214,8 @@ export default function Recipes() {
                       }}
                       data-testid={`view-recipe-${recipe.id}`}
                     >
-                      <ArrowRight size={14} className="mr-1" />
-                      View
+                      View Recipe
+                      <ArrowRight size={14} className="ml-1" />
                     </Button>
                   </div>
                 </CardContent>

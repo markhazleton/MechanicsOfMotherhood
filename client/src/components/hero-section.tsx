@@ -55,25 +55,25 @@ export default function HeroSection() {
         </div>
 
         {/* Static Stats */}
-  <div className="max-w-3xl mx-auto mt-4 bg-white/70 dark:bg-neutral-800/60 backdrop-blur-sm border border-white/40 dark:border-neutral-700/40 rounded-xl p-8 shadow-sm transition-colors">
+  <div className="max-w-3xl mx-auto mt-8 bg-white/95 dark:bg-neutral-800/90 backdrop-blur-md border-2 border-accent-500/30 dark:border-accent-500/40 rounded-2xl p-8 shadow-2xl transition-colors">
   <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {stats ? (
             <>
               <div className="text-center" data-testid="stat-recipes">
-                <div className="text-3xl font-extrabold text-white drop-shadow">{stats.totalRecipes}+</div>
-                <div className="uppercase tracking-wide text-sm text-neutral-600 dark:text-brand-100">Tested Recipes</div>
+                <div className="text-4xl font-extrabold text-accent-600 dark:text-accent-400 mb-2">{stats.totalRecipes}+</div>
+                <div className="uppercase tracking-wide text-xs font-bold text-brand-800 dark:text-brand-100">Tested Recipes</div>
               </div>
               <div className="text-center" data-testid="stat-categories">
-                <div className="text-3xl font-extrabold text-white drop-shadow">{stats.totalCategories}+</div>
-                <div className="uppercase tracking-wide text-sm text-neutral-600 dark:text-brand-100">Recipe Categories</div>
+                <div className="text-4xl font-extrabold text-accent-600 dark:text-accent-400 mb-2">{stats.totalCategories}+</div>
+                <div className="uppercase tracking-wide text-xs font-bold text-brand-800 dark:text-brand-100">Recipe Categories</div>
               </div>
               <div className="text-center" data-testid="stat-rating">
-                <div className="text-3xl font-extrabold text-white drop-shadow">4.8★</div>
-                <div className="uppercase tracking-wide text-sm text-neutral-600 dark:text-brand-100">Average Rating</div>
+                <div className="text-4xl font-extrabold text-accent-600 dark:text-accent-400 mb-2">4.8★</div>
+                <div className="uppercase tracking-wide text-xs font-bold text-brand-800 dark:text-brand-100">Average Rating</div>
               </div>
             </>
           ) : (
-            <div className="md:col-span-3 text-white">Statistics not available</div>
+            <div className="md:col-span-3 text-brand-800 dark:text-white">Statistics not available</div>
           )}
   </div>
   </div>

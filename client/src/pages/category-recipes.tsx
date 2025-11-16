@@ -97,21 +97,21 @@ export default function CategoryRecipes() {
   // Handle case where category doesn't exist
   if (!categorySlug || !currentCategory) {
     return (
-  <div className="min-h-screen bg-surface">
+  <div className="min-h-screen bg-warm-cream">
         <Navigation />
-  <div className="bg-surface border-b border-border">
+  <div className="bg-warm-cream border-b border-warm-peach/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <BreadcrumbNav items={generateBreadcrumbs('/categories')} />
           </div>
         </div>
-  <section className="bg-surface py-12 border-b border-border">
+  <section className="bg-gradient-to-b from-warm-peach/20 to-transparent py-16 border-b border-warm-peach/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center py-12">
               <div className="text-6xl mb-4">🔧</div>
-              <h1 className="heading-lg text-brand-900 mb-4">
+              <h1 className="font-display heading-lg text-brand-800 mb-4">
                 Category Not Found
               </h1>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-neutral-700 mb-6">
                 The category "{categorySlug}" doesn't exist in our workshop.
               </p>
               <div className="space-x-4">
@@ -135,33 +135,33 @@ export default function CategoryRecipes() {
   }
 
   return (
-  <div className="min-h-screen bg-surface">
+  <div className="min-h-screen bg-warm-cream">
       <Navigation />
       {/* Breadcrumb Navigation */}
-  <div className="bg-surface border-b border-border">
+  <div className="bg-warm-cream border-b border-warm-peach/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <BreadcrumbNav items={generateBreadcrumbs(`/recipes/category/${categorySlug}`, undefined, currentCategory?.name)} />
         </div>
       </div>
-      
+
       {/* Header */}
-  <section className="bg-surface py-12 border-b border-border">
+  <section className="bg-gradient-to-b from-warm-peach/20 to-transparent py-16 border-b border-warm-peach/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-6">
             <Link href="/categories">
-              <Button variant="ghost" className="mb-4 text-muted-foreground hover:text-brand-900">
+              <Button variant="ghost" className="mb-4 text-neutral-700 hover:text-brand-800">
                 <ArrowLeft size={16} className="mr-2" />
                 Back to Categories
               </Button>
             </Link>
           </div>
-          
+
           <div className="text-center mb-8">
-            <h1 className="font-mechanical heading-xl text-brand-900 mb-4">
+            <h1 className="font-display heading-xl text-brand-800 mb-4">
               {currentCategory?.name || 'Category'} Recipes
             </h1>
             {currentCategory?.description && (
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              <p className="text-neutral-700 text-lg max-w-2xl mx-auto">
                 {currentCategory.description}
               </p>
             )}
@@ -171,7 +171,7 @@ export default function CategoryRecipes() {
           <div className="flex flex-col lg:flex-row gap-6 items-center justify-center">
             <form onSubmit={handleSearch} className="flex-1 max-w-md">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500" size={16} />
                 <Input
                   type="text"
                   placeholder="Search recipes in this category..."
@@ -193,30 +193,30 @@ export default function CategoryRecipes() {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {recipes.map((recipe: Recipe) => (
-                  <Card key={recipe.id} className="bg-surface-elevated rounded-xl overflow-hidden shadow-md hover:shadow-lg motion-safe:hover:scale-[1.02] motion-safe:transform transition-all duration-300 border border-border" data-testid={`recipe-card-${recipe.id}`}>
+                  <Card key={recipe.id} className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg motion-safe:hover:scale-[1.02] motion-safe:transform transition-all duration-300 border border-warm-peach/30" data-testid={`recipe-card-${recipe.id}`}>
                     <img
                       src={getRecipeImageUrl(recipe)}
                       alt={getRecipeImageAlt(recipe)}
                       className="w-full h-40 object-cover"
                     />
-                    <CardContent className="p-4">
+                    <CardContent className="p-5">
                       <div className="flex items-center justify-end mb-2">
                         <div className="flex items-center text-accent-600" aria-label="Recipe rating">
                           <Star size={12} fill="currentColor" />
                           <span className="ml-1 text-xs">{recipe.averageRating ?? '–'}</span>
                         </div>
                       </div>
-                      <h3 className="font-bold text-lg mb-2 text-brand-900 line-clamp-2">
+                      <h3 className="font-display font-semibold text-lg mb-2 text-brand-800 line-clamp-2">
                         {recipe.name}
                       </h3>
-                      <div className="text-muted-foreground text-sm mb-3 line-clamp-2">
-                        <MarkdownContent 
+                      <div className="text-neutral-700 text-sm mb-3 line-clamp-2">
+                        <MarkdownContent
                           content={recipe.description || ''}
                           summary={true}
                           className="text-sm"
                         />
                       </div>
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <div className="flex items-center justify-between text-xs text-neutral-700">
                         <span className="flex items-center">
                           <Users size={12} className="mr-1" />
                           {recipe.servings}
@@ -264,12 +264,12 @@ export default function CategoryRecipes() {
               )}
             </>
           ) : (
-            <div className="text-center py-12 bg-surface-elevated rounded-lg">
+            <div className="text-center py-12 bg-white rounded-xl shadow-md border border-warm-peach/30">
               <div className="text-6xl mb-4">🍽️</div>
-              <h3 className="text-xl font-bold text-brand-900 mb-2">
+              <h3 className="text-xl font-bold text-brand-800 mb-2">
                 No Recipes Found
               </h3>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-neutral-700 mb-6">
                 We don't have any recipes in this category yet.
               </p>
               <Link href="/recipes">

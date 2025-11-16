@@ -36,7 +36,7 @@ export default function Footer() {
   }, []);
 
   return (
-  <footer className="bg-brand-900 text-white py-16">
+  <footer className="bg-gradient-to-b from-brand-800 to-brand-900 text-white py-16 border-t-4 border-accent-500 shadow-2xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand Column */}

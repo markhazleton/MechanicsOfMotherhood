@@ -31,51 +31,51 @@ export default function CommunitySection() {
   };
 
   return (
-  <section className="py-16 bg-surface">
+  <section className="py-16 bg-warm-cream">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="heading-lg text-brand-900 mb-4">
+          <h2 className="font-display heading-lg text-brand-800 mb-4">
             Join the MoM Crew
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-neutral-700 text-lg max-w-2xl mx-auto">
             Connect with fellow working moms who understand the daily grind. Share tips, troubleshoot problems, and celebrate wins together.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          <Card className="text-center p-6 bg-accent-50 rounded-xl border border-accent-200/50">
+          <Card className="text-center p-6 bg-white rounded-xl border border-warm-peach/30 shadow-md">
             <CardContent className="pt-6">
               <div className="bg-accent-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow">
                 <Users className="text-white text-2xl" />
               </div>
-              <h3 className="font-semibold text-xl mb-2 text-brand-900">Active Community</h3>
-              <p className="text-muted-foreground mb-4">
+              <h3 className="font-display font-semibold text-xl mb-2 text-brand-800">Active Community</h3>
+              <p className="text-neutral-700 mb-4">
                 Join <span className="font-semibold" data-testid="community-members-count">
                   {stats?.totalRecipes ? (stats.totalRecipes * 100).toLocaleString() : "15,000"}+
                 </span> working moms sharing real solutions.
               </p>
             </CardContent>
           </Card>
-          
-          <Card className="text-center p-6 bg-brand-50 rounded-xl border border-brand-200/50">
+
+          <Card className="text-center p-6 bg-white rounded-xl border border-warm-peach/30 shadow-md">
             <CardContent className="pt-6">
               <div className="bg-brand-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow">
                 <MessageCircle className="text-white text-2xl" />
               </div>
-              <h3 className="font-semibold text-xl mb-2 text-brand-900">Daily Support</h3>
-              <p className="text-muted-foreground mb-4">
+              <h3 className="font-display font-semibold text-xl mb-2 text-brand-800">Daily Support</h3>
+              <p className="text-neutral-700 mb-4">
                 Get answers to your questions from experienced mom engineers.
               </p>
             </CardContent>
           </Card>
-          
-          <Card className="text-center p-6 bg-neutral-50 rounded-xl border border-border">
+
+          <Card className="text-center p-6 bg-white rounded-xl border border-warm-peach/30 shadow-md">
             <CardContent className="pt-6">
               <div className="bg-accent-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow">
                 <Lightbulb className="text-white text-2xl" />
               </div>
-              <h3 className="font-semibold text-xl mb-2 text-brand-900">Exclusive Content</h3>
-              <p className="text-muted-foreground mb-4">
+              <h3 className="font-display font-semibold text-xl mb-2 text-brand-800">Exclusive Content</h3>
+              <p className="text-neutral-700 mb-4">
                 Access member-only recipes, meal plans, and workshop sessions.
               </p>
             </CardContent>

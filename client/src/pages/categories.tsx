@@ -23,23 +23,23 @@ export default function Categories() {
   const breadcrumbs = generateBreadcrumbs('/categories');
 
   return (
-  <div className="min-h-screen bg-surface">
+  <div className="min-h-screen bg-warm-cream">
       <Navigation />
       {/* Breadcrumb Navigation */}
-  <div className="bg-surface border-b border-border">
+  <div className="bg-warm-cream border-b border-warm-peach/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <BreadcrumbNav items={breadcrumbs} />
         </div>
       </div>
-      
+
       {/* Header */}
-  <section className="bg-surface py-12 border-b border-border">
+  <section className="bg-gradient-to-b from-warm-peach/20 to-transparent py-16 border-b border-warm-peach/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="heading-xl text-brand-900 mb-4">
+            <h1 className="font-display heading-xl text-brand-800 mb-4">
               Recipe Categories
             </h1>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <p className="text-neutral-700 text-lg max-w-2xl mx-auto">
               Browse our organized collection of tested recipes by category
             </p>
           </div>
@@ -58,7 +58,7 @@ export default function Categories() {
                   href={`/recipes/category/${slug}`}
                   data-testid={`category-card-${category.id}`}
                 >
-                  <Card className="bg-surface-elevated rounded-xl overflow-hidden shadow hover:shadow-lg motion-safe:hover:scale-[1.02] motion-safe:transform transition-all duration-300 cursor-pointer border border-border">
+                  <Card className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg motion-safe:hover:scale-[1.02] motion-safe:transform transition-all duration-300 cursor-pointer border border-warm-peach/30">
                     <div className="bg-gradient-to-br from-brand-600 to-brand-800 p-8 text-white">
                       <ChefHat size={32} className="mb-4" />
                       <h3 className="font-bold text-xl mb-2">
@@ -70,12 +70,12 @@ export default function Categories() {
                         </p>
                       )}
                     </div>
-                    <CardContent className="p-4 bg-surface">
+                    <CardContent className="p-4 bg-warm-cream/50">
                       <div className="flex items-center justify-between">
                         <Badge variant="accent">
                           {category.recipeCount} Recipe{category.recipeCount !== 1 ? 's' : ''}
                         </Badge>
-                        <ArrowRight size={16} className="text-muted-foreground" />
+                        <ArrowRight size={16} className="text-accent-600" />
                       </div>
                     </CardContent>
                   </Card>
@@ -86,12 +86,12 @@ export default function Categories() {
 
           {/* Empty State */}
           {categoriesWithCounts.length === 0 && (
-            <div className="text-center py-12 bg-surface-elevated rounded-lg">
-              <ChefHat size={64} className="mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-xl font-semibold text-brand-900 mb-2">
+            <div className="text-center py-12 bg-white rounded-xl shadow-md border border-warm-peach/30">
+              <ChefHat size={64} className="mx-auto text-accent-500 mb-4" />
+              <h3 className="text-xl font-semibold text-brand-800 mb-2">
                 No Categories Available
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-neutral-700">
                 Categories are being loaded from our recipe collection.
               </p>
             </div>

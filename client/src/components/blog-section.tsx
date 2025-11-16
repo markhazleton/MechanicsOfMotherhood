@@ -6,31 +6,31 @@ export default function BlogSection() {
   const [, navigate] = useLocation();
   
   return (
-  <section id="blog" className="py-16 bg-slate-50">
+  <section id="blog" className="py-16 bg-warm-cream">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-4">
-            <Wrench className="text-brand-600 text-2xl mr-3" />
-            <h2 className="heading-xl text-brand-900">
+            <Wrench className="text-accent-600 text-2xl mr-3" />
+            <h2 className="font-display heading-xl text-brand-800">
               MoM's Maintenance Manual
             </h2>
-            <Wrench className="text-brand-600 text-2xl ml-3" />
+            <Wrench className="text-accent-600 text-2xl ml-3" />
           </div>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <p className="text-neutral-700 text-lg max-w-2xl mx-auto">
             Real stories, practical tips, and maintenance logs from the trenches of working motherhood.
           </p>
         </div>
 
         {/* Coming Soon Message */}
-        <div className="bg-white rounded-xl p-8 shadow text-center max-w-md mx-auto border border-slate-100">
-          <div className="w-16 h-16 bg-brand-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow">
+        <div className="bg-white rounded-xl p-8 shadow-md text-center max-w-md mx-auto border border-warm-peach/30">
+          <div className="w-16 h-16 bg-accent-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow">
             <Wrench className="w-8 h-8 text-white" />
           </div>
-          <h3 className="heading-md text-brand-900 mb-3">
+          <h3 className="font-display heading-md text-brand-800 mb-3">
             Manual Coming Soon!
           </h3>
-          <p className="text-gray-600 mb-6">
-            We're crafting insightful articles and practical tips for working mothers. 
+          <p className="text-neutral-700 mb-6">
+            We're crafting insightful articles and practical tips for working mothers.
             Check back soon for our maintenance manual!
           </p>
         </div>
