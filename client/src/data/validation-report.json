@@ -1,19 +1,19 @@
 {
-  "timestamp": "2025-11-14T20:46:31.943Z",
+  "timestamp": "2026-01-04T18:01:13.623Z",
   "validation": {
     "errors": [],
     "warnings": [],
     "metrics": {
-      "totalRecipes": 109,
-      "validRecipes": 109,
+      "totalRecipes": 110,
+      "validRecipes": 110,
       "recipesWithImages": 0,
-      "recipesWithRatings": 62,
-      "approvedRecipes": 83,
+      "recipesWithRatings": 63,
+      "approvedRecipes": 84,
       "categoryDistribution": {
         "Main Course": 29,
         "Sauce": 1,
         "Dessert": 8,
-        "Appetizer": 9,
+        "Appetizer": 10,
         "Quick Meals": 4,
         "Drink": 27,
         "Breakfast": 2,

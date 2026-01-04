@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Force HTTPS Protocol -->
+    <script type="text/javascript">
+      if (window.location.protocol === 'http:' && window.location.hostname !== 'localhost') {
+        window.location.href = window.location.href.replace('http:', 'https:');
+      }
+    </script>
     <meta charset="UTF-8" />
     <meta
       name="viewport"
@@ -73,5 +79,26 @@
     <!-- Root mount point (single id attribute to avoid hydration anomalies) -->
     <div id="root" role="main"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Static links for crawlers (hidden, removed after DOMContentLoaded) -->
+    <div id="crawler-links" style="position: absolute; left: -9999px; top: -9999px;" aria-hidden="true">
+      <nav>
+        <h2>Mechanics of Motherhood Navigation</h2>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/recipes">All Recipes</a></li>
+          <li><a href="/categories">Recipe Categories</a></li>
+          <li><a href="/blog">Blog</a></li>
+        </ul>
+      </nav>
+    </div>
+    <script>
+      window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+          var crawlerLinks = document.getElementById('crawler-links');
+          if (crawlerLinks) crawlerLinks.remove();
+        }, 100);
+      });
+    </script>
   </body>
 </html>
