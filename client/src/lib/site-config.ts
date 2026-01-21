@@ -37,7 +37,7 @@ export const SITE_CONFIG = {
       'family cooking',
       'time-saving recipes',
       'healthy meal prep'
-    ],
+    ] as string[],
   },
   
   // Theme
