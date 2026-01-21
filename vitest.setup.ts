@@ -21,5 +21,5 @@ class MockIntersectionObserver {
   unobserve() {}
   disconnect() {}
 }
-// @ts-ignore
+// @ts-expect-error - Mock for testing environment
 window.IntersectionObserver = MockIntersectionObserver;

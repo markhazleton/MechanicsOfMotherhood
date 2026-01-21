@@ -1,4 +1,4 @@
-import { ChefHat, BookOpen, Clock, Star, ArrowRight } from "lucide-react";
+import { ChefHat, BookOpen, Star, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import apiData from "@/data/api-data.json";

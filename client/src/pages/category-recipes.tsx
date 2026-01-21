@@ -9,25 +9,11 @@ import MarkdownContent from "@/components/markdown-content";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { getRecipesByCategory, getCategoryBySlug, getRecipeUrl, getApiData } from "@/data/api-loader";
+import { getRecipesByCategory, getRecipeUrl, getApiData } from "@/data/api-loader";
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import type { Recipe, ApiData } from "@/data/api-types";
+import type { Recipe } from "@/data/api-types";
 import { nameToSlug, getCategorySlug } from "@/utils/slugify";
-
-interface RecipeResponse {
-  data: Recipe[];
-  message: string;
-  success: boolean;
-  pagination?: {
-    currentPage: number;
-    totalPages: number;
-    hasNext: boolean;
-    hasPrevious: boolean;
-    total: number;
-  };
-}
 
 export default function CategoryRecipes() {
   const [, params] = useRoute("/recipes/category/:categorySlug");

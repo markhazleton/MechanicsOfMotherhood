@@ -21,7 +21,9 @@ export function DarkModeToggle({ className = '' }: { className?: string }) {
       document.documentElement.classList.toggle('dark', next);
       try {
         localStorage.setItem('mom-theme', next ? 'dark' : 'light');
-      } catch {}
+      } catch {
+        // Ignore localStorage errors in private browsing
+      }
       return next;
     });
   };

@@ -3,7 +3,7 @@
  * Provides easy-to-use analytics functions for React components
  */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { useLocation } from "wouter";
 import {
   trackPageView,
@@ -35,7 +35,7 @@ export function useAnalytics() {
   }, [location]);
 
   // Recipe tracking functions
-  const analytics = {
+  const analytics = useMemo(() => ({
     // Page Tracking
     trackPage: (path: string, title?: string, additionalData?: any) => {
       trackPageView(path, title, additionalData);
@@ -163,7 +163,7 @@ export function useAnalytics() {
         window.gtag("event", eventName, eventData);
       }
     },
-  };
+  }), []);
 
   // Cleanup function for recipe completion tracking
   useEffect(() => {
@@ -188,7 +188,7 @@ export function useAnalytics() {
         }
       }
     };
-  }, []);
+  }, [analytics]);
 
   return analytics;
 }

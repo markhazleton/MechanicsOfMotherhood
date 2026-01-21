@@ -15,7 +15,7 @@ export interface PerformanceMetric {
 function logMetric(metric: PerformanceMetric) {
   // Basic console logging; swap with network/beacon call if needed
   if (import.meta.env.DEV) {
-    console.info("[perf]", metric.name, metric.value, metric.rating);
+    console.warn("[perf]", metric.name, metric.value, metric.rating);
   }
   // Example beacon placeholder
   // navigator.sendBeacon('/__perf', JSON.stringify(metric));

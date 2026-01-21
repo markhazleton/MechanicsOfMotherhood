@@ -1,4 +1,4 @@
-import { Users, Clock, Star, ArrowRight, ChefHat } from "lucide-react";
+import { Users, Star, ArrowRight, ChefHat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import MarkdownContent from "./markdown-content";

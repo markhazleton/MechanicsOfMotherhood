@@ -2,9 +2,6 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
 import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
-import React from "react";
-import { renderToString } from "react-dom/server";
-import AppSSR from "../client/src/AppSSR";
 import {
   getRecipes,
   getCategories,
@@ -56,7 +53,7 @@ function writeHtml(routePath: string, html: string, helmet: any) {
   mkdirSync(outDir, { recursive: true });
   const replaced = template.replace(
     '<div id="root" role="main"></div>',
-    `<div id=\"root\" role=\"main\">${html}</div>`
+    `<div id="root" role="main">${html}</div>`
   );
   const withHead = replaced.replace(
     "</head>",
@@ -64,7 +61,7 @@ function writeHtml(routePath: string, html: string, helmet: any) {
   );
   const filePath = path.join(outDir, "index.html");
   writeFileSync(filePath, withHead, "utf-8");
-  console.log("[ssg] wrote", routePath || "/");
+  console.warn("[ssg] wrote", routePath || "/");
 }
 
 async function run() {
@@ -93,7 +90,9 @@ async function run() {
       const slug = route.replace("/recipe/", "");
       try {
         getRecipeBySlug(slug);
-      } catch {}
+      } catch {
+        // Recipe not found, skip prerendering
+      }
     }
     const { html, helmet } = await render(route);
     const outRoute = route === "/" ? "" : route.replace(/^\//, "");

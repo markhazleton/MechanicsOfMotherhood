@@ -121,8 +121,8 @@ function App({ ssrPath, helmetContext }: AppProps) {
           {/* Reduced motion helper class */}
           <style>{`
             @media (prefers-reduced-motion: reduce) {
-              .motion-safe\:hover\:scale-105:hover { transform: none; }
-              .motion-safe\:transition-none { transition: none !important; }
+              .motion-safe:hover:scale-105:hover { transform: none; }
+              .motion-safe:transition-none { transition: none !important; }
             }
           `}</style>
           <AppRouter ssrPath={ssrPath} />

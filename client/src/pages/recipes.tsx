@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation, Link } from "wouter";
+import { Link } from "wouter";
 import { Search, Filter, Users, Star, ArrowRight } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
@@ -13,14 +13,12 @@ import { getRecipes, getCategories, searchRecipes, getRecipeUrl } from "@/data/a
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
 import { generateCanonicalUrl, generateBreadcrumbs } from "@/utils/seo-helpers";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import SITE_CONFIG from "@/lib/site-config";
 import type { Recipe } from "@/data/api-types";
 
 export default function Recipes() {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSearch, setActiveSearch] = useState("");
-  const [, navigate] = useLocation();
   
   // Initialize analytics
   const analytics = useAnalytics();

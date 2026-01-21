@@ -24,7 +24,7 @@ export default function Navigation() {
         current_page: location
       });
       // TODO: Implement search functionality
-      console.log("Search query:", searchQuery);
+      console.warn("Search functionality not yet implemented:", searchQuery);
     }
   };
 

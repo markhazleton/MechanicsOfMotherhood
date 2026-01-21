@@ -20,7 +20,7 @@ import type {
 } from '@/types/chat';
 
 // TODO: Replace with actual API endpoint when ready
-const API_BASE_URL = '/api/chat';
+// const API_BASE_URL = '/api/chat';
 
 /**
  * Default hint chips for recipe conversations
@@ -163,13 +163,8 @@ export async function sendChatMessage(
 
   const sessionId = request.sessionId || generateSessionId();
 
-  // Create user message
-  const userMessage: ChatMessage = {
-    id: generateMessageId(),
-    role: 'user',
-    content: request.message,
-    timestamp: new Date(),
-  };
+  // User message will be added when implementing real API
+  // For now, stub response is generated directly
 
   // Generate stub response
   const responseContent = generateStubResponse(

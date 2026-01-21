@@ -371,11 +371,15 @@ export default function RecipeDetail() {
                 variant="outline"
                 className="px-8"
                 onClick={() => {
-                  navigator.share?.({
-                    title: recipe?.name || "Recipe",
-                    text: recipe?.description || "",
-                    url: window.location.href,
-                  }) || navigator.clipboard?.writeText(window.location.href);
+                  if (navigator.share) {
+                    navigator.share({
+                      title: recipe?.name || "Recipe",
+                      text: recipe?.description || "",
+                      url: window.location.href,
+                    });
+                  } else if (navigator.clipboard) {
+                    navigator.clipboard.writeText(window.location.href);
+                  }
                 }}
               >
                 Share Recipe

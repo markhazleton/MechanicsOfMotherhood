@@ -20,6 +20,8 @@
     "preview": "vite preview",
     "preview:github": "vite preview --base=/MechanicsOfMotherhood/",
     "check": "tsc",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
+    "lint:fix": "eslint . --ext ts,tsx --fix",
     "clean": "node scripts/clean.js",
     "clean:all": "npm run clean && node -e \"const fs = require('fs'); try { fs.rmSync('node_modules', { recursive: true, force: true }); fs.rmSync('package-lock.json', { force: true }); console.log('Removed node_modules and package-lock.json. Run npm install to reinstall dependencies.'); } catch (e) { console.log('Failed to remove some files:', e.message); }\"",
     "prepare-v4": "node scripts/prepare-v4-migration.js",

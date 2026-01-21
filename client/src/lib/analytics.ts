@@ -111,7 +111,7 @@ export function initializeAnalytics(): void {
     send_page_view: true,
   });
 
-  console.log("Advanced Analytics initialized for MoM");
+  console.warn("Advanced Analytics initialized for MoM");
 }
 
 /**
@@ -469,7 +469,7 @@ export function debugAnalytics(): void {
   if (typeof window === "undefined" || process.env.NODE_ENV !== "development")
     return;
 
-  console.log("Analytics Debug Mode Active");
+  console.warn("Analytics Debug Mode Active");
 
   // Override gtag to log events
   const originalGtag = window.gtag;
@@ -478,7 +478,7 @@ export function debugAnalytics(): void {
     eventName: string | Date,
     eventParams?: any
   ) => {
-    console.log("📊 Analytics Event:", { command, eventName, eventParams });
+    console.warn("📊 Analytics Event:", { command, eventName, eventParams });
     if (originalGtag) {
       originalGtag(command, eventName, eventParams);
     }
