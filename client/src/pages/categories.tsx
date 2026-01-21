@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getCategorySlug } from "@/utils/slugify";
 import { getApiData } from "@/data/api-loader";
+import type { Category } from "@/data/api-types";
 
 export default function Categories() {
   const apiData = getApiData();
@@ -50,7 +51,7 @@ export default function Categories() {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {categoriesWithCounts.map((category: any) => {
+            {categoriesWithCounts.map((category: Category & { recipeCount: number }) => {
               const slug = getCategorySlug(category.name);
               return (
                 <Link

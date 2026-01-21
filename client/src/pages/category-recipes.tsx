@@ -12,7 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getRecipesByCategory, getRecipeUrl, getApiData } from "@/data/api-loader";
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import type { Recipe } from "@/data/api-types";
+import type { Recipe, Category } from "@/data/api-types";
 import { nameToSlug, getCategorySlug } from "@/utils/slugify";
 
 export default function CategoryRecipes() {
@@ -29,7 +29,7 @@ export default function CategoryRecipes() {
   const categories = apiData?.categories || [];
   
   // Find category by matching both basic slug and enhanced slug
-  const currentCategory = categories.find((cat: any) => 
+  const currentCategory = categories.find((cat: Category) => 
     getCategorySlug(cat.name) === categorySlug || nameToSlug(cat.name) === categorySlug
   );
   const categoryId = currentCategory?.id;

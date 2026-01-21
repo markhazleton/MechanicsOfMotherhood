@@ -13,7 +13,7 @@ import { getRecipes, getCategories, searchRecipes, getRecipeUrl } from "@/data/a
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
 import { generateCanonicalUrl, generateBreadcrumbs } from "@/utils/seo-helpers";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import type { Recipe } from "@/data/api-types";
+import type { Recipe, Category } from "@/data/api-types";
 
 export default function Recipes() {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -139,7 +139,7 @@ export default function Recipes() {
                 title="Filter recipes by category"
               >
                 <option value="">All Categories</option>
-                {(categories || []).map((category: any) => (
+                {(categories || []).map((category: Category) => (
                   <option key={category.id} value={category.id.toString()}>
                     {category.name}
                   </option>

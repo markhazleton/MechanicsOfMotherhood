@@ -24,7 +24,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    const isDomNotFound = (error as any).name === 'NotFoundError';
+    const isDomNotFound = error.name === 'NotFoundError';
     // Suppress noisy React 19 DOM race errors (removeChild on detached node) that are non-fatal
     if (!isDomNotFound) {
       console.error('Error caught by boundary:', error, errorInfo);

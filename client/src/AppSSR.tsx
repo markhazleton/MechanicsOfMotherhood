@@ -17,10 +17,10 @@ if (typeof Categories !== 'function') console.warn('[SSR] Categories component u
 if (typeof CategoryRecipes !== 'function') console.warn('[SSR] CategoryRecipes component undefined');
 if (typeof Blog !== 'function') console.warn('[SSR] Blog component undefined');
 if (typeof NotFound !== 'function') console.warn('[SSR] NotFound component undefined');
-const HelmetProvider = (HelmetAsync as any).HelmetProvider || (({ children }: any) => children);
-if ((HelmetAsync as any).HelmetProvider === undefined) console.warn('[SSR] HelmetProvider undefined (using pass-through)');
+const HelmetProvider = (HelmetAsync as Record<string, unknown>).HelmetProvider as React.ComponentType<{context?: unknown; children: React.ReactNode}> || (({ children }: { children: React.ReactNode }) => children);
+if ((HelmetAsync as Record<string, unknown>).HelmetProvider === undefined) console.warn('[SSR] HelmetProvider undefined (using pass-through)');
 
-interface AppSSRProps { ssrPath: string; helmetContext?: any }
+interface AppSSRProps { ssrPath: string; helmetContext?: Record<string, unknown> }
 const AppSSR: React.FC<AppSSRProps> = ({ ssrPath, helmetContext }) => {
   return (
   <HelmetProvider context={helmetContext}>

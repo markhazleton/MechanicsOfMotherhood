@@ -27,9 +27,9 @@ export function initPerformanceMonitoring() {
   try {
     onCLS(logMetric);
     // FID removed: capture First Contentful Paint and INP instead
-    onFCP(logMetric as any);
+    onFCP(logMetric as (metric: {name: string; value: number; rating: string}) => void);
     onLCP(logMetric);
-    onINP?.(logMetric as any);
+    onINP?.(logMetric as (metric: {name: string; value: number; rating: string}) => void);
     onTTFB(logMetric);
   } catch (e) {
     console.warn("Performance monitoring init failed", e);

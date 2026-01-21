@@ -36,7 +36,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "quality:check": "node scripts/quality-check.js",
+    "quality:a11y": "node scripts/check-a11y.js",
+    "quality:links": "node scripts/check-links.js",
+    "quality:all": "npm run quality:check && npm run quality:a11y && npm run quality:links"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

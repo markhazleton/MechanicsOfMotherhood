@@ -157,8 +157,8 @@ export function getCategoryBySlug(slug: string): Category | undefined {
  */
 export function getWebsites(): Website[] {
   // Safe type conversion with fallback structure
-  return (websitesData as any[]).map(
-    (site: any) =>
+  return (websitesData as Record<string, unknown>[]).map(
+    (site: Record<string, unknown>) =>
       ({
         id: site.id || 0,
         name: site.name || "",
@@ -190,11 +190,11 @@ export function getWebsiteById(id: number): Website | undefined {
  */
 export function getMenuItemsByWebsite(websiteId: number): MenuItem[] {
   // Safe type conversion for menu items
-  const menuData = menuItemsData as any;
-  const items = menuData[websiteId.toString()] || menuData[websiteId] || [];
+  const menuData = menuItemsData as Record<string, unknown>;
+  const items = (menuData[websiteId.toString()] || menuData[websiteId] || []) as Record<string, unknown>[];
 
   return items.map(
-    (item: any) =>
+    (item: Record<string, unknown>) =>
       ({
         id: item.id || 0,
         domainID: item.domain_id || item.domainID || 0,
@@ -222,7 +222,7 @@ export function getMenuItemsByWebsite(websiteId: number): MenuItem[] {
  */
 export function getApiData(): ApiData {
   // Safe conversion of API data
-  const data = apiData as any;
+  const data = apiData as Record<string, unknown>;
   return {
     recipes: getRecipes(),
     categories: getCategories(),
@@ -232,7 +232,7 @@ export function getApiData(): ApiData {
       acc[numKey] = getMenuItemsByWebsite(numKey);
       return acc;
     }, {} as Record<number, MenuItem[]>),
-    metadata: data.metadata || {
+    metadata: (data.metadata as { fetchedAt: string; totalRecipes: number; totalCategories: number; totalWebsites: number }) || {
       fetchedAt: new Date().toISOString(),
       totalRecipes: getRecipes().length,
       totalCategories: getCategories().length,

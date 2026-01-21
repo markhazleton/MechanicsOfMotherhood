@@ -16,7 +16,7 @@ export interface Recipe {
     description?: string;
     order?: number;
     isActive?: boolean;
-    recipes?: any[];
+    recipes?: Recipe[];
     url?: string;
     domainID?: number;
   };
@@ -31,10 +31,10 @@ export interface Recipe {
   recipeURL?: string;
   images?: string[];
   seO_Keywords?: string;
-  recipeCategories?: any;
-  recipeCategoryNM?: any;
-  fileDescription?: any;
-  fileName?: any;
+  recipeCategories?: unknown;
+  recipeCategoryNM?: string;
+  fileDescription?: string;
+  fileName?: string;
   lastViewDT?: string;
   modifiedID?: number;
 }
@@ -46,7 +46,7 @@ export interface Category {
   order?: number;
   isActive?: boolean;
   url?: string;
-  recipes?: any[];
+  recipes?: Recipe[];
   domainID?: number;
 }
 

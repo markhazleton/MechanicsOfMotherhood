@@ -1,0 +1,159 @@
+name: Quality Checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  quality:
+    name: Code Quality & Testing
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: TypeScript type checking
+        run: npm run check
+
+      - name: ESLint code quality
+        run: npm run lint
+
+      - name: Run unit tests
+        run: npm run test:coverage
+        env:
+          CI: true
+
+      - name: Upload coverage report
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: client/coverage
+
+      - name: Validate API data
+        run: npm run validate-data
+        continue-on-error: true
+
+      - name: Validate SEO assets
+        run: npm run validate:seo
+        continue-on-error: true
+
+      - name: Security audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Build for production
+        run: npm run build:static
+        env:
+          NODE_ENV: production
+
+      - name: Check accessibility
+        run: npm run quality:a11y
+        continue-on-error: true
+
+      - name: Check for broken links
+        run: npm run quality:links
+        continue-on-error: true
+
+      - name: Analyze bundle size
+        run: npm run analyze
+        continue-on-error: true
+
+      - name: Upload bundle analysis
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-analysis
+          path: stats.html
+        continue-on-error: true
+
+  performance:
+    name: Performance Budget Check
+    runs-on: ubuntu-latest
+    needs: quality
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Build for production
+        run: npm run build:static
+        env:
+          NODE_ENV: production
+
+      - name: Check bundle sizes
+        run: |
+          echo "📦 Checking bundle sizes against performance budget..."
+          
+          DIST_DIR="dist/public/assets"
+          
+          # Check if dist directory exists
+          if [ ! -d "$DIST_DIR" ]; then
+            echo "❌ Build output not found"
+            exit 1
+          fi
+          
+          # Calculate total JS size
+          TOTAL_JS=$(find "$DIST_DIR" -name "*.js" -exec stat -f%z {} \; 2>/dev/null | awk '{s+=$1} END {print s/1024}' || find "$DIST_DIR" -name "*.js" -exec stat -c%s {} \; | awk '{s+=$1} END {print s/1024}')
+          TOTAL_CSS=$(find "$DIST_DIR" -name "*.css" -exec stat -f%z {} \; 2>/dev/null | awk '{s+=$1} END {print s/1024}' || find "$DIST_DIR" -name "*.css" -exec stat -c%s {} \; | awk '{s+=$1} END {print s/1024}')
+          
+          echo "📊 Bundle Sizes:"
+          echo "  JavaScript: ${TOTAL_JS}KB"
+          echo "  CSS: ${TOTAL_CSS}KB"
+          
+          # Check against budget (300KB for JS, 50KB for CSS)
+          if (( $(echo "$TOTAL_JS > 300" | bc -l) )); then
+            echo "⚠️  JavaScript bundle exceeds 300KB budget"
+          else
+            echo "✅ JavaScript bundle within budget"
+          fi
+          
+          if (( $(echo "$TOTAL_CSS > 50" | bc -l) )); then
+            echo "⚠️  CSS bundle exceeds 50KB budget"
+          else
+            echo "✅ CSS bundle within budget"
+          fi
+
+  summary:
+    name: Quality Summary
+    runs-on: ubuntu-latest
+    needs: [quality, performance]
+    if: always()
+    
+    steps:
+      - name: Quality Check Summary
+        run: |
+          echo "📋 Quality Check Summary"
+          echo "======================="
+          echo ""
+          echo "✅ Code Quality: ${{ needs.quality.result }}"
+          echo "✅ Performance: ${{ needs.performance.result }}"
+          echo ""
+          if [ "${{ needs.quality.result }}" == "success" ] && [ "${{ needs.performance.result }}" == "success" ]; then
+            echo "🎉 All quality checks passed!"
+          else
+            echo "❌ Some quality checks failed. Please review the logs above."
+            exit 1
+          fi

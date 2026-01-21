@@ -37,7 +37,7 @@ export function useAnalytics() {
   // Recipe tracking functions
   const analytics = useMemo(() => ({
     // Page Tracking
-    trackPage: (path: string, title?: string, additionalData?: any) => {
+    trackPage: (path: string, title?: string, additionalData?: Record<string, unknown>) => {
       trackPageView(path, title, additionalData);
     },
 
@@ -112,7 +112,7 @@ export function useAnalytics() {
     trackButtonClick: (
       buttonName: string,
       context: string,
-      additionalData?: Record<string, any>
+      additionalData?: Record<string, unknown>
     ) => {
       trackButtonClick(buttonName, context, additionalData);
     },
@@ -145,7 +145,7 @@ export function useAnalytics() {
     },
 
     // Form submissions
-    trackFormSubmit: (formName: string, formData?: Record<string, any>) => {
+    trackFormSubmit: (formName: string, formData?: Record<string, unknown>) => {
       trackFormSubmission(formName, formData);
     },
 
@@ -158,7 +158,7 @@ export function useAnalytics() {
     },
 
     // Custom event tracking
-    trackCustomEvent: (eventName: string, eventData: Record<string, any>) => {
+    trackCustomEvent: (eventName: string, eventData: Record<string, string | number | boolean>) => {
       if (typeof window !== "undefined" && window.gtag) {
         window.gtag("event", eventName, eventData);
       }

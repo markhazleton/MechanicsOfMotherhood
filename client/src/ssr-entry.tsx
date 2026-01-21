@@ -8,10 +8,10 @@ export interface RenderResult {
 }
 
 export async function render(url: string): Promise<RenderResult> {
-  const helmetContext: any = {};
+  const helmetContext: Record<string, unknown> = {};
   const element = React.createElement(AppSSR, { ssrPath: url, helmetContext });
   const html = renderToString(element);
-  const helmetRaw = helmetContext.helmet || { title: { toString: () => '' }, meta: { toString: () => '' }, link: { toString: () => '' } };
+  const helmetRaw = (helmetContext.helmet as { title: { toString: () => string }; meta: { toString: () => string }; link: { toString: () => string } }) || { title: { toString: () => '' }, meta: { toString: () => '' }, link: { toString: () => '' } };
   const helmet = {
     title: helmetRaw.title.toString(),
     meta: helmetRaw.meta.toString(),

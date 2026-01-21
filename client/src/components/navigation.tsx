@@ -34,7 +34,7 @@ export default function Navigation() {
     { href: "/blog", label: "Blog", icon: Newspaper },
   ];
 
-  const NavLink = ({ href, label, icon: Icon }: { href: string; label: string; icon: any }) => {
+  const NavLink = ({ href, label, icon: Icon }: { href: string; label: string; icon: React.ComponentType<{ size?: number }> }) => {
     const active = location === href;
     return (
       <Link

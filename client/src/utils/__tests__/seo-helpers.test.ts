@@ -6,11 +6,12 @@ import {
   generatePageTitle,
 } from "../seo-helpers";
 import { nameToSlug, recipeNameToSlug, getCategorySlug } from "../slugify";
+import type { Recipe } from "@/data/api-types";
 
 // Minimal recipe type stub
-const baseRecipe: any = {
+const baseRecipe: Partial<Recipe> = {
   name: "Test Pancakes",
-  recipeCategory: { name: "Breakfast" },
+  recipeCategory: { id: 1, name: "Breakfast" },
   seO_Keywords: "fluffy\nquick\n-easy",
   description:
     "A lovely breakfast starter. Packed with flavor and energy for the day.",
@@ -18,7 +19,7 @@ const baseRecipe: any = {
 
 describe("generateRecipeKeywords", () => {
   it("aggregates and deduplicates keywords", () => {
-    const result = generateRecipeKeywords(baseRecipe);
+    const result = generateRecipeKeywords(baseRecipe as Recipe);
     expect(result).toContain("test pancakes");
     expect(result).toContain("breakfast");
     expect(result).toContain("breakfast recipe");
@@ -31,27 +32,27 @@ describe("generateRecipeKeywords", () => {
 
   it("handles empty seO_Keywords gracefully", () => {
     const r = { ...baseRecipe, seO_Keywords: "" };
-    const result = generateRecipeKeywords(r);
+    const result = generateRecipeKeywords(r as Recipe);
     expect(result).toContain("test pancakes");
   });
 });
 
 describe("generateRecipeDescription", () => {
   it("returns first sentence when short", () => {
-    const desc = generateRecipeDescription(baseRecipe);
+    const desc = generateRecipeDescription(baseRecipe as Recipe);
     expect(desc.endsWith(".")).toBe(true);
     expect(desc.length).toBeLessThanOrEqual(155);
   });
 
   it("truncates very long sentence", () => {
     const long = { ...baseRecipe, description: "A".repeat(300) + "." };
-    const desc = generateRecipeDescription(long);
+    const desc = generateRecipeDescription(long as Recipe);
     expect(desc.endsWith("...")).toBe(true);
   });
 
-  it("creates fallback when missing description", () => {
-    const noDesc = { ...baseRecipe, description: "" };
-    const desc = generateRecipeDescription(noDesc);
+  it("fallback for missing description", () => {
+    const noDesc = { ...baseRecipe, description: undefined };
+    const desc = generateRecipeDescription(noDesc as Recipe);
     expect(desc.toLowerCase()).toContain("delicious");
     expect(desc).toContain("Test Pancakes");
   });

@@ -22,7 +22,7 @@ const Blog = React.lazy(() => import('./pages/blog'));
 // If a custom domain is configured, deploy at root.
 // Otherwise use the repository name sub-path.
 let basePath = "";
-const isProd = (typeof import.meta !== 'undefined' && (import.meta as any).env && (import.meta as any).env.PROD) || process.env.NODE_ENV === 'production';
+const isProd = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.PROD) || process.env.NODE_ENV === 'production';
 if (isProd) {
   // For production, we know this site has a custom domain configured
   // The CNAME file indicates mechanicsofmotherhood.com is the custom domain
@@ -101,7 +101,7 @@ function AppRouter({ ssrPath }: AppRouterProps) {
   );
 }
 
-interface AppProps { ssrPath?: string; helmetContext?: any }
+interface AppProps { ssrPath?: string; helmetContext?: Record<string, unknown> }
 
 function App({ ssrPath, helmetContext }: AppProps) {
   return (
@@ -115,7 +115,7 @@ function App({ ssrPath, helmetContext }: AppProps) {
         time: new Date().toISOString()
       });
     }}>
-      {React.createElement((HelmetAsync as any).HelmetProvider || React.Fragment, { context: helmetContext },
+      {React.createElement((HelmetAsync as Record<string, unknown>).HelmetProvider as React.ComponentType<{context?: unknown}> || React.Fragment, { context: helmetContext },
         <TooltipProvider>
           <Toaster />
           {/* Reduced motion helper class */}

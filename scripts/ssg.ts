@@ -31,7 +31,7 @@ if (!existsSync(serverBundlePath)) {
   process.exit(1);
 }
 const template = readFileSync(path.join(distRoot, "index.html"), "utf-8");
-let renderer: any;
+let renderer: { render: (url: string) => Promise<{ html: string; helmet: { title: string; meta: string; link: string } }> } | null = null;
 async function getRenderer() {
   if (!renderer) {
     const mod = await import(pathToFileURL(serverBundlePath).href);
@@ -46,7 +46,7 @@ async function getRenderer() {
   return renderer;
 }
 
-function writeHtml(routePath: string, html: string, helmet: any) {
+function writeHtml(routePath: string, html: string, helmet: { title: string; meta: string; link: string }) {
   // Sanitize the route path for filesystem compatibility (remove invalid characters)
   const sanitizedRoutePath = routePath.replace(/[<>:"|?*]/g, "-");
   const outDir = path.join(distRoot, sanitizedRoutePath);
