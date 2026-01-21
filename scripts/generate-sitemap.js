@@ -30,7 +30,7 @@ if (!customDomain) {
 }
 const SITE_URL = customDomain
   ? `https://${customDomain.replace(/\/$/, '')}`
-  : 'https://sharesmallbiz-support.github.io/MechanicsOfMotherhood';
+  : 'https://mechanicsofmotherhood.com';
 const OUTPUT_PATH = path.join(__dirname, '../client/public/sitemap.xml');
 
 // Load recipe and category data

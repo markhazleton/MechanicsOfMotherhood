@@ -1,14 +1,7 @@
 import type { Recipe } from '@/data/api-types';
-// Helper to derive the canonical site base at build/runtime.
-function getSiteBase() {
-  if (typeof window !== 'undefined') {
-    return `${window.location.protocol}//${window.location.host}`;
-  }
-  // Build-time fallback: prefer custom domain env, else GitHub Pages.
-  const envDomain = (process.env.VITE_CUSTOM_DOMAIN as string | undefined);
-  return envDomain ? `https://${envDomain}` : 'https://sharesmallbiz-support.github.io/MechanicsOfMotherhood';
-}
-const SITE_BASE = getSiteBase();
+import SITE_CONFIG from '@/lib/site-config';
+
+const SITE_BASE = SITE_CONFIG.baseUrl;
 
 interface RecipeStructuredDataProps {
   recipe: Recipe;
@@ -47,7 +40,7 @@ export function generateRecipeStructuredData({ recipe, url, imageUrl }: RecipeSt
     "@context": "https://schema.org",
     "@type": "Recipe",
     "name": recipe.name,
-    "description": recipe.description || `Delicious ${recipe.name} recipe from Mechanics of Motherhood`,
+    "description": recipe.description || `Delicious ${recipe.name} recipe from ${SITE_CONFIG.name.full} (${SITE_CONFIG.name.short})`,
   "image": imageUrl || `${SITE_BASE}/images/hero/default-recipe.jpg`,
     "author": {
       "@type": "Person",
@@ -94,10 +87,10 @@ export function generateOrganizationStructuredData() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Mechanics of Motherhood",
-    "alternateName": "MoM",
-    "description": "Engineering better meals for working mothers worldwide",
-  "url": SITE_BASE + '/',
+    "name": `${SITE_CONFIG.name.full} (${SITE_CONFIG.name.short})`,
+    "alternateName": SITE_CONFIG.name.short,
+    "description": SITE_CONFIG.seo.description,
+    "url": SITE_BASE + '/',
     "logo": {
       "@type": "ImageObject",
   "url": `${SITE_BASE}/images/logos/mom-logo.png`
@@ -117,13 +110,13 @@ export function generateWebsiteStructuredData() {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Mechanics of Motherhood",
-    "alternateName": "MoM",
+    "name": `${SITE_CONFIG.name.full} (${SITE_CONFIG.name.short})`,
+    "alternateName": SITE_CONFIG.name.short,
   "url": SITE_BASE + '/',
-    "description": "Engineering better meals for working mothers worldwide",
+    "description": SITE_CONFIG.seo.description,
     "publisher": {
       "@type": "Organization",
-      "name": "Mechanics of Motherhood"
+      "name": `${SITE_CONFIG.name.full} (${SITE_CONFIG.name.short})`
     },
     "potentialAction": {
       "@type": "SearchAction",

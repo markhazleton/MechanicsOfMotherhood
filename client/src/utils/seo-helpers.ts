@@ -14,7 +14,7 @@ export const SITE_CONFIG = {
     "Engineering better meals for working mothers worldwide. Tested recipes, kitchen tools, and meal planning solutions.",
   author: "Mechanics of Motherhood",
   twitterHandle: "@MechanicsOfMom",
-  defaultImage: "/images/hero/mom-og-image.png",
+  defaultImage: "/images/logos/MOM-Logo-Full.png",
   logo: "/images/logos/mom-logo.png",
 };
 
@@ -131,12 +131,12 @@ export function generateBreadcrumbs(
   const breadcrumbs: Array<{ name: string; href: string }> = [];
 
   if (path.includes("/recipes/category/")) {
-    breadcrumbs.push({ name: "Recipe Manual", href: "/recipes" });
+    breadcrumbs.push({ name: "Recipes", href: "/recipes" });
     if (categoryName) {
       breadcrumbs.push({ name: categoryName, href: path });
     }
   } else if (path.includes("/recipe/")) {
-    breadcrumbs.push({ name: "Recipe Manual", href: "/recipes" });
+    breadcrumbs.push({ name: "Recipes", href: "/recipes" });
     if (recipe?.recipeCategory?.name) {
       const categorySlug = getCategorySlug(recipe.recipeCategory.name);
       breadcrumbs.push({
@@ -148,11 +148,11 @@ export function generateBreadcrumbs(
       breadcrumbs.push({ name: recipe.name, href: path });
     }
   } else if (path === "/recipes") {
-    breadcrumbs.push({ name: "Recipe Manual", href: "/recipes" });
+    breadcrumbs.push({ name: "Recipes", href: "/recipes" });
   } else if (path === "/categories") {
     breadcrumbs.push({ name: "Categories", href: "/categories" });
   } else if (path === "/blog") {
-    breadcrumbs.push({ name: "Maintenance Log", href: "/blog" });
+    breadcrumbs.push({ name: "Blog", href: "/blog" });
   } else if (path === "/") {
     // Home gets no additional crumb beyond Workshop (added in component)
   } else if (path === "/404" || path === "*") {
@@ -275,6 +275,6 @@ export function generateBlogStructuredData() {
     name: "Mechanics of Motherhood Blog",
     url: `${SITE_CONFIG.url}/blog`,
     description:
-      "Tips, tricks, and stories from the Mechanics of Motherhood workshop",
+      "Tips, tricks, and stories from the Mechanics of Motherhood home kitchen",
   };
 }

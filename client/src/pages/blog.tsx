@@ -5,6 +5,7 @@ import Footer from "@/components/footer";
 import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
 import SeoHead from "@/components/seo/SeoHead";
 import { generateBreadcrumbs, generateBlogStructuredData } from "@/utils/seo-helpers";
+import SITE_CONFIG from "@/lib/site-config";
 
 export default function Blog() {
   const breadcrumbs = generateBreadcrumbs('/blog');
@@ -12,10 +13,10 @@ export default function Blog() {
   return (
   <div className="min-h-screen bg-warm-cream">
       <SeoHead
-        title="Mechanics of Motherhood Blog"
-        description="Tips, tricks, and stories from the Mechanics of Motherhood workshop. Meal planning, cooking efficiency, and family-friendly kitchen engineering."
-        url="https://mechanicsofmotherhood.com/blog"
-        keywords={["mom blog", "family cooking tips", "meal planning", "kitchen organization", "busy mom recipes"]}
+        title={`${SITE_CONFIG.name.full} (${SITE_CONFIG.name.short}) Blog`}
+        description={`Tips, tricks, and stories from ${SITE_CONFIG.name.full}. Meal planning, cooking tips, and family-friendly recipes.`}
+        url={`${SITE_CONFIG.baseUrl}/blog`}
+        keywords={["mom blog", "family cooking tips", "meal planning", "busy mom recipes"]}
         structuredData={blogStructuredData}
       />
       <Navigation />
@@ -30,10 +31,10 @@ export default function Blog() {
   <section className="bg-gradient-to-r from-brand-800 to-accent-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-            MoM's Workshop Blog
+            {SITE_CONFIG.name.short}'s Blog
           </h1>
           <p className="text-xl max-w-2xl mx-auto">
-            Tips, tricks, and stories from the mechanics of motherhood
+            Tips, tricks, and stories from real moms
           </p>
         </div>
       </section>

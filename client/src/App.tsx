@@ -39,6 +39,9 @@ function AppRouter({ ssrPath }: AppRouterProps) {
   const h1Ref = useRef<HTMLHeadingElement | null>(null);
 
   useEffect(() => {
+    // Scroll to top on route change
+    window.scrollTo(0, 0);
+
     const id = window.requestAnimationFrame(() => {
       // Find first visible h1 inside main if not already stored
       if (mainRef.current) {
@@ -50,10 +53,10 @@ function AppRouter({ ssrPath }: AppRouterProps) {
 
       if (h1Ref.current) {
         h1Ref.current.setAttribute('tabIndex', '-1');
-        h1Ref.current.focus({ preventScroll: false });
+        h1Ref.current.focus({ preventScroll: true });
       } else if (mainRef.current) {
         mainRef.current.setAttribute('tabIndex', '-1');
-        mainRef.current.focus({ preventScroll: false });
+        mainRef.current.focus({ preventScroll: true });
       }
 
       // Announce page load for SR users

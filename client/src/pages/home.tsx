@@ -6,6 +6,7 @@ import CommunitySection from "@/components/community-section";
 import Footer from "@/components/footer";
 import SeoHead from "@/components/seo/SeoHead";
 import { generateWebsiteStructuredData, generateOrganizationStructuredData } from "@/components/seo/StructuredData";
+import SITE_CONFIG from "@/lib/site-config";
 
 export default function Home() {
   // Generate structured data for homepage
@@ -16,22 +17,13 @@ export default function Home() {
   const combinedStructuredData = [websiteStructuredData, organizationStructuredData];
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors">
+    <main className="min-h-screen bg-background text-foreground transition-colors">
       {/* SEO Head for homepage */}
       <SeoHead
-        title="Mechanics of Motherhood - Engineering Better Meals"
-        description="Engineering better meals for working mothers worldwide. Tested recipes, kitchen tools, and meal planning solutions for busy families."
-        keywords={[
-          'working mother recipes',
-          'quick family meals',
-          'easy dinner recipes',
-          'meal planning for busy moms',
-          'kitchen organization',
-          'family cooking',
-          'time-saving recipes',
-          'healthy meal prep'
-        ]}
-        url="https://sharesmallbiz-support.github.io/MechanicsOfMotherhood/"
+        title={SITE_CONFIG.seo.title}
+        description={SITE_CONFIG.seo.description}
+        keywords={SITE_CONFIG.seo.keywords}
+        url={`${SITE_CONFIG.baseUrl}/`}
         type="website"
         structuredData={combinedStructuredData}
       />
@@ -42,6 +34,6 @@ export default function Home() {
       <BlogSection />
       <CommunitySection />
       <Footer />
-    </div>
+    </main>
   );
 }

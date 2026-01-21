@@ -1,7 +1,7 @@
 {
-  "name": "Mechanics of Motherhood",
+  "name": "Mechanics of Motherhood (MoM)",
   "short_name": "MoM",
-  "description": "Engineering better meals for working mothers worldwide",
+  "description": "Delicious, tested recipes for working mothers and busy families - Real recipes for real moms",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -28,7 +28,7 @@
       "purpose": "any"
     }
   ],
-  "theme_color": "#2C3E50",
+  "theme_color": "#ED8936",
   "background_color": "#ffffff",
   "display": "standalone",
   "orientation": "portrait-primary",

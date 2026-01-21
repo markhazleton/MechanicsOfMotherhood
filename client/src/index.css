@@ -1,4 +1,4 @@
-/* Modern Mechanics of Motherhood - Tailwind CSS v4 Design System */
+/* Modern Recipe Blog - Tailwind CSS v4 Design System */
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
 
 @import "tailwindcss";
@@ -9,49 +9,49 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
   --font-display: "Playfair Display", Georgia, serif;
 
-  /* Colors - Neutral */
-  --color-neutral-50: hsl(220 14% 96%);
-  --color-neutral-100: hsl(220 13% 91%);
-  --color-neutral-200: hsl(220 13% 83%);
-  --color-neutral-300: hsl(220 9% 72%);
-  --color-neutral-400: hsl(220 9% 46%);
-  --color-neutral-500: hsl(220 9% 39%);
-  --color-neutral-600: hsl(220 13% 33%);
-  --color-neutral-700: hsl(220 14% 20%);
-  --color-neutral-800: hsl(220 27% 12%);
-  --color-neutral-900: hsl(220 39% 7%);
-  --color-neutral-950: hsl(220 50% 4%);
+  /* Colors - Neutral (Slate-based for better readability) */
+  --color-neutral-50: hsl(210 40% 98%);
+  --color-neutral-100: hsl(210 40% 96%);
+  --color-neutral-200: hsl(214 32% 91%);
+  --color-neutral-300: hsl(213 27% 84%);
+  --color-neutral-400: hsl(215 20% 65%);
+  --color-neutral-500: hsl(215 16% 47%);
+  --color-neutral-600: hsl(215 19% 35%);
+  --color-neutral-700: hsl(215 25% 27%);
+  --color-neutral-800: hsl(217 33% 17%);
+  --color-neutral-900: hsl(222 47% 11%);
+  --color-neutral-950: hsl(229 84% 5%);
 
-  /* Colors - Brand (Warm Coffee/Rose Brown) */
-  --color-brand-50: hsl(25 45% 96%);
-  --color-brand-100: hsl(25 40% 90%);
-  --color-brand-200: hsl(25 38% 80%);
-  --color-brand-300: hsl(25 35% 65%);
-  --color-brand-400: hsl(25 32% 50%);
-  --color-brand-500: hsl(25 35% 42%);
-  --color-brand-600: hsl(25 40% 35%);
-  --color-brand-700: hsl(25 45% 28%);
-  --color-brand-800: hsl(25 50% 22%);
-  --color-brand-900: hsl(25 55% 18%);
-  --color-brand-950: hsl(25 60% 12%);
+  /* Colors - Brand (Rich warm brown - darker for better contrast) */
+  --color-brand-50: hsl(30 60% 97%);
+  --color-brand-100: hsl(28 55% 92%);
+  --color-brand-200: hsl(26 52% 82%);
+  --color-brand-300: hsl(24 48% 68%);
+  --color-brand-400: hsl(22 45% 52%);
+  --color-brand-500: hsl(20 50% 42%);
+  --color-brand-600: hsl(18 55% 34%);
+  --color-brand-700: hsl(16 58% 26%);
+  --color-brand-800: hsl(14 60% 20%);
+  --color-brand-900: hsl(12 62% 16%);
+  --color-brand-950: hsl(10 65% 10%);
 
-  /* Colors - Accent (Terracotta) */
-  --color-accent-50: hsl(10 65% 96%);
-  --color-accent-100: hsl(10 60% 90%);
-  --color-accent-200: hsl(10 58% 80%);
-  --color-accent-300: hsl(10 56% 68%);
-  --color-accent-400: hsl(10 54% 58%);
-  --color-accent-500: hsl(10 52% 48%);
-  --color-accent-600: hsl(10 55% 40%);
-  --color-accent-700: hsl(10 58% 32%);
-  --color-accent-800: hsl(10 60% 26%);
-  --color-accent-900: hsl(10 65% 20%);
+  /* Colors - Accent (Coral/Tomato - vibrant and appetizing) */
+  --color-accent-50: hsl(12 100% 97%);
+  --color-accent-100: hsl(12 95% 92%);
+  --color-accent-200: hsl(12 90% 84%);
+  --color-accent-300: hsl(12 85% 72%);
+  --color-accent-400: hsl(12 80% 58%);
+  --color-accent-500: hsl(12 76% 48%);
+  --color-accent-600: hsl(12 82% 40%);
+  --color-accent-700: hsl(12 85% 32%);
+  --color-accent-800: hsl(12 88% 26%);
+  --color-accent-900: hsl(12 90% 20%);
 
-  /* Colors - Warm Backgrounds */
-  --color-warm-cream: hsl(30 50% 97%);
-  --color-warm-peach: hsl(25 80% 94%);
-  --color-warm-sage: hsl(140 30% 95%);
-  --color-warm-lavender: hsl(270 50% 97%);
+  /* Colors - Backgrounds (Clean, readable) */
+  --color-warm-cream: hsl(40 33% 98%);
+  --color-warm-peach: hsl(30 50% 95%);
+  --color-warm-sage: hsl(140 25% 95%);
+  --color-warm-lavender: hsl(260 40% 97%);
 
   /* Colors - Success (Teal / Green) */
   --color-success-50: hsl(165 70% 96%);
@@ -95,19 +95,20 @@
   --color-warning: var(--color-warning-500);
   --color-warning-foreground: 0 0% 0%;
 
-  /* Semantic Colors */
-  --color-background: var(--color-warm-cream);
+  /* Semantic Colors - High contrast for readability */
+  --color-background: hsl(0 0% 100%);
   --color-foreground: var(--color-neutral-900);
-  --color-muted: var(--color-warm-peach);
-  --color-muted-foreground: var(--color-brand-700);
+  --color-muted: var(--color-neutral-100);
+  --color-muted-foreground: var(--color-neutral-600);
   --color-card: hsl(0 0% 100%);
   --color-card-foreground: var(--color-neutral-900);
-  --color-border: hsl(25 20% 88%);
+  --color-border: var(--color-neutral-200);
   --color-primary: var(--color-accent-600);
   --color-primary-foreground: hsl(0 0% 100%);
-  --color-secondary: var(--color-warm-peach);
-  --color-secondary-foreground: var(--color-brand-900);
+  --color-secondary: var(--color-neutral-100);
+  --color-secondary-foreground: var(--color-neutral-900);
   --color-ring: var(--color-accent-500);
+  --color-input: var(--color-neutral-200);
 
   /* Spacing */
   --spacing-2: 0.5rem;
@@ -430,16 +431,18 @@
   /* Dark Mode Token Overrides */
   @layer base {
     :root.dark {
-      --color-background: 220 39% 7%;
-      --color-foreground: 220 14% 96%;
-      --color-card: 220 27% 12%;
-      --color-card-foreground: 220 14% 96%;
-      --color-border: 220 13% 33%;
-      --color-muted: 220 27% 12%;
-      --color-muted-foreground: 220 13% 70%;
-      --color-secondary: 220 27% 16%;
-      --color-secondary-foreground: 220 14% 96%;
-      --color-ring: var(--color-brand-500);
+      --color-background: hsl(222 47% 11%);
+      --color-foreground: hsl(210 40% 98%);
+      --color-card: hsl(217 33% 17%);
+      --color-card-foreground: hsl(210 40% 98%);
+      --color-border: hsl(215 25% 27%);
+      --color-muted: hsl(217 33% 17%);
+      --color-muted-foreground: hsl(215 20% 65%);
+      --color-secondary: hsl(215 25% 27%);
+      --color-secondary-foreground: hsl(210 40% 98%);
+      --color-input: hsl(215 25% 27%);
+      --color-ring: var(--color-accent-400);
+      --color-primary: var(--color-accent-500);
       /* Dark adjusted success/destructive/warning for contrast */
       --color-success-50: hsl(170 55% 11%);
       --color-success-100: hsl(170 55% 14%);

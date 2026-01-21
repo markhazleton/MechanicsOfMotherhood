@@ -39,6 +39,7 @@ export function RecipeChat({
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hints] = useState<ChatHint[]>(getChatHints());
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize chat session on mount
@@ -56,13 +57,18 @@ export function RecipeChat({
     initChat();
   }, [recipeId, recipeName]);
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll to bottom when new messages arrive (only after user interaction)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    if (hasUserInteracted && messages.length > 0) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, hasUserInteracted]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading || !session) return;
+
+    // Mark that user has interacted with chat
+    setHasUserInteracted(true);
 
     const userMessage: ChatMessage = {
       id: `temp_${Date.now()}`,
@@ -106,6 +112,7 @@ export function RecipeChat({
   };
 
   const handleHintClick = (hint: ChatHint) => {
+    setHasUserInteracted(true);
     setInputValue(hint.prompt);
   };
 

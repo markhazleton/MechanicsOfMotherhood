@@ -17,7 +17,7 @@ export default function SeoHead({
   title = 'Mechanics of Motherhood - Engineering Better Meals',
   description = 'Engineering better meals for working mothers worldwide. Tested recipes, kitchen tools, and meal planning solutions.',
   keywords = [],
-  image = 'https://mechanicsofmotherhood.com/images/logos/mom-og-image.png',
+  image = 'https://mechanicsofmotherhood.com/images/logos/MOM-Logo-Full.png',
   url,
   type = 'website',
   author,

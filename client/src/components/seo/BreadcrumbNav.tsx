@@ -15,7 +15,7 @@ interface BreadcrumbProps {
 export default function BreadcrumbNav({ items, className = '' }: BreadcrumbProps) {
   // Always include home as the first item
   const allItems = [
-    { name: 'Workshop', href: '/' },
+    { name: 'Home', href: '/' },
     ...items
   ];
 

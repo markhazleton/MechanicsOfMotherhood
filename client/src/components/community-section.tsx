@@ -1,117 +1,60 @@
-import { useState } from "react";
-import { Users, MessageCircle, Lightbulb, Rocket } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Users, Heart, BookOpen } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
 import apiData from "@/data/api-data.json";
 
 export default function CommunitySection() {
-  const [email, setEmail] = useState("");
-  const { toast } = useToast();
-
   const { metadata: stats } = apiData;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email && email.includes("@")) {
-      // Static app - show success message without actual submission
-      toast({
-        title: "Thanks for your interest!",
-        description: "We're working on newsletter functionality. Please check back soon!",
-      });
-      setEmail("");
-    } else {
-      toast({
-        title: "Invalid Email",
-        description: "Please enter a valid email address.",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
-  <section className="py-16 bg-warm-cream">
+    <section className="py-16 md:py-20 bg-muted/30 dark:bg-muted/10 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="font-display heading-lg text-brand-800 mb-4">
-            Join the MoM Crew
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            Why Choose MoM Recipes
           </h2>
-          <p className="text-neutral-700 text-lg max-w-2xl mx-auto">
-            Connect with fellow working moms who understand the daily grind. Share tips, troubleshoot problems, and celebrate wins together.
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            Real recipes tested by real families. Simple, delicious, and designed for busy lives.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          <Card className="text-center p-6 bg-white rounded-xl border border-warm-peach/30 shadow-md">
-            <CardContent className="pt-6">
-              <div className="bg-accent-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow">
-                <Users className="text-white text-2xl" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="text-center p-6 bg-card border-border">
+            <CardContent className="pt-4">
+              <div className="bg-accent-100 dark:bg-accent-900/40 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="text-accent-600 dark:text-accent-400" size={24} />
               </div>
-              <h3 className="font-display font-semibold text-xl mb-2 text-brand-800">Active Community</h3>
-              <p className="text-neutral-700 mb-4">
-                Join <span className="font-semibold" data-testid="community-members-count">
-                  {stats?.totalRecipes ? (stats.totalRecipes * 100).toLocaleString() : "15,000"}+
-                </span> working moms sharing real solutions.
+              <h3 className="font-semibold text-lg mb-2 text-foreground">Growing Collection</h3>
+              <p className="text-muted-foreground text-sm">
+                Browse <span className="font-semibold text-foreground" data-testid="community-members-count">
+                  {stats?.totalRecipes || "100"}+
+                </span> recipes across {stats?.totalCategories || "14"} categories.
               </p>
             </CardContent>
           </Card>
 
-          <Card className="text-center p-6 bg-white rounded-xl border border-warm-peach/30 shadow-md">
-            <CardContent className="pt-6">
-              <div className="bg-brand-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow">
-                <MessageCircle className="text-white text-2xl" />
+          <Card className="text-center p-6 bg-card border-border">
+            <CardContent className="pt-4">
+              <div className="bg-accent-100 dark:bg-accent-900/40 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart className="text-accent-600 dark:text-accent-400" size={24} />
               </div>
-              <h3 className="font-display font-semibold text-xl mb-2 text-brand-800">Daily Support</h3>
-              <p className="text-neutral-700 mb-4">
-                Get answers to your questions from experienced mom engineers.
+              <h3 className="font-semibold text-lg mb-2 text-foreground">Family Tested</h3>
+              <p className="text-muted-foreground text-sm">
+                Every recipe is tested by real families for taste and ease.
               </p>
             </CardContent>
           </Card>
 
-          <Card className="text-center p-6 bg-white rounded-xl border border-warm-peach/30 shadow-md">
-            <CardContent className="pt-6">
-              <div className="bg-accent-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow">
-                <Lightbulb className="text-white text-2xl" />
+          <Card className="text-center p-6 bg-card border-border">
+            <CardContent className="pt-4">
+              <div className="bg-accent-100 dark:bg-accent-900/40 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4">
+                <BookOpen className="text-accent-600 dark:text-accent-400" size={24} />
               </div>
-              <h3 className="font-display font-semibold text-xl mb-2 text-brand-800">Exclusive Content</h3>
-              <p className="text-neutral-700 mb-4">
-                Access member-only recipes, meal plans, and workshop sessions.
+              <h3 className="font-semibold text-lg mb-2 text-foreground">Easy to Follow</h3>
+              <p className="text-muted-foreground text-sm">
+                Clear instructions and ingredient lists make cooking stress-free.
               </p>
             </CardContent>
           </Card>
-        </div>
-
-  <div className="bg-gradient-to-r from-brand-800 to-brand-600 rounded-2xl p-8 md:p-12 text-center text-white shadow-lg">
-          <h3 className="font-mechanical text-2xl md:text-3xl font-bold mb-4">
-            Ready to Join the Workshop?
-          </h3>
-          <p className="text-xl mb-8 opacity-90">
-            Get instant access to our complete recipe database and join the most supportive community of working moms.
-          </p>
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
-            <Input
-              type="email"
-              placeholder="Enter your email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="flex-1 px-6 py-4 rounded-xl text-neutral-900 focus:ring-2 focus:ring-accent-500 focus:outline-none"
-              data-testid="newsletter-email-input"
-              required
-            />
-            <Button
-              type="submit"
-              variant="accent"
-              className="px-8 py-4 rounded-xl font-semibold whitespace-nowrap transition-all shadow"
-              data-testid="button-start-building"
-            >
-              <Rocket className="mr-2" size={18} />
-              Start Building
-            </Button>
-          </form>
-          <p className="text-sm opacity-75 mt-4">
-            Join for free. No spam, just practical tips and recipes.
-          </p>
         </div>
       </div>
     </section>

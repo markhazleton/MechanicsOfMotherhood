@@ -112,7 +112,7 @@ export default function CategoryRecipes() {
                 Category Not Found
               </h1>
               <p className="text-neutral-700 mb-6">
-                The category "{categorySlug}" doesn't exist in our workshop.
+                The category "{categorySlug}" doesn't exist in our home kitchen.
               </p>
               <div className="space-x-4">
                 <Link href="/categories">

@@ -36,8 +36,11 @@ function validateRobots(content) {
   if (!/Sitemap:\s*https?:\/\//i.test(content)) {
     warnings.push('robots.txt missing absolute Sitemap URL');
   }
-  if (/Disallow:\s*\/$/im.test(content)) {
-    errors.push('robots.txt disallows root path (/) which would block crawling');
+  // Check if the global User-agent: * block disallows root (/)
+  // This should NOT flag Disallow: / for specific bad bots
+  const globalBlock = content.match(/User-agent:\s*\*[\s\S]*?(?=User-agent:|$)/i);
+  if (globalBlock && /Disallow:\s*\/\s*$/m.test(globalBlock[0])) {
+    errors.push('robots.txt disallows root path (/) for all crawlers which would block crawling');
   }
 }
 

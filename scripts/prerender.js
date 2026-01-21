@@ -133,7 +133,7 @@ for (const r of recipes.slice(0, 250)) { // safety cap
     const site = 'https://mechanicsofmotherhood.com';
     const canonical = `${site}/recipe/${slug}`;
     // Prefer first provided image if available; fallback to generic OG image
-    const imageUrl = (r.images && r.images.length && r.images[0].url) ? r.images[0].url.replace(/^https?:\/\/[^/]+/, 'https://mechanicsofmotherhood.com') : `${site}/images/logos/mom-og-image.png`;
+    const imageUrl = (r.images && r.images.length && r.images[0].url) ? r.images[0].url.replace(/^https?:\/\/[^/]+/, 'https://mechanicsofmotherhood.com') : `${site}/images/logos/MOM-Logo-Full.png`;
     const recipeSchema = {
       "@context":"https://schema.org",
       "@type":"Recipe",
@@ -208,7 +208,7 @@ for (const c of categories) {
 }
 
 // Core landing pages
-writeRoute('', { title: 'Mechanics of Motherhood - Engineering Better Meals', description: 'Engineering better meals for working mothers worldwide.', structuredData: [
+writeRoute('', { title: 'Mechanics of Motherhood - Real Recipes for Real Moms', description: 'Delicious, tested recipes for working mothers worldwide.', structuredData: [
   {
     "@context":"https://schema.org",
     "@type":"Organization",
@@ -231,7 +231,7 @@ writeRoute('', { title: 'Mechanics of Motherhood - Engineering Better Meals', de
     }
   }
 ] });
-writeRoute('recipes', { title: 'All Recipes', description: 'Browse all Mechanics of Motherhood recipes.' });
+writeRoute('recipes', { title: 'All Recipes', description: 'Browse our collection of family-tested recipes.' });
 writeRoute('categories', { title: 'Recipe Categories', description: 'Explore recipe categories.' });
 
 console.log('[prerender] Complete');

@@ -1,15 +1,21 @@
+# Mechanics of Motherhood - robots.txt
+# https://mechanicsofmotherhood.com
+
+# Allow all legitimate crawlers
 User-agent: *
 Allow: /
 
-# Sitemap location
+# Sitemap location (critical for SEO)
 Sitemap: https://mechanicsofmotherhood.com/sitemap.xml
 
-# Disallow build artifacts and admin paths
+# Disallow build artifacts and non-content paths
 Disallow: /assets/
 Disallow: /_redirects
 Disallow: /404.html
+Disallow: /*.json$
+Disallow: /build-version.json
 
-# Allow important static resources
+# Allow important static resources for rendering
 Allow: /*.css
 Allow: /*.js
 Allow: /*.png
@@ -18,3 +24,30 @@ Allow: /*.jpeg
 Allow: /*.gif
 Allow: /*.svg
 Allow: /*.webp
+Allow: /images/
+
+# Google-specific directives
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Bing-specific directives
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+# Block bad bots and scrapers
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+# Host directive (helps with canonicalization)
+Host: https://mechanicsofmotherhood.com

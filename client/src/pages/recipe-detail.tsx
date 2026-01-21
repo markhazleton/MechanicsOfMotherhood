@@ -71,17 +71,17 @@ export default function RecipeDetail() {
 
   if (error || !recipe) {
     return (
-      <div className="min-h-screen bg-surface-base text-text-base">
+      <div className="min-h-screen bg-background text-foreground transition-colors">
         <Navigation />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center">
-            <h1 className="font-mechanical heading-xl text-text-strong mb-4">
+            <h1 className="text-3xl font-bold text-foreground mb-4">
               Recipe Not Found
             </h1>
-            <p className="text-text-muted mb-8">
+            <p className="text-muted-foreground mb-8">
               {error || "The recipe you're looking for doesn't exist or has been removed."}
             </p>
-            <Button onClick={() => navigate("/recipes")} variant="brand">
+            <Button onClick={() => navigate("/recipes")} variant="default">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Recipes
             </Button>
@@ -113,7 +113,7 @@ export default function RecipeDetail() {
   });
 
   return (
-  <div className="recipe-detail-page min-h-screen bg-surface-base text-text-base">
+    <div className="recipe-detail-page min-h-screen bg-background text-foreground transition-colors">
       {/* SEO Head */}
       <SeoHead
         title={recipe.name}
@@ -127,62 +127,60 @@ export default function RecipeDetail() {
         modifiedTime={recipe.modifiedDT}
         structuredData={structuredData}
       />
-      
+
       <div className="no-print">
         <Navigation />
       </div>
-      
+
       {/* Breadcrumb Navigation */}
-  <div className="bg-surface-subtle border-b border-border-subtle">
+      <div className="bg-muted/50 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <BreadcrumbNav items={breadcrumbs} />
         </div>
       </div>
-      
+
       {/* Hero Section */}
-    <section className="relative recipe-hero-section no-print">
-  <div className="h-96 bg-gradient-to-r from-brand-900/25 to-accent-600/25 relative overflow-hidden">
+      <section className="relative recipe-hero-section no-print">
+        <div className="h-80 md:h-96 relative overflow-hidden">
           <img
             src={getRecipeImageUrl(recipe)}
             alt={getRecipeImageAlt(recipe)}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         </div>
-        
+
         <div className="absolute inset-0 flex items-end">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 w-full">
             <Button
               onClick={handleBackClick}
-              variant="subtle"
-              className="mb-6 bg-white/90 hover:bg-white text-brand-800 dark:text-brand-100"
+              variant="secondary"
+              className="mb-6 bg-white/90 hover:bg-white text-neutral-900"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Recipes
             </Button>
-            
+
             <div className="text-white">
               <div className="flex items-center gap-2 mb-4">
-                <Badge variant="brand" className="bg-accent-solid text-white">
+                <Badge className="bg-accent-600 text-white border-0">
                   {recipe?.recipeCategory?.name || "Recipe"}
                 </Badge>
-                {/* Difficulty removed: no source field in API */}
               </div>
-              
-              <h1 className="font-mechanical text-4xl md:text-5xl font-bold mb-6">
+
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
                 {recipe?.name}
               </h1>
-              
+
               <div className="flex flex-wrap items-center gap-6 text-white/90">
                 <div className="flex items-center">
                   <Users className="w-5 h-5 mr-2" />
-                  <span className="font-semibold">Serves:</span>
-                  <span className="ml-1">{recipe?.servings || 4}</span>
+                  <span>Serves {recipe?.servings || 4}</span>
                 </div>
                 <div className="flex items-center">
-                  <Star className="w-5 h-5 mr-2 fill-current text-accent-600" />
-                  <span className="font-semibold">{recipe?.averageRating || 5}/5</span>
-                  <span className="ml-1 text-sm">({recipe?.ratingCount || 0} reviews)</span>
+                  <Star className="w-5 h-5 mr-2 fill-yellow-400 text-yellow-400" />
+                  <span>{recipe?.averageRating || 5}/5</span>
+                  <span className="ml-1 text-sm text-white/70">({recipe?.ratingCount || 0} reviews)</span>
                 </div>
               </div>
             </div>
@@ -191,11 +189,11 @@ export default function RecipeDetail() {
       </section>
 
       {/* Recipe Content */}
-      <section className="py-16 bg-warm-cream">
+      <section className="py-12 md:py-16 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Print Header (only visible in print) */}
           <div className="print-only recipe-print-header mb-6">
-            <h1 className="font-mechanical text-3xl font-bold">{recipe.name}</h1>
+            <h1 className="text-3xl font-bold">{recipe.name}</h1>
             <div className="recipe-print-meta">
               <span>Category: {recipe?.recipeCategory?.name || 'Recipe'}</span>
               {recipe.servings && <span>Serves: {recipe.servings}</span>}
@@ -203,27 +201,27 @@ export default function RecipeDetail() {
             </div>
             <img src={getRecipeImageUrl(recipe)} alt={getRecipeImageAlt(recipe)} className="recipe-print-image" />
           </div>
-          
+
           {/* Description Card */}
-      <Card className="mb-8">
+          <Card className="mb-8">
             <CardContent className="p-6">
-        <div className="prose prose-lg max-w-none prose-headings:text-brand-800 prose-links:text-accent-600 hover:prose-links:text-accent-700 prose-strong:text-brand-900 prose-p:text-neutral-800 prose-p:leading-relaxed">
+              <div className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-links:text-accent-600 dark:prose-links:text-accent-400">
                 <MarkdownContent
                   content={recipe?.description || "No description available for this recipe."}
-                  className="text-neutral-800"
+                  className="text-muted-foreground"
                 />
               </div>
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 recipe-content-grid">
-            
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 recipe-content-grid">
+
             {/* Ingredients */}
             <div className="lg:col-span-1">
               <Card>
-                <CardHeader className="bg-warm-peach/30">
-                  <CardTitle className="font-display heading-lg text-brand-800 flex items-center">
-                    <BookOpen className="w-6 h-6 mr-2 text-accent-600" />
+                <CardHeader className="bg-muted/50 dark:bg-muted/30">
+                  <CardTitle className="text-xl font-semibold text-foreground flex items-center">
+                    <BookOpen className="w-5 h-5 mr-2 text-accent-600 dark:text-accent-400" />
                     Ingredients
                   </CardTitle>
                 </CardHeader>
@@ -231,48 +229,44 @@ export default function RecipeDetail() {
                   <div className="space-y-3">
                     {ingredientsHtml ? (
                       <div
-                        className="ingredients-list text-neutral-800"
+                        className="ingredients-list text-foreground"
                         dangerouslySetInnerHTML={{ __html: ingredientsHtml }}
                       />
                     ) : ingredientsList && ingredientsList.length > 0 ? (
                       ingredientsList.map((ingredient: string, index: number) => (
                         <div key={index} className="flex items-start">
                           <div className="w-2 h-2 bg-accent-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                          <span className="text-neutral-800 leading-relaxed">{ingredient}</span>
+                          <span className="text-foreground leading-relaxed">{ingredient}</span>
                         </div>
                       ))
                     ) : (
-                      <p className="text-neutral-600 italic">No ingredients listed</p>
+                      <p className="text-muted-foreground italic">No ingredients listed</p>
                     )}
                   </div>
 
                   {/* SEO Keywords as Tags */}
                   {recipe?.seO_Keywords && (
-                    <div className="mt-6 pt-6 border-t border-warm-peach/50 recipe-tags">
-                      <h4 className="font-semibold text-brand-800 mb-3 flex items-center">
+                    <div className="mt-6 pt-6 border-t border-border recipe-tags">
+                      <h4 className="font-semibold text-foreground mb-3 flex items-center">
                         <span className="w-2 h-2 bg-accent-500 rounded-full mr-2"></span>
                         Recipe Tags
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {recipe.seO_Keywords
-                          .split(/[\n\r]+/)  // Split by new lines
-                          .map(line => line.trim())  // Trim whitespace
-                          .filter(line => line)  // Remove empty lines
-                          .map(line => line.replace(/^[-\d.]*\s*/, ''))  // Remove bullet points and numbers
-                          .filter(keyword => keyword.trim())  // Filter out empty results
+                          .split(/[\n\r]+/)
+                          .map(line => line.trim())
+                          .filter(line => line)
+                          .map(line => line.replace(/^[-\d.]*\s*/, ''))
+                          .filter(keyword => keyword.trim())
                           .map((keyword: string, index: number) => {
                             const cleanKeyword = keyword.trim();
                             if (!cleanKeyword) return null;
-                            
-                            // Cycle through different badge variants for visual variety
-                            const badgeVariants = ["subtle", "outline", "subtle", "outline"] as const;
-                            const variantIndex = index % badgeVariants.length;
 
                             return (
                               <Badge
                                 key={index}
-                                variant={badgeVariants[variantIndex]}
-                                className="cursor-default hover:shadow-sm motion-safe:hover:scale-105 motion-safe:transform"
+                                variant="outline"
+                                className="cursor-default"
                                 title={cleanKeyword}
                               >
                                 {cleanKeyword}
@@ -282,8 +276,6 @@ export default function RecipeDetail() {
                       </div>
                     </div>
                   )}
-
-                  {/* Quick Stats removed: time & difficulty not provided by API */}
                 </CardContent>
               </Card>
             </div>
@@ -291,45 +283,45 @@ export default function RecipeDetail() {
             {/* Instructions */}
             <div className="lg:col-span-2">
               <Card>
-                <CardHeader className="bg-warm-peach/30">
-                  <CardTitle className="font-display heading-lg text-brand-800 flex items-center">
-                    <ChefHat className="w-6 h-6 mr-2 text-accent-600" />
+                <CardHeader className="bg-muted/50 dark:bg-muted/30">
+                  <CardTitle className="text-xl font-semibold text-foreground flex items-center">
+                    <ChefHat className="w-5 h-5 mr-2 text-accent-600 dark:text-accent-400" />
                     Instructions
                   </CardTitle>
                 </CardHeader>
                 <CardContent onMouseEnter={handleInstructionsView} className="pt-6">
-                  <div className="space-y-6">
+                  <div className="space-y-5">
                     {instructionsHtml ? (
                       <div
-                        className="instructions-list text-neutral-800"
+                        className="instructions-list text-foreground"
                         dangerouslySetInnerHTML={{ __html: instructionsHtml }}
                       />
                     ) : instructionsList && instructionsList.length > 0 ? (
                       instructionsList.map((instruction: string, index: number) => (
                         <div key={index} className="flex">
-                          <div className="flex-shrink-0 w-8 h-8 bg-accent-500 text-white rounded-full flex items-center justify-center font-bold text-sm mr-4 shadow-sm">
+                          <div className="flex-shrink-0 w-8 h-8 bg-accent-600 text-white rounded-full flex items-center justify-center font-semibold text-sm mr-4">
                             {index + 1}
                           </div>
-                          <div className="flex-1">
-                            <p className="text-neutral-800 leading-relaxed">{instruction}</p>
+                          <div className="flex-1 pt-1">
+                            <p className="text-foreground leading-relaxed">{instruction}</p>
                           </div>
                         </div>
                       ))
                     ) : (
-                      <p className="text-neutral-600 italic">No instructions provided</p>
+                      <p className="text-muted-foreground italic">No instructions provided</p>
                     )}
                   </div>
 
                   {/* Additional Recipe Info */}
-                  <Separator className="my-8 bg-warm-peach/50" />
+                  <Separator className="my-8" />
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 additional-recipe-info">
                     <div>
-                      <h4 className="font-semibold text-brand-800 mb-2 flex items-center">
+                      <h4 className="font-semibold text-foreground mb-3 flex items-center">
                         <span className="w-2 h-2 bg-accent-500 rounded-full mr-2"></span>
                         Cooking Tips
                       </h4>
-                      <ul className="text-sm text-neutral-700 space-y-1">
+                      <ul className="text-sm text-muted-foreground space-y-2">
                         <li>• Read through all instructions before starting</li>
                         <li>• Prep all ingredients before cooking</li>
                         <li>• Adjust seasonings to taste</li>
@@ -337,11 +329,11 @@ export default function RecipeDetail() {
                       </ul>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-brand-800 mb-2 flex items-center">
+                      <h4 className="font-semibold text-foreground mb-3 flex items-center">
                         <span className="w-2 h-2 bg-accent-500 rounded-full mr-2"></span>
                         Storage
                       </h4>
-                      <ul className="text-sm text-neutral-700 space-y-1">
+                      <ul className="text-sm text-muted-foreground space-y-2">
                         <li>• Store leftovers in refrigerator</li>
                         <li>• Best consumed within 2-3 days</li>
                         <li>• Can be frozen for up to 3 months</li>
@@ -354,8 +346,8 @@ export default function RecipeDetail() {
             </div>
           </div>
 
-          {/* Talk to MoM Chat Feature */}
-          <div className="mt-12 no-print">
+          {/* Recipe Chat Feature */}
+          <div className="mt-10 no-print">
             <RecipeChat
               recipeId={recipe.id}
               recipeName={recipe.name}
@@ -365,20 +357,19 @@ export default function RecipeDetail() {
           </div>
 
           {/* Action Buttons */}
-          <div className="mt-12 text-center action-buttons no-print">
+          <div className="mt-10 text-center action-buttons no-print">
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                variant="brand"
-                className="px-8"
+              <Button
+                size="lg"
+                className="px-8 bg-accent-600 hover:bg-accent-700 text-white"
                 onClick={() => window.print()}
               >
                 Print Recipe
               </Button>
-              <Button 
-                size="lg" 
-                variant="outlineBrand" 
-                className="px-8 share-actions hover:bg-accent-600 hover:text-white hover:border-accent-600"
+              <Button
+                size="lg"
+                variant="outline"
+                className="px-8"
                 onClick={() => {
                   navigator.share?.({
                     title: recipe?.name || "Recipe",

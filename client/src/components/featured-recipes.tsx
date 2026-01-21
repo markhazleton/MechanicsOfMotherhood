@@ -1,7 +1,6 @@
-import { Users, TrendingUp, Star, ArrowRight, Settings } from "lucide-react";
+import { Users, Clock, Star, ArrowRight, ChefHat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import MarkdownContent from "./markdown-content";
 import { Link, useLocation } from "wouter";
 import { getFeaturedRecipes, getCategories, getRecipeUrl } from "@/data/api-loader";
@@ -21,36 +20,25 @@ export default function FeaturedRecipes() {
   const categories = categoriesData || [];
   const recipes = featuredContent || [];
 
-  // Difficulty removed – not supplied by API. Retained helper placeholder if reinstated later.
-  const getDifficultyIcon = () => <TrendingUp size={14} className="opacity-0" />; // visually nothing
-
-  const getCategoryColor = (categoryName: string) => {
-    return "#38B2AC"; // Default teal color since API doesn't have color field
-  };
-
   return (
-  <section id="recipes" className="py-16 bg-warm-cream">
+    <section id="recipes" className="py-16 md:py-20 bg-muted/30 dark:bg-muted/10 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-4">
-            <Settings className="text-accent-600 text-2xl mr-3" />
-            <h2 className="font-display heading-lg text-brand-800">
-              MoM's Kitchen Workshop
-            </h2>
-            <Settings className="text-accent-600 text-2xl ml-3" />
-          </div>
-          <p className="text-neutral-700 text-lg max-w-2xl mx-auto">
-            Precision-engineered recipes for the modern working mother. Every dish tested, timed, and perfected.
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            Featured Recipes
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            Our most popular family-tested recipes. Quick to make, delicious to eat.
           </p>
         </div>
 
         {/* Category Filters */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {categories.map((category: Category) => (
+        <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-10">
+          {categories.slice(0, 6).map((category: Category) => (
             <Button
               key={category.id}
-              variant="outlineBrand"
-              className="px-6 py-3 rounded-full font-medium transition-all duration-300"
+              variant="outline"
+              className="px-4 py-2 rounded-full text-sm font-medium border-border hover:bg-accent-50 hover:text-accent-700 hover:border-accent-300 dark:hover:bg-accent-900/30 dark:hover:text-accent-300 transition-all"
               data-testid={`category-button-${category.name.toLowerCase().replace(/\s+/g, '-')}`}
               onClick={() => navigate(`/recipes/category/${getCategorySlug(category.name)}`)}
             >
@@ -60,77 +48,72 @@ export default function FeaturedRecipes() {
         </div>
 
         {/* Recipe Grid */}
-        <div className="grid grid-cols-1 md:grid-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {recipes.map((recipe: Recipe) => (
-            <Card key={recipe.id} className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg motion-safe:hover:scale-[1.02] motion-safe:transform transition-all duration-300 border border-warm-peach/30" data-testid={`recipe-card-${recipe.id}`}>
-              <img
-                src={getRecipeImageUrl(recipe)}
-                alt={getRecipeImageAlt(recipe)}
-                className="w-full h-48 object-cover"
-              />
-              <CardContent className="p-6">
-                <div className="flex items-center justify-end mb-3">
-                  <div className="flex items-center text-accent-600" aria-label="Recipe rating">
-                    <Star size={14} fill="currentColor" />
-                    <span className="ml-1 text-sm font-semibold">{recipe.averageRating ?? '–'}</span>
-                  </div>
-                </div>
-                <h3 className="font-display font-semibold text-xl mb-2 text-brand-800" data-testid={`recipe-title-${recipe.id}`}>
-                  {recipe.name}
-                </h3>
-                <div className="text-neutral-700 mb-4">
-                  <MarkdownContent
-                    content={recipe.description || "Delicious recipe from MoM's kitchen workshop"}
-                    summary={true}
-                    className="text-sm"
+            <Link key={recipe.id} href={getRecipeUrl(recipe)}>
+              <Card className="group h-full bg-card rounded-xl overflow-hidden border border-border hover:border-accent-300 dark:hover:border-accent-700 hover:shadow-lg transition-all duration-200 cursor-pointer" data-testid={`recipe-card-${recipe.id}`}>
+                <div className="relative">
+                  <img
+                    src={getRecipeImageUrl(recipe)}
+                    alt={getRecipeImageAlt(recipe)}
+                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
+                  {/* Rating badge */}
+                  <div className="absolute top-3 right-3 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded-full text-sm font-medium">
+                    <Star size={14} fill="currentColor" className="text-yellow-400" />
+                    <span>{recipe.averageRating ?? '5.0'}</span>
+                  </div>
+                  {/* Category badge */}
+                  {recipe.recipeCategory?.name && (
+                    <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-neutral-800/90 backdrop-blur-sm text-foreground px-3 py-1 rounded-full text-xs font-medium">
+                      {recipe.recipeCategory.name}
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center text-sm text-neutral-700">
-                    <span className="flex items-center">
-                      <Users size={14} className="mr-1" />
-                      {recipe.servings ?? '–'}{recipe.servings ? ' servings' : ''}
+                <CardContent className="p-5">
+                  <h3 className="font-semibold text-lg mb-2 text-foreground group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors line-clamp-2" data-testid={`recipe-title-${recipe.id}`}>
+                    {recipe.name}
+                  </h3>
+                  <div className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                    <MarkdownContent
+                      content={recipe.description || "A delicious family recipe"}
+                      summary={true}
+                      className="text-sm"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between pt-3 border-t border-border">
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Users size={14} />
+                        {recipe.servings ?? '4'}
+                      </span>
+                    </div>
+                    <span className="text-accent-600 dark:text-accent-400 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                      View Recipe
+                      <ArrowRight size={14} />
                     </span>
                   </div>
-                  <Link href={getRecipeUrl(recipe)}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-accent-600 hover:text-accent-700 font-semibold"
-                      onClick={() => {
-                        analytics.trackButtonClick('build_recipe', 'featured_recipes', {
-                          recipe_id: recipe.id,
-                          recipe_name: recipe.name,
-                          recipe_category: recipe.recipeCategory?.name
-                        });
-                      }}
-                      data-testid={`button-build-recipe-${recipe.id}`}
-                    >
-                      <ArrowRight size={16} className="mr-1" />
-                      Build It
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
 
         <div className="text-center mt-12">
           <Button
-            variant="outlineBrand"
             size="lg"
-            className="px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-sm"
-            data-testid="button-browse-workshop-manual"
+            className="px-8 py-6 rounded-xl font-semibold text-lg bg-accent-600 hover:bg-accent-700 text-white shadow-lg shadow-accent-500/25 transition-all"
+            data-testid="button-browse-all-recipes"
             onClick={() => {
-              analytics.trackButtonClick('browse_full_manual', 'featured_recipes', {
+              analytics.trackButtonClick('browse_all_recipes', 'featured_recipes', {
                 source: 'homepage'
               });
               navigate("/recipes");
             }}
           >
-            <Settings className="mr-2" size={20} />
-            Browse Full Workshop Manual
+            <ChefHat className="mr-2" size={20} />
+            View All Recipes
+            <ArrowRight className="ml-2" size={18} />
           </Button>
         </div>
       </div>

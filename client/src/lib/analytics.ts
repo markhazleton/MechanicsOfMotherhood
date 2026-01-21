@@ -1,5 +1,5 @@
 /**
- * Advanced Google Analytics Implementation for Mechanics of Motherhood
+ * Advanced Google Analytics Implementation for Mechanics of Motherhood (MoM)
  * Comprehensive tracking for recipe interactions, user engagement, and conversion events
  */
 

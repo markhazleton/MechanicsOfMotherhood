@@ -1,6 +1,6 @@
-import { Settings, Utensils, Facebook, Instagram, Youtube } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { Link } from "wouter";
+import SITE_CONFIG from "@/lib/site-config";
 const logoIcon = "/images/logos/MOM-Logo-Icon.png";
 
 export default function Footer() {
@@ -8,7 +8,6 @@ export default function Footer() {
   const [buildInfo, setBuildInfo] = useState<{hash:string; date:string} | null>(null);
 
   useEffect(() => {
-    // Read meta tag first (fast path)
     const meta = document.querySelector('meta[name="app-build"]') as HTMLMetaElement | null;
     if (meta?.content) {
       const parts = meta.content.split('-');
@@ -21,7 +20,6 @@ export default function Footer() {
       }
       return;
     }
-    // Fallback: attempt fetch of build-version.json (non-blocking)
     fetch('/build-version.json', { cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
@@ -35,174 +33,76 @@ export default function Footer() {
       .catch(() => {});
   }, []);
 
+  const linkClasses = "text-neutral-400 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900 rounded";
+
   return (
-  <footer className="bg-gradient-to-b from-brand-800 to-brand-900 text-white py-16 border-t-4 border-accent-500 shadow-2xl">
+    <footer className="bg-neutral-900 text-white py-12 md:py-16 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
           {/* Brand Column */}
           <div className="md:col-span-1">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="relative">
-                <img 
-                  src={logoIcon}
-                  alt="MoM Logo Icon"
-                  className="h-8 w-8 object-contain filter brightness-0 invert"
-                />
-              </div>
+              <img
+                src={logoIcon}
+                alt={`${SITE_CONFIG.name.short} Recipes`}
+                className="h-10 w-10 object-contain filter brightness-0 invert"
+              />
               <div>
-                <h3 className="text-xl font-extrabold tracking-tight">MoM</h3>
-  <p className="text-xs text-brand-100/80 font-semibold tracking-wide">MECHANICS OF MOTHERHOOD</p>
+                <h3 className="text-xl font-bold tracking-tight">{SITE_CONFIG.name.short} Recipes</h3>
+                <p className="text-xs text-neutral-400">{SITE_CONFIG.name.tagline}</p>
               </div>
             </div>
-  <p className="text-brand-100/70 mb-4">
-              Engineering better meals for working mothers worldwide.
+            <p className="text-neutral-400 text-sm mb-5 leading-relaxed">
+              Simple, tested recipes for busy families. Good food, made easy.
             </p>
-            <div className="flex space-x-4">
-              <a
-                href="#"
-  className="text-brand-100/70 hover:text-accent-500 transition-colors"
-                aria-label="Facebook"
-                data-testid="social-link-facebook"
-              >
-                <Facebook size={20} />
-              </a>
-              <a
-                href="#"
-  className="text-brand-100/70 hover:text-accent-500 transition-colors"
-                aria-label="Instagram"
-                data-testid="social-link-instagram"
-              >
-                <Instagram size={20} />
-              </a>
-              <a
-                href="#"
-  className="text-brand-100/70 hover:text-accent-500 transition-colors"
-                aria-label="YouTube"
-                data-testid="social-link-youtube"
-              >
-                <Youtube size={20} />
-              </a>
-            </div>
           </div>
 
-          {/* Workshop Links */}
+          {/* Navigation */}
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-white">Workshop</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/recipes" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-recipe-manual">
-                  Recipe Manual
-                </Link>
-              </li>
-              <li>
-                <Link href="/recipes/category/quick-meals" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-quick-meals">
-                  Quick Meals
-                </Link>
-              </li>
-              <li>
-                <Link href="/recipes/category/breakfast" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-breakfast">
-                  Family-Friendly Recipes
-                </Link>
-              </li>
-              <li>
-                <Link href="/recipes/category/main-course" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-main-course">
-                  Meal Prep Ideas
-                </Link>
-              </li>
-              <li>
-                <a href="#" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-kitchen-tools">
-                  Kitchen Tools
-                </a>
-              </li>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-300 mb-4">Navigation</h4>
+            <ul className="space-y-3">
+              <li><Link href="/" className={linkClasses}>Home</Link></li>
+              <li><Link href="/recipes" className={linkClasses}>All Recipes</Link></li>
+              <li><Link href="/categories" className={linkClasses}>Categories</Link></li>
+              <li><Link href="/blog" className={linkClasses}>Blog</Link></li>
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Popular Categories */}
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-white">Resources</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/blog" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-maintenance-manual">
-                  Maintenance Manual
-                </Link>
-              </li>
-              <li>
-                <a href="#" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-troubleshooting">
-                  Troubleshooting Guide
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-community-forum">
-                  Community Forum
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-video-tutorials">
-                  Video Tutorials
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-printable-plans">
-                  Printable Plans
-                </a>
-              </li>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-300 mb-4">Categories</h4>
+            <ul className="space-y-3">
+              <li><Link href="/recipes/category/main-course" className={linkClasses}>Main Course</Link></li>
+              <li><Link href="/recipes/category/quick-meals" className={linkClasses}>Quick Meals</Link></li>
+              <li><Link href="/recipes/category/dessert" className={linkClasses}>Dessert</Link></li>
+              <li><Link href="/recipes/category/appetizer" className={linkClasses}>Appetizer</Link></li>
+              <li><Link href="/recipes/category/soup" className={linkClasses}>Soup</Link></li>
             </ul>
           </div>
 
-          {/* Company */}
+          {/* More Categories */}
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-white">Company</h4>
-            <ul className="space-y-2">
-              <li>
-                <a href="#" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-about-mom">
-                  About MoM
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-our-story">
-                  Our Story
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-contact">
-                  Contact Us
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-partnerships">
-                  Partnerships
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-press-kit">
-                  Press Kit
-                </a>
-              </li>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-300 mb-4">More</h4>
+            <ul className="space-y-3">
+              <li><Link href="/recipes/category/slow-cooker" className={linkClasses}>Slow Cooker</Link></li>
+              <li><Link href="/recipes/category/breakfast" className={linkClasses}>Breakfast</Link></li>
+              <li><Link href="/recipes/category/side-dishes" className={linkClasses}>Side Dishes</Link></li>
+              <li><Link href="/recipes/category/drink" className={linkClasses}>Drinks</Link></li>
+              <li><Link href="/recipes/category/salad" className={linkClasses}>Salad</Link></li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
-  <div className="border-t border-brand-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-brand-100/70 text-sm mb-4 md:mb-0" data-testid="copyright-text">
-            © {currentYear} Mechanics of Motherhood. All rights reserved.
+        <div className="border-t border-neutral-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-neutral-500 text-sm" data-testid="copyright-text">
+            © {currentYear} {SITE_CONFIG.name.full} ({SITE_CONFIG.name.short}). All rights reserved.
           </p>
           {buildInfo && (
-            <div className="text-xs text-brand-100/60 font-mono" data-testid="build-info">
+            <div className="text-xs text-neutral-600 font-mono" data-testid="build-info">
               build {buildInfo.hash} • {buildInfo.date}
             </div>
           )}
-          <div className="flex space-x-6 text-sm">
-            <a href="#" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-privacy">
-              Privacy Policy
-            </a>
-            <a href="#" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-terms">
-              Terms of Service
-            </a>
-            <a href="#" className="text-brand-100/70 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900" data-testid="footer-link-cookies">
-              Cookie Policy
-            </a>
-          </div>
         </div>
       </div>
     </footer>
