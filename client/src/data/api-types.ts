@@ -1,5 +1,5 @@
 // Auto-generated types from API data
-// Generated on 2026-01-21T11:55:56.619Z
+// Generated on 2026-01-28T20:26:20.621Z
 
 export interface Recipe {
   id: number;
@@ -16,7 +16,7 @@ export interface Recipe {
     description?: string;
     order?: number;
     isActive?: boolean;
-    recipes?: Recipe[];
+    recipes?: any[];
     url?: string;
     domainID?: number;
   };
@@ -31,10 +31,10 @@ export interface Recipe {
   recipeURL?: string;
   images?: string[];
   seO_Keywords?: string;
-  recipeCategories?: unknown;
-  recipeCategoryNM?: string;
-  fileDescription?: string;
-  fileName?: string;
+  recipeCategories?: any;
+  recipeCategoryNM?: any;
+  fileDescription?: any;
+  fileName?: any;
   lastViewDT?: string;
   modifiedID?: number;
 }
@@ -46,7 +46,7 @@ export interface Category {
   order?: number;
   isActive?: boolean;
   url?: string;
-  recipes?: Recipe[];
+  recipes?: any[];
   domainID?: number;
 }
 
