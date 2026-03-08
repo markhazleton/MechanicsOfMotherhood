@@ -9,7 +9,7 @@ import MarkdownContent from "@/components/markdown-content";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { getRecipesByCategory, getRecipeUrl, getApiData } from "@/data/api-loader";
+import { getCategories, getRecipeUrl, getRecipesByCategory } from "@/data/api-loader";
 import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import type { Recipe, Category } from "@/data/api-types";
@@ -25,8 +25,7 @@ export default function CategoryRecipes() {
   const analytics = useAnalytics();
 
   // Get category details using static data
-  const apiData = getApiData();
-  const categories = apiData?.categories || [];
+  const categories = getCategories();
   
   // Find category by matching both basic slug and enhanced slug
   const currentCategory = categories.find((cat: Category) => 

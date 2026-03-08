@@ -5,7 +5,7 @@
  */
 
 import { execSync } from 'child_process';
-import { existsSync, statSync } from 'fs';
+import { existsSync, statSync, readdirSync } from 'fs';
 import { join } from 'path';
 
 const checks = [];
@@ -64,7 +64,7 @@ function checkFileSize(name, filePath, maxSizeKB) {
   return true;
 }
 
-function checkBundleSize() {
+async function checkBundleSize() {
   console.log(`\n📦 Checking bundle sizes...`);
   
   const distPath = 'dist/public/assets';
@@ -78,8 +78,7 @@ function checkBundleSize() {
   const pagePattern = /page-.*\.js$/;
   
   try {
-    const fs = await import('fs');
-    const files = fs.readdirSync(distPath);
+    const files = readdirSync(distPath);
     
     let totalSize = 0;
     let largeChunks = [];

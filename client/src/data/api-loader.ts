@@ -3,11 +3,8 @@
 
 import recipesData from "./recipes.json";
 import categoriesData from "./categories.json";
-import websitesData from "./websites.json";
-import menuItemsData from "./menu-items.json";
-import apiData from "./api-data.json";
 
-import type { Recipe, Category, Website, MenuItem, ApiData } from "./api-types";
+import type { Recipe, Category } from "./api-types";
 import { recipeNameToSlug, recipeSlugToSearchTerm } from "../utils/slugify";
 
 /**
@@ -153,95 +150,6 @@ export function getCategoryBySlug(slug: string): Category | undefined {
 }
 
 /**
- * Get all websites
- */
-export function getWebsites(): Website[] {
-  // Safe type conversion with fallback structure
-  return (websitesData as Record<string, unknown>[]).map(
-    (site: Record<string, unknown>) =>
-      ({
-        id: site.id || 0,
-        name: site.name || "",
-        description: site.description || "",
-        siteTemplate: site.siteTemplate || "",
-        siteStyle: site.siteStyle || "",
-        message: site.message || "",
-        siteName: site.siteName || "",
-        websiteUrl: site.websiteUrl || "",
-        websiteTitle: site.websiteTitle || "",
-        useBreadCrumbURL: site.useBreadCrumbURL || false,
-        isRecipeSite: site.isRecipeSite || false,
-        modifiedDT: site.modifiedDT || "",
-        modifiedID: site.modifiedID || 0,
-      } as Website)
-  );
-}
-
-/**
- * Get website by ID
- */
-export function getWebsiteById(id: number): Website | undefined {
-  const websites = getWebsites();
-  return websites.find((website) => website.id === id);
-}
-
-/**
- * Get menu items for a website
- */
-export function getMenuItemsByWebsite(websiteId: number): MenuItem[] {
-  // Safe type conversion for menu items
-  const menuData = menuItemsData as Record<string, unknown>;
-  const items = (menuData[websiteId.toString()] || menuData[websiteId] || []) as Record<string, unknown>[];
-
-  return items.map(
-    (item: Record<string, unknown>) =>
-      ({
-        id: item.id || 0,
-        domainID: item.domain_id || item.domainID || 0,
-        domainName: item.domain_name || item.domainName || "",
-        title: item.title || item.page_title || "",
-        icon: item.icon || "",
-        pageContent: item.page_content || item.pageContent || "",
-        action: item.action || "",
-        controller: item.controller || "",
-        argument: item.argument || "",
-        url: item.url || item.virtual_path || "",
-        description: item.description || "",
-        displayInNavigation:
-          item.display_navigation || item.displayInNavigation || false,
-        displayOrder: item.order || item.displayOrder || 0,
-        parentId: item.parent_id || item.parentId || 0,
-        parentTitle: item.parent_title || item.parentTitle || "",
-        lastModified: item.last_modified || item.lastModified || "",
-      } as MenuItem)
-  );
-}
-
-/**
- * Get complete API data with metadata
- */
-export function getApiData(): ApiData {
-  // Safe conversion of API data
-  const data = apiData as Record<string, unknown>;
-  return {
-    recipes: getRecipes(),
-    categories: getCategories(),
-    websites: getWebsites(),
-    menuItems: Object.keys(data.menuItems || {}).reduce((acc, key) => {
-      const numKey = parseInt(key);
-      acc[numKey] = getMenuItemsByWebsite(numKey);
-      return acc;
-    }, {} as Record<number, MenuItem[]>),
-    metadata: (data.metadata as { fetchedAt: string; totalRecipes: number; totalCategories: number; totalWebsites: number }) || {
-      fetchedAt: new Date().toISOString(),
-      totalRecipes: getRecipes().length,
-      totalCategories: getCategories().length,
-      totalWebsites: getWebsites().length,
-    },
-  };
-}
-
-/**
  * Search recipes by name, description, or ingredients
  */
 export function searchRecipes(query: string): Recipe[] {
@@ -265,7 +173,7 @@ export function getFeaturedRecipes(limit: number = 6): Recipe[] {
   const recipes = getRecipes();
 
   // Sort by average rating (descending) and then by creation date (most recent)
-  return recipes
+  return [...recipes]
     .sort((a, b) => {
       const ratingA = a.averageRating || 0;
       const ratingB = b.averageRating || 0;
@@ -328,15 +236,10 @@ export function getRecipeStats() {
  * Get data freshness information
  */
 export function getDataMetadata() {
-  try {
-    const data = getApiData();
-    return data.metadata;
-  } catch {
-    return {
-      fetchedAt: "Unknown",
-      totalRecipes: 0,
-      totalCategories: 0,
-      totalWebsites: 0,
-    };
-  }
+  return {
+    fetchedAt: "Unknown",
+    totalRecipes: getRecipes().length,
+    totalCategories: getCategories().length,
+    totalWebsites: 0,
+  };
 }

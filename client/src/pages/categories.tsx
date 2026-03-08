@@ -7,13 +7,12 @@ import { generateBreadcrumbs } from "@/utils/seo-helpers";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getCategorySlug } from "@/utils/slugify";
-import { getApiData } from "@/data/api-loader";
+import { getCategories, getRecipes } from "@/data/api-loader";
 import type { Category } from "@/data/api-types";
 
 export default function Categories() {
-  const apiData = getApiData();
-  const categories = apiData?.categories || [];
-  const recipes = apiData?.recipes || [];
+  const categories = getCategories();
+  const recipes = getRecipes();
 
   // Calculate recipe counts for each category
   const categoriesWithCounts = categories.map(category => ({

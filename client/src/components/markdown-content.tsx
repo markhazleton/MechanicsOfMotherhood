@@ -6,7 +6,6 @@ interface MarkdownContentProps {
   content: string;
   className?: string;
   summary?: boolean; // If true, show only first paragraph
-  allowHtml?: boolean; // If true, render as HTML instead of markdown
 }
 
 /**
@@ -16,25 +15,12 @@ interface MarkdownContentProps {
 export function MarkdownContent({ 
   content, 
   className = '', 
-  summary = false,
-  allowHtml = false 
+  summary = false
 }: MarkdownContentProps) {
   if (!content) return null;
 
   // For summary view, extract first paragraph
   const displayContent = summary ? getDescriptionSummary(content) : content;
-
-  if (allowHtml) {
-    // Render as HTML with basic sanitization
-    return (
-      <div 
-        className={className}
-        dangerouslySetInnerHTML={{ 
-          __html: displayContent 
-        }}
-      />
-    );
-  }
 
   // Render as markdown using ReactMarkdown
   return (
