@@ -32,6 +32,7 @@
     "ssg": "tsx scripts/ssg.ts",
     "analyze": "vite build --mode production && npx rollup-plugin-visualizer --json stats.json --template treemap --sourcemap false || true",
     "test": "vitest run",
+    "test:links": "node --test scripts/__tests__/check-links.test.js",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",

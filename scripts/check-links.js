@@ -5,11 +5,27 @@
  */
 
 import { readFileSync, readdirSync, existsSync, statSync } from 'fs';
-import { join } from 'path';
+import { join, relative } from 'path';
+import { pathToFileURL } from 'url';
 
 const links = new Set();
 const existingPaths = new Set();
 const brokenLinks = [];
+export const CLIENT_SIDE_ROUTES = ['/recipe/', '/recipes/category/', '/recipes', '/categories', '/blog'];
+
+export function toRoutePath(distPath, fullPath, isHtmlFile = false) {
+  let relativePath = `/${relative(distPath, fullPath).replace(/\\/g, '/')}`;
+  if (isHtmlFile) {
+    relativePath = relativePath.replace('/index.html', '');
+  }
+  return relativePath || '/';
+}
+
+export function filterActualBrokenLinks(linksToCheck) {
+  return linksToCheck.filter(link =>
+    !CLIENT_SIDE_ROUTES.some(route => link.startsWith(route))
+  );
+}
 
 function extractLinks(html) {
   const linkRegex = /href=["']([^"']+)["']/gi;
@@ -37,7 +53,7 @@ function scanDirectory(dir, distPath) {
     const stats = statSync(fullPath);
     
     if (stats.isDirectory()) {
-      const relativePath = fullPath.replace(distPath, '').replace(/\\/g, '/');
+      const relativePath = toRoutePath(distPath, fullPath);
       existingPaths.add(relativePath);
       existingPaths.add(relativePath + '/');
       scanDirectory(fullPath, distPath);
@@ -46,8 +62,8 @@ function scanDirectory(dir, distPath) {
       extractLinks(html);
       
       // Add this file's path as existing
-      const relativePath = fullPath.replace(distPath, '').replace(/\\/g, '/').replace('/index.html', '');
-      existingPaths.add(relativePath || '/');
+      const relativePath = toRoutePath(distPath, fullPath, true);
+      existingPaths.add(relativePath);
       existingPaths.add(relativePath + '/');
     }
   });
@@ -131,10 +147,7 @@ function checkLinks(distPath) {
     console.log('   - Other client-side routed pages');
     
     // Don't fail the build for client-side routed links
-    const clientSideRoutes = ['/recipe/', '/recipes/category/'];
-    const actualBroken = brokenLinks.filter(link => 
-      !clientSideRoutes.some(route => link.startsWith(route))
-    );
+    const actualBroken = filterActualBrokenLinks(brokenLinks);
     
     if (actualBroken.length > 0) {
       console.log(`\n⚠️  ${actualBroken.length} link(s) may need attention`);
@@ -147,4 +160,7 @@ function checkLinks(distPath) {
 }
 
 const distPath = 'dist/public';
-checkLinks(distPath);
+const isMainModule = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isMainModule) {
+  checkLinks(distPath);
+}
