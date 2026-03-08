@@ -1,10 +1,21 @@
-import { ChefHat, BookOpen, Star, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { ChefHat, BookOpen, Star, ArrowRight, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import { Input } from "@/components/ui/input";
+import { Link, useLocation } from "wouter";
 import apiData from "@/data/api-data.json";
 
 export default function HeroSection() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [, navigate] = useLocation();
   const { metadata: stats } = apiData;
+
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const query = searchQuery.trim();
+    if (!query) return;
+    navigate(`/recipes?search=${encodeURIComponent(query)}`);
+  };
 
   return (
     <section className="relative bg-gradient-to-br from-accent-50 via-background to-brand-50 dark:from-neutral-900 dark:via-background dark:to-neutral-800 py-16 md:py-24 overflow-hidden transition-colors">
@@ -31,6 +42,29 @@ export default function HeroSection() {
             Simple, tested recipes that work for real life. Quick weeknight dinners,
             meal prep ideas, and family favorites all in one place.
           </p>
+
+          <form
+            onSubmit={handleSearchSubmit}
+            className="max-w-2xl mx-auto mb-8"
+            data-testid="home-recipe-search-form"
+          >
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+                <Input
+                  type="search"
+                  placeholder="Search all recipes..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 h-12 bg-background border-border"
+                  data-testid="home-recipe-search-input"
+                />
+              </div>
+              <Button type="submit" size="lg" className="h-12 px-6" data-testid="home-recipe-search-button">
+                Search Recipes
+              </Button>
+            </div>
+          </form>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">

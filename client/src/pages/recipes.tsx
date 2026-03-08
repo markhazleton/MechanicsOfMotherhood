@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "wouter";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "wouter";
 import { Search, Filter, Users, Star, ArrowRight } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
@@ -16,9 +16,18 @@ import { useAnalytics } from "@/hooks/useAnalytics";
 import type { Recipe, Category } from "@/data/api-types";
 
 export default function Recipes() {
+  const [location] = useLocation();
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeSearch, setActiveSearch] = useState("");
+  const [searchQuery, setSearchQuery] = useState(() =>
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search).get("search") || ""
+      : ""
+  );
+  const [activeSearch, setActiveSearch] = useState(() =>
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search).get("search") || ""
+      : ""
+  );
   
   // Initialize analytics
   const analytics = useAnalytics();
@@ -39,13 +48,38 @@ export default function Recipes() {
     filteredRecipes = filteredRecipes.filter(recipe => recipe.recipeCategoryID === categoryId);
   }
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const searchFromUrl = new URLSearchParams(window.location.search).get("search") || "";
+
+    if (searchFromUrl !== activeSearch) {
+      setActiveSearch(searchFromUrl);
+      setSearchQuery(searchFromUrl);
+    }
+  }, [location, activeSearch]);
+
+  const updateSearchInUrl = (query: string) => {
+    if (typeof window === "undefined") return;
+
+    const url = new URL(window.location.href);
+    if (query) {
+      url.searchParams.set("search", query);
+    } else {
+      url.searchParams.delete("search");
+    }
+    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}`);
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setActiveSearch(searchQuery);
+    const nextSearch = searchQuery.trim();
+    setActiveSearch(nextSearch);
+    updateSearchInUrl(nextSearch);
     
     // Track search event
-    if (searchQuery.trim()) {
-      analytics.trackSearch(searchQuery, filteredRecipes.length, 'global');
+    if (nextSearch) {
+      analytics.trackSearch(nextSearch, searchRecipes(nextSearch).length, 'global');
     }
   };
 
@@ -104,6 +138,7 @@ export default function Recipes() {
                   onClick={() => {
                     setActiveSearch("");
                     setSearchQuery("");
+                    updateSearchInUrl("");
                   }}
                   className="ml-2 text-accent-600 hover:underline text-sm"
                 >

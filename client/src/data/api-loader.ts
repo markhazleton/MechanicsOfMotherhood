@@ -7,6 +7,31 @@ import categoriesData from "./categories.json";
 import type { Recipe, Category } from "./api-types";
 import { recipeNameToSlug, recipeSlugToSearchTerm } from "../utils/slugify";
 
+interface RecipeSearchIndexEntry {
+  recipe: Recipe;
+  searchableText: string;
+}
+
+const normalizeSearchText = (value: string): string =>
+  value.toLowerCase().replace(/\s+/g, " ").trim();
+
+const recipeSearchIndex: RecipeSearchIndexEntry[] = (recipesData as Recipe[]).map((recipe) => {
+  const searchParts = [
+    recipe.name,
+    recipe.description,
+    recipe.ingredients,
+    recipe.instructions,
+    recipe.recipeCategory?.name,
+    recipe.authorNM,
+    recipe.seO_Keywords,
+  ].filter(Boolean);
+
+  return {
+    recipe,
+    searchableText: normalizeSearchText(searchParts.join(" ")),
+  };
+});
+
 /**
  * Normalize slug for comparison (handle edge cases with special characters)
  */
@@ -153,17 +178,39 @@ export function getCategoryBySlug(slug: string): Category | undefined {
  * Search recipes by name, description, or ingredients
  */
 export function searchRecipes(query: string): Recipe[] {
-  if (!query.trim()) return [];
+  const normalizedQuery = normalizeSearchText(query);
+  if (!normalizedQuery) return [];
 
-  const recipes = getRecipes();
-  const searchTerm = query.toLowerCase();
+  const queryTokens = normalizedQuery.split(" ").filter(Boolean);
+  if (queryTokens.length === 0) return [];
 
-  return recipes.filter(
-    (recipe) =>
-      recipe.name?.toLowerCase().includes(searchTerm) ||
-      recipe.description?.toLowerCase().includes(searchTerm) ||
-      recipe.ingredients?.toLowerCase().includes(searchTerm)
-  );
+  return recipeSearchIndex
+    .map(({ recipe, searchableText }) => {
+      let score = 0;
+      const recipeName = normalizeSearchText(recipe.name || "");
+      const recipeCategory = normalizeSearchText(recipe.recipeCategory?.name || "");
+
+      for (const token of queryTokens) {
+        if (recipeName.startsWith(token)) score += 12;
+        if (recipeName.includes(token)) score += 8;
+        if (recipeCategory.includes(token)) score += 4;
+        if (searchableText.includes(token)) score += 2;
+      }
+
+      if (recipeName.includes(normalizedQuery)) {
+        score += 24;
+      } else if (searchableText.includes(normalizedQuery)) {
+        score += 8;
+      }
+
+      return { recipe, score };
+    })
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return (b.recipe.averageRating || 0) - (a.recipe.averageRating || 0);
+    })
+    .map((entry) => entry.recipe);
 }
 
 /**
