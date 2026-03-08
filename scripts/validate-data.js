@@ -23,6 +23,7 @@ const __dirname = path.dirname(__filename);
 // Data directory
 const DATA_DIR = path.join(__dirname, '..', 'client', 'src', 'data');
 const COPILOT_DIR = path.join(__dirname, '..', 'copilot');
+const COPILOT_DATA_QUALITY_DIR = path.join(COPILOT_DIR, 'data-quality');
 
 /**
  * Load data from JSON file
@@ -202,15 +203,15 @@ async function main() {
 
   // Save validation report to copilot directory
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const reportPath = path.join(COPILOT_DIR, `data-quality-report-${timestamp}.md`);
+  const reportPath = path.join(COPILOT_DATA_QUALITY_DIR, `data-quality-report-${timestamp}.md`);
   
   // Generate markdown report
   const markdownReport = generateMarkdownReport(validationResult, dataToValidate);
   
   try {
-    // Ensure copilot directory exists
-    if (!fs.existsSync(COPILOT_DIR)) {
-      fs.mkdirSync(COPILOT_DIR, { recursive: true });
+    // Ensure data-quality report directory exists
+    if (!fs.existsSync(COPILOT_DATA_QUALITY_DIR)) {
+      fs.mkdirSync(COPILOT_DATA_QUALITY_DIR, { recursive: true });
     }
     
     fs.writeFileSync(reportPath, markdownReport, 'utf8');

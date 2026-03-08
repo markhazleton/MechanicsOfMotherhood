@@ -219,3 +219,7 @@ vite.config.ts.*
 # Documentation
 # NOTE: The /copilot folder contains AI-generated documentation and should be tracked
 # Temporary documentation files can be ignored with specific patterns if needed
+
+# Generated data-quality reports
+copilot/data-quality/*.md
+!copilot/data-quality/.gitkeep
