@@ -1,5 +1,10 @@
 /// <reference types="vite/client" />
 
+interface ImportMetaEnv {
+  readonly VITE_CHAT_API_BASE_URL?: string;
+  readonly VITE_CHAT_API_TIMEOUT_MS?: string;
+}
+
 declare module "*.png" {
   const value: string;
   export default value;

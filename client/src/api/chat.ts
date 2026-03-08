@@ -1,14 +1,9 @@
 /**
- * Chat API Module - Stubbed for Future LLM Integration
+ * Chat API Module - Static-first with optional runtime API integration.
  *
- * This module provides the interface for the "Talk to MoM about this Recipe" feature.
- * Currently returns canned responses for demonstration purposes.
- *
- * TO INTEGRATE WITH REAL API:
- * 1. Replace stub functions with actual API calls
- * 2. Update API_BASE_URL to your backend endpoint
- * 3. Implement proper error handling and retry logic
- * 4. Add streaming support for real-time responses (optional)
+ * Default behavior is local/offline responses so static builds (including GitHub Pages)
+ * remain fully functional. If `VITE_CHAT_API_BASE_URL` is configured at runtime, chat
+ * requests attempt live API calls and gracefully fall back to local responses on failure.
  */
 
 import type {
@@ -19,8 +14,23 @@ import type {
   ChatSession,
 } from '@/types/chat';
 
-// TODO: Replace with actual API endpoint when ready
-// const API_BASE_URL = '/api/chat';
+const CHAT_API_BASE_URL = (import.meta.env.VITE_CHAT_API_BASE_URL || '').trim();
+const CHAT_API_TIMEOUT_MS = Number(import.meta.env.VITE_CHAT_API_TIMEOUT_MS || 10000);
+
+interface LiveInitResponse {
+  sessionId?: string;
+  agentId?: string;
+  conversationId?: string;
+  welcomeMessage?: string;
+  hints?: ChatHint[];
+}
+
+interface LiveMessageResponse {
+  sessionId?: string;
+  conversationId?: string;
+  message?: string;
+  hints?: ChatHint[];
+}
 
 /**
  * Default hint chips for recipe conversations
@@ -79,8 +89,8 @@ function generateMessageId(): string {
 }
 
 /**
- * Generate a canned response based on the user's message
- * TODO: Replace with actual LLM API call
+ * Generate a local canned response based on the user's message.
+ * Used as a default static mode and as fallback when live API is unavailable.
  */
 function generateStubResponse(userMessage: string, recipeName: string): string {
   const lowerMessage = userMessage.toLowerCase();
@@ -122,51 +132,140 @@ function generateStubResponse(userMessage: string, recipeName: string): string {
   return `Thanks for your question about ${recipeName}! I'm here to help you with cooking tips, ingredient substitutions, serving adjustments, and more. While I'm still learning, I can offer practical advice to make your cooking easier. What specific aspect of this recipe would you like help with?`;
 }
 
-/**
- * Initialize a new chat session
- * TODO: Replace with actual API endpoint: POST /api/recipes/{id}/agent/start
- */
-export async function initializeChatSession(
-  recipeId: number,
-  recipeName: string
-): Promise<ChatSession> {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
+function isLiveChatEnabled(): boolean {
+  return CHAT_API_BASE_URL.length > 0;
+}
 
-  const sessionId = generateSessionId();
-  const welcomeMessage: ChatMessage = {
+async function fetchLiveChat<T>(path: string, payload: unknown): Promise<T> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), CHAT_API_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(`${CHAT_API_BASE_URL}${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Chat API error ${response.status}`);
+    }
+
+    return (await response.json()) as T;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function buildFallbackWelcomeMessage(recipeName: string): ChatMessage {
+  return {
     id: generateMessageId(),
     role: 'assistant',
     content: `Hi! I'm MoM — your cooking companion for ${recipeName}. I'm still learning, but I can help you tweak this recipe to fit your needs. Ask me about ingredient swaps, serving adjustments, prep shortcuts, or anything else!`,
     timestamp: new Date(),
   };
+}
 
+function buildFallbackChatSession(recipeId: number, recipeName: string): ChatSession {
   return {
-    sessionId,
+    sessionId: generateSessionId(),
     recipeId,
     recipeName,
-    messages: [welcomeMessage],
+    messages: [buildFallbackWelcomeMessage(recipeName)],
     createdAt: new Date(),
     updatedAt: new Date(),
   };
 }
 
 /**
+ * Initialize a new chat session
+ */
+export async function initializeChatSession(
+  recipeId: number,
+  recipeName: string
+): Promise<ChatSession> {
+  if (isLiveChatEnabled()) {
+    try {
+      const liveResponse = await fetchLiveChat<LiveInitResponse>(
+        `/api/recipes/${recipeId}/agent/start`,
+        { recipeName }
+      );
+
+      const sessionId =
+        liveResponse.sessionId ||
+        liveResponse.conversationId ||
+        liveResponse.agentId ||
+        generateSessionId();
+
+      const welcomeMessage: ChatMessage = {
+        id: generateMessageId(),
+        role: 'assistant',
+        content: liveResponse.welcomeMessage || buildFallbackWelcomeMessage(recipeName).content,
+        timestamp: new Date(),
+      };
+
+      return {
+        sessionId,
+        recipeId,
+        recipeName,
+        messages: [welcomeMessage],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+    } catch (error) {
+      console.warn('Live chat initialization failed; using local fallback.', error);
+    }
+  }
+
+  // Keep a small delay so UI behavior remains similar in fallback mode.
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  return buildFallbackChatSession(recipeId, recipeName);
+}
+
+/**
  * Send a message to the chat agent
- * TODO: Replace with actual API endpoint: POST /api/agents/{agentId}/messages
  */
 export async function sendChatMessage(
   request: ChatRequest
 ): Promise<ChatResponse> {
-  // Simulate API delay
+  if (isLiveChatEnabled() && request.sessionId) {
+    try {
+      const liveResponse = await fetchLiveChat<LiveMessageResponse>(
+        `/api/agents/${encodeURIComponent(request.sessionId)}/messages`,
+        {
+          message: request.message,
+          recipeId: request.recipeId,
+          recipeName: request.recipeName,
+          context: request.context,
+        }
+      );
+
+      const assistantMessage: ChatMessage = {
+        id: generateMessageId(),
+        role: 'assistant',
+        content: liveResponse.message || generateStubResponse(request.message, request.recipeName),
+        timestamp: new Date(),
+      };
+
+      return {
+        sessionId:
+          liveResponse.sessionId ||
+          liveResponse.conversationId ||
+          request.sessionId,
+        message: assistantMessage,
+        hints: liveResponse.hints || DEFAULT_HINTS,
+      };
+    } catch (error) {
+      console.warn('Live chat message failed; using local fallback.', error);
+    }
+  }
+
+  // Simulate API delay in fallback mode.
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   const sessionId = request.sessionId || generateSessionId();
 
-  // User message will be added when implementing real API
-  // For now, stub response is generated directly
-
-  // Generate stub response
   const responseContent = generateStubResponse(
     request.message,
     request.recipeName
@@ -192,52 +291,3 @@ export async function sendChatMessage(
 export function getChatHints(): ChatHint[] {
   return DEFAULT_HINTS;
 }
-
-/**
- * Future API integration functions
- * Uncomment and implement when connecting to real backend
- */
-
-/*
-export async function initializeAgent(
-  recipeId: number,
-  recipeName: string,
-  context: { ingredients: string; instructions: string }
-): Promise<AgentInitResponse> {
-  const response = await fetch(`${API_BASE_URL}/recipes/${recipeId}/agent/start`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      recipeName,
-      context,
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to initialize agent');
-  }
-
-  return response.json();
-}
-
-export async function sendAgentMessage(
-  agentId: string,
-  conversationId: string,
-  message: string
-): Promise<AgentMessageResponse> {
-  const response = await fetch(`${API_BASE_URL}/agents/${agentId}/messages`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      conversationId,
-      message,
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to send message');
-  }
-
-  return response.json();
-}
-*/

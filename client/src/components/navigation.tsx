@@ -5,26 +5,30 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { searchRecipes } from "@/data/api-loader";
 import DarkModeToggle from "@/components/dark-mode-toggle";
 import SITE_CONFIG from "@/lib/site-config";
 const logoIcon = "/images/logos/MOM-Logo-Icon.png";
 
 export default function Navigation() {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const analytics = useAnalytics();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      analytics.trackSearch(searchQuery, 0, 'global');
+    const query = searchQuery.trim();
+
+    if (query) {
+      const resultCount = searchRecipes(query).length;
+      analytics.trackSearch(query, resultCount, 'global');
       analytics.trackFormSubmit('navigation_search', {
-        search_term: searchQuery,
+        search_term: query,
         current_page: location
       });
-      // TODO: Implement search functionality
-      console.warn("Search functionality not yet implemented:", searchQuery);
+      navigate(`/recipes?search=${encodeURIComponent(query)}`);
+      setIsOpen(false);
     }
   };
 
