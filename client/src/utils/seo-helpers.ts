@@ -15,7 +15,7 @@ export const SITE_CONFIG = {
   author: "Mechanics of Motherhood",
   twitterHandle: "@MechanicsOfMom",
   defaultImage: "/images/logos/MOM-Logo-Full.png",
-  logo: "/images/logos/mom-logo.png",
+  logo: "/images/logos/MOM-Logo-Full.png",
 };
 
 /**
@@ -116,7 +116,7 @@ export function generateRecipeImageUrl(recipe: Recipe): string {
   }
 
   // Default recipe image
-  return `${SITE_CONFIG.url}/images/hero/default-recipe.jpg`;
+  return `${SITE_CONFIG.url}/images/recipes/mom-recipe-placeholder.svg`;
 }
 
 /**

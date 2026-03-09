@@ -3,12 +3,19 @@ import { AlertCircle } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
-import { generateBreadcrumbs } from "@/utils/seo-helpers";
+import SeoHead from "@/components/seo/SeoHead";
+import { generateBreadcrumbs, generateCanonicalUrl } from "@/utils/seo-helpers";
 
 export default function NotFound() {
   const breadcrumbs = generateBreadcrumbs('/404');
   return (
   <div className="min-h-screen bg-warm-cream flex flex-col">
+      <SeoHead
+        title="404 Page Not Found"
+        description="The page you were looking for does not exist."
+        url={generateCanonicalUrl("/404")}
+        robots="noindex, nofollow"
+      />
       <Navigation />
   <div className="bg-warm-cream border-b border-warm-peach/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">

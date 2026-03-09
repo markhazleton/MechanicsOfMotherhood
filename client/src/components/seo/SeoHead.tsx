@@ -11,6 +11,7 @@ interface SeoHeadProps {
   publishedTime?: string;
   modifiedTime?: string;
   structuredData?: object;
+  robots?: string;
 }
 
 export default function SeoHead({
@@ -23,7 +24,8 @@ export default function SeoHead({
   author,
   publishedTime,
   modifiedTime,
-  structuredData
+  structuredData,
+  robots = 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1'
 }: SeoHeadProps) {
   // Ensure title includes site name if not already present
   const fullTitle = title.includes('Mechanics of Motherhood') 
@@ -99,7 +101,7 @@ export default function SeoHead({
       )}
 
       {/* Additional SEO tags */}
-      <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+      <meta name="robots" content={robots} />
       <meta name="format-detection" content="telephone=no" />
       <meta name="theme-color" content="#3e5461" />
       

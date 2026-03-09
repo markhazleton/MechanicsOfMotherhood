@@ -3,7 +3,8 @@ import { ArrowRight, ChefHat } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
-import { generateBreadcrumbs } from "@/utils/seo-helpers";
+import SeoHead from "@/components/seo/SeoHead";
+import { generateBreadcrumbs, generateCanonicalUrl, generateItemListStructuredData } from "@/utils/seo-helpers";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getCategorySlug } from "@/utils/slugify";
@@ -21,9 +22,24 @@ export default function Categories() {
   }));
 
   const breadcrumbs = generateBreadcrumbs('/categories');
+  const currentUrl = generateCanonicalUrl('/categories');
+  const structuredData = generateItemListStructuredData(
+    categoriesWithCounts.map((category) => ({
+      name: category.name,
+      url: generateCanonicalUrl(`/recipes/category/${getCategorySlug(category.name)}`),
+    })),
+    "Recipe Categories"
+  );
 
   return (
   <div className="min-h-screen bg-warm-cream">
+      <SeoHead
+        title="Recipe Categories"
+        description={`Browse ${categoriesWithCounts.length} recipe categories and discover family-tested meals by topic.`}
+        url={currentUrl}
+        keywords={["recipe categories", "meal categories", "family recipe index", "browse recipes"]}
+        structuredData={structuredData}
+      />
       <Navigation />
       {/* Breadcrumb Navigation */}
   <div className="bg-warm-cream border-b border-warm-peach/30">

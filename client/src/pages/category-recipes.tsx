@@ -4,7 +4,8 @@ import { Search, ArrowLeft, Users, Star, ArrowRight } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
-import { generateBreadcrumbs } from "@/utils/seo-helpers";
+import SeoHead from "@/components/seo/SeoHead";
+import { generateBreadcrumbs, generateCanonicalUrl, generateItemListStructuredData } from "@/utils/seo-helpers";
 import MarkdownContent from "@/components/markdown-content";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,17 @@ export default function CategoryRecipes() {
     hasPrevious: page > 1,
     total: totalRecipes,
   };
+  const currentPath = categorySlug ? `/recipes/category/${categorySlug}` : "/recipes";
+  const currentUrl = generateCanonicalUrl(currentPath);
+  const categoryStructuredData = currentCategory
+    ? generateItemListStructuredData(
+        filteredRecipes.slice(0, 50).map((recipe) => ({
+          name: recipe.name,
+          url: generateCanonicalUrl(getRecipeUrl(recipe)),
+        })),
+        `${currentCategory.name} Recipes`
+      )
+    : undefined;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,6 +95,12 @@ export default function CategoryRecipes() {
   if (!categorySlug || !currentCategory) {
     return (
   <div className="min-h-screen bg-warm-cream">
+        <SeoHead
+          title="Category Not Found"
+          description="The requested recipe category could not be found."
+          url={generateCanonicalUrl("/404")}
+          robots="noindex, nofollow"
+        />
         <Navigation />
   <div className="bg-warm-cream border-b border-warm-peach/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
@@ -121,6 +139,22 @@ export default function CategoryRecipes() {
 
   return (
   <div className="min-h-screen bg-warm-cream">
+      <SeoHead
+        title={`${currentCategory.name} Recipes`}
+        description={
+          searchQuery.trim()
+            ? `${totalRecipes} ${currentCategory.name.toLowerCase()} recipes match "${searchQuery.trim()}".`
+            : `Browse ${totalRecipes} ${currentCategory.name.toLowerCase()} recipes for family-friendly meals.`
+        }
+        url={currentUrl}
+        keywords={[
+          `${currentCategory.name.toLowerCase()} recipes`,
+          "family recipes",
+          "easy meal ideas",
+          "recipe collection",
+        ]}
+        structuredData={categoryStructuredData}
+      />
       <Navigation />
       {/* Breadcrumb Navigation */}
   <div className="bg-warm-cream border-b border-warm-peach/30">

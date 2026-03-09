@@ -41,7 +41,7 @@ export function generateRecipeStructuredData({ recipe, url, imageUrl }: RecipeSt
     "@type": "Recipe",
     "name": recipe.name,
     "description": recipe.description || `Delicious ${recipe.name} recipe from ${SITE_CONFIG.name.full} (${SITE_CONFIG.name.short})`,
-  "image": imageUrl || `${SITE_BASE}/images/hero/default-recipe.jpg`,
+  "image": imageUrl || `${SITE_BASE}/images/recipes/mom-recipe-placeholder.svg`,
     "author": {
       "@type": "Person",
       "name": recipe.authorNM || "Mechanics of Motherhood"
@@ -52,7 +52,7 @@ export function generateRecipeStructuredData({ recipe, url, imageUrl }: RecipeSt
   "url": SITE_BASE + '/',
       "logo": {
         "@type": "ImageObject",
-  "url": `${SITE_BASE}/images/logos/mom-logo.png`
+  "url": `${SITE_BASE}/images/logos/MOM-Logo-Full.png`
       }
     },
     "url": url,
@@ -93,7 +93,7 @@ export function generateOrganizationStructuredData() {
     "url": SITE_BASE + '/',
     "logo": {
       "@type": "ImageObject",
-  "url": `${SITE_BASE}/images/logos/mom-logo.png`
+  "url": `${SITE_BASE}/images/logos/MOM-Logo-Full.png`
     },
     "sameAs": [
       // Add social media URLs when available
