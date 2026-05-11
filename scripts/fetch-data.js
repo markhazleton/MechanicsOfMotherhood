@@ -11,8 +11,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // API Configuration
-const RECIPE_API_BASE = process.env.RECIPE_API_BASE || 'https://webspark.markhazleton.com/api/recipespark';
-const WEBCMS_API_BASE = process.env.WEBCMS_API_BASE || 'https://webspark.markhazleton.com/api/WebCMS';
+const RECIPE_API_BASE = process.env.RECIPE_API_BASE || 'https://web.makeboldspark.com/api/recipespark';
+const WEBCMS_API_BASE = process.env.WEBCMS_API_BASE || 'https://web.makeboldspark.com/api/WebCMS';
 const AUTH_TOKEN = process.env.WEBCMS_AUTH_TOKEN || 'MARKHAZLETON-WEB';
 
 // Output directory for static data

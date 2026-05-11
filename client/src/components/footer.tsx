@@ -98,6 +98,13 @@ export default function Footer() {
           <p className="text-neutral-500 text-sm" data-testid="copyright-text">
             © {currentYear} {SITE_CONFIG.name.full} ({SITE_CONFIG.name.short}). All rights reserved.
           </p>
+          <p className="text-neutral-500 text-sm">
+            <a href="https://mechanicsofmotherhood.com" className={linkClasses}>Mechanics Of Motherhood</a>
+            {' — built by '}
+            <a href="https://markhazleton.com" className={linkClasses}>Mark Hazleton</a>
+            {' · '}
+            <a href="https://makeboldsolutions.com" className={linkClasses}>Make Bold Solutions</a>
+          </p>
           {buildInfo && (
             <div className="text-xs text-neutral-600 font-mono" data-testid="build-info">
               build {buildInfo.hash} • {buildInfo.date}

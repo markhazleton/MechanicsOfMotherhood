@@ -6,8 +6,8 @@ import dotenv from 'dotenv';
 // Load environment variables from .env file
 dotenv.config();
 
-const RECIPE_API_BASE = process.env.RECIPE_API_BASE || 'https://webspark.markhazleton.com/api/recipespark';
-const WEBCMS_API_BASE = process.env.WEBCMS_API_BASE || 'https://webspark.markhazleton.com/api/WebCMS';
+const RECIPE_API_BASE = process.env.RECIPE_API_BASE || 'https://web.makeboldspark.com/api/recipespark';
+const WEBCMS_API_BASE = process.env.WEBCMS_API_BASE || 'https://web.makeboldspark.com/api/WebCMS';
 const AUTH_TOKEN = process.env.WEBCMS_AUTH_TOKEN || 'MARKHAZLETON-WEB';
 
 async function testEndpoint(url, headers = {}) {

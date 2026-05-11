@@ -112,7 +112,7 @@ client/
 
 ### API Integration
 
-- **Primary API**: RecipeSpark at webspark.markhazleton.com
+- **Primary API**: RecipeSpark at web.makeboldspark.com
 - **Fallback**: Mock data in `client/src/data/`
 - **Build Process**: Data fetched during build and cached locally
 - **Runtime**: Client-side only, no backend dependency

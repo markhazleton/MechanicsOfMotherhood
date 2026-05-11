@@ -19,6 +19,17 @@ Transform your kitchen chaos into organized culinary success with 108+ curated r
 
 ---
 
+## About
+
+Mechanics of Motherhood is a modern recipe management platform demonstrating React 19, TypeScript, Vite, and Tailwind CSS in a production deployment with custom domain hosting, automated CI/CD, and real API integration.
+
+**Live Site**: [https://mechanicsofmotherhood.com](https://mechanicsofmotherhood.com)
+
+> Built by [Mark Hazleton](https://markhazleton.com) — Mark Hazleton, Solutions Architect
+> Mechanics Of Motherhood is part of the [Make Bold Spark](https://makeboldspark.com) portfolio of technical demonstrations.
+
+---
+
 ## 🎯 Why Choose Mechanics of Motherhood?
 
 <table>
@@ -310,7 +321,8 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 [🏠 Homepage](https://mechanicsofmotherhood.com) • [📱 Live Demo](https://mechanicsofmotherhood.com) • [📚 Documentation](https://github.com/markhazleton/MechanicsOfMotherhood/wiki) • [💬 Community](https://github.com/markhazleton/MechanicsOfMotherhood/discussions)
 
-**Developed by [Mark Hazleton](https://markhazleton.com)** • [GitHub](https://github.com/markhazleton) • [Website](https://markhazleton.com)
+**Developed by [Mark Hazleton](https://markhazleton.com)** — Mark Hazleton, Solutions Architect
+Part of the [Make Bold Spark](https://makeboldspark.com) portfolio · [Make Bold Solutions](https://makeboldsolutions.com)
 
 ⭐ **Star this repo if you find it useful!** ⭐
 
