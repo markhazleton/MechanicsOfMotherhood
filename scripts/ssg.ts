@@ -47,6 +47,42 @@ async function getRenderer() {
   return renderer;
 }
 
+function normalizeRoute(input: string): string {
+  if (!input) return "/";
+  const trimmed = input.trim();
+  if (!trimmed) return "/";
+
+  let route = trimmed;
+  try {
+    const parsed = new URL(trimmed);
+    route = parsed.pathname || "/";
+  } catch {
+    // Keep non-URL paths as-is.
+  }
+
+  route = route.replace(/\\/g, "/");
+  route = route.split(/[?#]/)[0] || "/";
+  if (!route.startsWith("/")) route = `/${route}`;
+
+  if (route !== "/") {
+    route = route.replace(/\/+$/, "");
+    if (!route) route = "/";
+  }
+
+  return route;
+}
+
+function loadRoutesFromSitemap(sitemapPath: string): string[] {
+  if (!existsSync(sitemapPath)) return [];
+
+  const xml = readFileSync(sitemapPath, "utf-8");
+  const matches = xml.match(/<loc>(.*?)<\/loc>/g) || [];
+  return matches
+    .map((match) => match.replace(/<\/?loc>/g, "").trim())
+    .filter(Boolean)
+    .map((loc) => normalizeRoute(loc));
+}
+
 function upsertHeadNode(document: Document, node: Element): void {
   const head = document.head;
   const tagName = node.tagName.toLowerCase();
@@ -123,11 +159,18 @@ function writeHtml(routePath: string, html: string) {
 async function run() {
   const categories = getCategories();
   const recipes = getRecipes();
-  const routes = new Set<string>(["/", "/recipes", "/categories"]);
+  const routes = new Set<string>(["/", "/recipes", "/categories", "/blog"]);
+
+  const sitemapRoutes = loadRoutesFromSitemap(
+    path.join(projectRoot, "client", "public", "sitemap.xml")
+  );
+  sitemapRoutes.forEach((route) => routes.add(route));
+
   categories.forEach((c) => {
-    if (c.url) routes.add(c.url);
+    if (c.url) routes.add(normalizeRoute(c.url));
   });
-  recipes.slice(0, 300).forEach((r) => {
+
+  recipes.forEach((r) => {
     let slug = r.name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
@@ -137,11 +180,16 @@ async function run() {
       // Sanitize slug to remove invalid filesystem characters
       slug = slug.replace(/[<>:"|?*]/g, "-");
     }
-    routes.add("/recipe/" + slug);
+
+    routes.add(normalizeRoute("/recipe/" + slug));
+    if (r.recipeURL) {
+      routes.add(normalizeRoute(r.recipeURL));
+    }
   });
 
   const { render } = await getRenderer();
-  for (const route of routes) {
+  const sortedRoutes = Array.from(routes).sort();
+  for (const route of sortedRoutes) {
     if (route.startsWith("/recipe/")) {
       const slug = route.replace("/recipe/", "");
       try {
@@ -154,6 +202,8 @@ async function run() {
     const outRoute = route === "/" ? "" : route.replace(/^\//, "");
     writeHtml(outRoute, html);
   }
+
+  console.warn(`[ssg] rendered ${sortedRoutes.length} routes`);
 }
 run().catch((e) => {
   console.error("[ssg] failed", e);
