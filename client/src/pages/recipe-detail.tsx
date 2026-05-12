@@ -57,7 +57,7 @@ export default function RecipeDetail() {
       recipe_id: recipe?.id,
       recipe_name: recipe?.name
     });
-    navigate("/recipes");
+    navigate("/recipes/");
   };
 
   // Analytics event handlers for recipe sections
@@ -81,7 +81,7 @@ export default function RecipeDetail() {
             <p className="text-muted-foreground mb-8">
               {error || "The recipe you're looking for doesn't exist or has been removed."}
             </p>
-            <Button onClick={() => navigate("/recipes")} variant="default">
+            <Button onClick={() => navigate("/recipes/")} variant="default">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Recipes
             </Button>

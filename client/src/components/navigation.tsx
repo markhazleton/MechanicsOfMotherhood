@@ -27,19 +27,25 @@ export default function Navigation() {
         search_term: query,
         current_page: location
       });
-      navigate(`/recipes?search=${encodeURIComponent(query)}`);
+      navigate(`/recipes/?search=${encodeURIComponent(query)}`);
       setIsOpen(false);
     }
   };
 
+  const normalizePath = (path: string): string => {
+    const clean = (path || "/").split(/[?#]/)[0] || "/";
+    if (clean === "/") return "/";
+    return clean.replace(/\/+$/, "");
+  };
+
   const navLinks = [
     { href: "/", label: "Home", icon: Home },
-    { href: "/recipes", label: "Recipes", icon: BookOpen },
-    { href: "/blog", label: "Blog", icon: Newspaper },
+    { href: "/recipes/", label: "Recipes", icon: BookOpen },
+    { href: "/blog/", label: "Blog", icon: Newspaper },
   ];
 
   const NavLink = ({ href, label, icon: Icon }: { href: string; label: string; icon: React.ComponentType<{ size?: number }> }) => {
-    const active = location === href;
+    const active = normalizePath(location) === normalizePath(href);
     return (
       <Link
         href={href}

@@ -144,22 +144,95 @@ function fixDataIssues(data, validationResult) {
     console.log(`   🔧 Removed ${originalRecipeCount - validRecipes.length} recipes with missing essential data`);
   }
 
+  const toCategoryUrl = (category) => {
+    const slugFromName = (category.name || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+
+    const rawPath = (category.url || '').split(/[?#]/)[0];
+    const withLeadingSlash = rawPath ? (rawPath.startsWith('/') ? rawPath : `/${rawPath}`) : '';
+    const normalizedBase = withLeadingSlash.replace(/^\/recipe\/category\//, '/recipes/category/');
+    const match = normalizedBase.match(/^\/recipes\/category\/([^/]+)/i);
+    const slug = match?.[1] ? match[1].toLowerCase() : slugFromName;
+    return `/recipes/category/${slug}`;
+  };
+
+  const normalizeCategoryPath = (rawPath = '') => {
+    const source = String(rawPath || '').trim();
+    if (!source.startsWith('/')) return source;
+    return source.replace(/^\/recipe\/category\//, '/recipes/category/');
+  };
+
+  const normalizeMenuEntry = (entry) => {
+    if (!entry || typeof entry !== 'object') return 0;
+    let changed = 0;
+
+    if (typeof entry.url === 'string') {
+      const normalizedUrl = normalizeCategoryPath(entry.url);
+      if (normalizedUrl !== entry.url) {
+        entry.url = normalizedUrl;
+        changed++;
+      }
+    }
+
+    if (typeof entry.virtual_path === 'string') {
+      const normalizedVirtualPath = normalizeCategoryPath(entry.virtual_path);
+      if (normalizedVirtualPath !== entry.virtual_path) {
+        entry.virtual_path = normalizedVirtualPath;
+        changed++;
+      }
+    }
+
+    return changed;
+  };
+
   // Fix category URLs to use consistent format
   categories.forEach(category => {
-    if (category.url && !category.url.includes('/recipes/category/')) {
-      const oldUrl = category.url;
-      // Generate consistent URL format
-      const slug = category.name.toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .trim('-');
-      
-      category.url = `/recipes/category/${slug}`;
+    const oldUrl = category.url || '';
+    const normalizedUrl = toCategoryUrl(category);
+    if (oldUrl !== normalizedUrl) {
+      category.url = normalizedUrl;
       console.log(`   🔧 Fixed category URL: "${category.name}" from "${oldUrl}" to "${category.url}"`);
       fixedCount++;
     }
   });
+
+  // Normalize nested recipe category URLs in generated recipe artifacts
+  recipes.forEach((recipe) => {
+    const categoryUrl = recipe?.recipeCategory?.url;
+    if (typeof categoryUrl === 'string') {
+      const normalizedUrl = normalizeCategoryPath(categoryUrl);
+      if (normalizedUrl !== categoryUrl) {
+        recipe.recipeCategory.url = normalizedUrl;
+        fixedCount++;
+      }
+    }
+  });
+
+  // Normalize extracted menu-items.json category URLs
+  const menuItemCollections = data.menuItems && typeof data.menuItems === 'object'
+    ? Object.values(data.menuItems)
+    : [];
+
+  menuItemCollections.forEach((entries) => {
+    if (!Array.isArray(entries)) return;
+    entries.forEach((entry) => {
+      fixedCount += normalizeMenuEntry(entry);
+    });
+  });
+
+  // Normalize websites.json embedded menu category URLs
+  if (Array.isArray(data.websites)) {
+    data.websites.forEach((website) => {
+      if (!Array.isArray(website?.menu)) return;
+      website.menu.forEach((entry) => {
+        fixedCount += normalizeMenuEntry(entry);
+      });
+    });
+  }
 
   console.log(`✅ Fixed ${fixedCount} data quality issues`);
   

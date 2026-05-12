@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-05-12T21:02:29.820Z",
+  "timestamp": "2026-05-12T22:35:54.553Z",
   "validation": {
     "errors": [],
     "warnings": [],
@@ -40,5 +40,5 @@
   },
   "validationMode": "standalone",
   "dataSource": "api-data.json",
-  "fixIssuesMode": false
+  "fixIssuesMode": true
 }

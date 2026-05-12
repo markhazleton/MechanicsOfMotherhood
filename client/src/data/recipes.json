@@ -20,7 +20,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -56,7 +56,7 @@
       "order": 10,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/sauce",
+      "url": "/recipes/category/sauce",
       "domainID": 2
     },
     "recipeCategoryID": 10,
@@ -92,7 +92,7 @@
       "order": 4,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/dessert",
+      "url": "/recipes/category/dessert",
       "domainID": 2
     },
     "recipeCategoryID": 4,
@@ -128,7 +128,7 @@
       "order": 1,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/appetizer",
+      "url": "/recipes/category/appetizer",
       "domainID": 2
     },
     "recipeCategoryID": 1,
@@ -164,7 +164,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -200,7 +200,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -236,7 +236,7 @@
       "order": 8,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/quick-meals",
+      "url": "/recipes/category/quick-meals",
       "domainID": 2
     },
     "recipeCategoryID": 8,
@@ -272,7 +272,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -308,7 +308,7 @@
       "order": 3,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/breakfast",
+      "url": "/recipes/category/breakfast",
       "domainID": 2
     },
     "recipeCategoryID": 3,
@@ -344,7 +344,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -380,7 +380,7 @@
       "order": 2,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/bread",
+      "url": "/recipes/category/bread",
       "domainID": 2
     },
     "recipeCategoryID": 2,
@@ -416,7 +416,7 @@
       "order": 1,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/appetizer",
+      "url": "/recipes/category/appetizer",
       "domainID": 2
     },
     "recipeCategoryID": 1,
@@ -452,7 +452,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -488,7 +488,7 @@
       "order": 11,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/side-dishes",
+      "url": "/recipes/category/side-dishes",
       "domainID": 2
     },
     "recipeCategoryID": 11,
@@ -524,7 +524,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -560,7 +560,7 @@
       "order": 4,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/dessert",
+      "url": "/recipes/category/dessert",
       "domainID": 2
     },
     "recipeCategoryID": 4,
@@ -596,7 +596,7 @@
       "order": 1,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/appetizer",
+      "url": "/recipes/category/appetizer",
       "domainID": 2
     },
     "recipeCategoryID": 1,
@@ -632,7 +632,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -668,7 +668,7 @@
       "order": 4,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/dessert",
+      "url": "/recipes/category/dessert",
       "domainID": 2
     },
     "recipeCategoryID": 4,
@@ -704,7 +704,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -740,7 +740,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -776,7 +776,7 @@
       "order": 8,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/quick-meals",
+      "url": "/recipes/category/quick-meals",
       "domainID": 2
     },
     "recipeCategoryID": 8,
@@ -812,7 +812,7 @@
       "order": 12,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/slow-cooker",
+      "url": "/recipes/category/slow-cooker",
       "domainID": 2
     },
     "recipeCategoryID": 12,
@@ -848,7 +848,7 @@
       "order": 11,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/side-dishes",
+      "url": "/recipes/category/side-dishes",
       "domainID": 2
     },
     "recipeCategoryID": 11,
@@ -884,7 +884,7 @@
       "order": 12,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/slow-cooker",
+      "url": "/recipes/category/slow-cooker",
       "domainID": 2
     },
     "recipeCategoryID": 12,
@@ -920,7 +920,7 @@
       "order": 12,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/slow-cooker",
+      "url": "/recipes/category/slow-cooker",
       "domainID": 2
     },
     "recipeCategoryID": 12,
@@ -956,7 +956,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -992,7 +992,7 @@
       "order": 8,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/quick-meals",
+      "url": "/recipes/category/quick-meals",
       "domainID": 2
     },
     "recipeCategoryID": 8,
@@ -1028,7 +1028,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -1064,7 +1064,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -1100,7 +1100,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -1136,7 +1136,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -1172,7 +1172,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -1208,7 +1208,7 @@
       "order": 3,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/breakfast",
+      "url": "/recipes/category/breakfast",
       "domainID": 2
     },
     "recipeCategoryID": 3,
@@ -1244,7 +1244,7 @@
       "order": 4,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/dessert",
+      "url": "/recipes/category/dessert",
       "domainID": 2
     },
     "recipeCategoryID": 4,
@@ -1280,7 +1280,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -1316,7 +1316,7 @@
       "order": 13,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/soup",
+      "url": "/recipes/category/soup",
       "domainID": 2
     },
     "recipeCategoryID": 13,
@@ -1352,7 +1352,7 @@
       "order": 13,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/soup",
+      "url": "/recipes/category/soup",
       "domainID": 2
     },
     "recipeCategoryID": 13,
@@ -1388,7 +1388,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -1424,7 +1424,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -1460,7 +1460,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -1496,7 +1496,7 @@
       "order": 14,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/vegetable",
+      "url": "/recipes/category/vegetable",
       "domainID": 2
     },
     "recipeCategoryID": 14,
@@ -1532,7 +1532,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -1568,7 +1568,7 @@
       "order": 12,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/slow-cooker",
+      "url": "/recipes/category/slow-cooker",
       "domainID": 2
     },
     "recipeCategoryID": 12,
@@ -1604,7 +1604,7 @@
       "order": 13,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/soup",
+      "url": "/recipes/category/soup",
       "domainID": 2
     },
     "recipeCategoryID": 13,
@@ -1640,7 +1640,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -1676,7 +1676,7 @@
       "order": 1,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/appetizer",
+      "url": "/recipes/category/appetizer",
       "domainID": 2
     },
     "recipeCategoryID": 1,
@@ -1712,7 +1712,7 @@
       "order": 13,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/soup",
+      "url": "/recipes/category/soup",
       "domainID": 2
     },
     "recipeCategoryID": 13,
@@ -1748,7 +1748,7 @@
       "order": 1,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/appetizer",
+      "url": "/recipes/category/appetizer",
       "domainID": 2
     },
     "recipeCategoryID": 1,
@@ -1784,7 +1784,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -1820,7 +1820,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -1856,7 +1856,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -1892,7 +1892,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -1928,7 +1928,7 @@
       "order": 14,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/vegetable",
+      "url": "/recipes/category/vegetable",
       "domainID": 2
     },
     "recipeCategoryID": 14,
@@ -1964,7 +1964,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -2000,7 +2000,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -2036,7 +2036,7 @@
       "order": 1,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/appetizer",
+      "url": "/recipes/category/appetizer",
       "domainID": 2
     },
     "recipeCategoryID": 1,
@@ -2072,7 +2072,7 @@
       "order": 4,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/dessert",
+      "url": "/recipes/category/dessert",
       "domainID": 2
     },
     "recipeCategoryID": 4,
@@ -2108,7 +2108,7 @@
       "order": 9,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/salad",
+      "url": "/recipes/category/salad",
       "domainID": 2
     },
     "recipeCategoryID": 9,
@@ -2144,7 +2144,7 @@
       "order": 13,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/soup",
+      "url": "/recipes/category/soup",
       "domainID": 2
     },
     "recipeCategoryID": 13,
@@ -2180,7 +2180,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -2216,7 +2216,7 @@
       "order": 13,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/soup",
+      "url": "/recipes/category/soup",
       "domainID": 2
     },
     "recipeCategoryID": 13,
@@ -2252,7 +2252,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -2288,7 +2288,7 @@
       "order": 11,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/side-dishes",
+      "url": "/recipes/category/side-dishes",
       "domainID": 2
     },
     "recipeCategoryID": 11,
@@ -2324,7 +2324,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -2360,7 +2360,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -2396,7 +2396,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -2432,7 +2432,7 @@
       "order": 12,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/slow-cooker",
+      "url": "/recipes/category/slow-cooker",
       "domainID": 2
     },
     "recipeCategoryID": 12,
@@ -2468,7 +2468,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -2504,7 +2504,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -2540,7 +2540,7 @@
       "order": 4,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/dessert",
+      "url": "/recipes/category/dessert",
       "domainID": 2
     },
     "recipeCategoryID": 4,
@@ -2576,7 +2576,7 @@
       "order": 12,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/slow-cooker",
+      "url": "/recipes/category/slow-cooker",
       "domainID": 2
     },
     "recipeCategoryID": 12,
@@ -2612,7 +2612,7 @@
       "order": 13,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/soup",
+      "url": "/recipes/category/soup",
       "domainID": 2
     },
     "recipeCategoryID": 13,
@@ -2648,7 +2648,7 @@
       "order": 1,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/appetizer",
+      "url": "/recipes/category/appetizer",
       "domainID": 2
     },
     "recipeCategoryID": 1,
@@ -2684,7 +2684,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -2720,7 +2720,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -2756,7 +2756,7 @@
       "order": 8,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/quick-meals",
+      "url": "/recipes/category/quick-meals",
       "domainID": 2
     },
     "recipeCategoryID": 8,
@@ -2792,7 +2792,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -2828,7 +2828,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -2864,7 +2864,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -2900,7 +2900,7 @@
       "order": 12,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/slow-cooker",
+      "url": "/recipes/category/slow-cooker",
       "domainID": 2
     },
     "recipeCategoryID": 12,
@@ -2936,7 +2936,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -2972,7 +2972,7 @@
       "order": 1,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/appetizer",
+      "url": "/recipes/category/appetizer",
       "domainID": 2
     },
     "recipeCategoryID": 1,
@@ -3008,7 +3008,7 @@
       "order": 14,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/vegetable",
+      "url": "/recipes/category/vegetable",
       "domainID": 2
     },
     "recipeCategoryID": 14,
@@ -3044,7 +3044,7 @@
       "order": 1,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/appetizer",
+      "url": "/recipes/category/appetizer",
       "domainID": 2
     },
     "recipeCategoryID": 1,
@@ -3080,7 +3080,7 @@
       "order": 1,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/appetizer",
+      "url": "/recipes/category/appetizer",
       "domainID": 2
     },
     "recipeCategoryID": 1,
@@ -3116,7 +3116,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -3152,7 +3152,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -3188,7 +3188,7 @@
       "order": 14,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/vegetable",
+      "url": "/recipes/category/vegetable",
       "domainID": 2
     },
     "recipeCategoryID": 14,
@@ -3224,7 +3224,7 @@
       "order": 4,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/dessert",
+      "url": "/recipes/category/dessert",
       "domainID": 2
     },
     "recipeCategoryID": 4,
@@ -3260,7 +3260,7 @@
       "order": 4,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/dessert",
+      "url": "/recipes/category/dessert",
       "domainID": 2
     },
     "recipeCategoryID": 4,
@@ -3296,7 +3296,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -3332,7 +3332,7 @@
       "order": 14,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/vegetable",
+      "url": "/recipes/category/vegetable",
       "domainID": 2
     },
     "recipeCategoryID": 14,
@@ -3368,7 +3368,7 @@
       "order": 14,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/vegetable",
+      "url": "/recipes/category/vegetable",
       "domainID": 2
     },
     "recipeCategoryID": 14,
@@ -3404,7 +3404,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -3440,7 +3440,7 @@
       "order": 13,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/soup",
+      "url": "/recipes/category/soup",
       "domainID": 2
     },
     "recipeCategoryID": 13,
@@ -3476,7 +3476,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -3512,7 +3512,7 @@
       "order": 13,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/soup",
+      "url": "/recipes/category/soup",
       "domainID": 2
     },
     "recipeCategoryID": 13,
@@ -3548,7 +3548,7 @@
       "order": 14,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/vegetable",
+      "url": "/recipes/category/vegetable",
       "domainID": 2
     },
     "recipeCategoryID": 14,
@@ -3584,7 +3584,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -3620,7 +3620,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -3656,7 +3656,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -3692,7 +3692,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,
@@ -3728,7 +3728,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -3764,7 +3764,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -3800,7 +3800,7 @@
       "order": 5,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/dips",
+      "url": "/recipes/category/dips",
       "domainID": 2
     },
     "recipeCategoryID": 5,
@@ -3836,7 +3836,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -3872,7 +3872,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -3908,7 +3908,7 @@
       "order": 6,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/drink",
+      "url": "/recipes/category/drink",
       "domainID": 2
     },
     "recipeCategoryID": 6,
@@ -3944,7 +3944,7 @@
       "order": 7,
       "isActive": true,
       "recipes": [],
-      "url": "/recipe/category/main-course",
+      "url": "/recipes/category/main-course",
       "domainID": 2
     },
     "recipeCategoryID": 7,

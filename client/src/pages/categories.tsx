@@ -26,7 +26,7 @@ export default function Categories() {
   const structuredData = generateItemListStructuredData(
     categoriesWithCounts.map((category) => ({
       name: category.name,
-      url: generateCanonicalUrl(`/recipes/category/${getCategorySlug(category.name)}`),
+      url: generateCanonicalUrl(`/recipes/category/${getCategorySlug(category.name)}/`),
     })),
     "Recipe Categories"
   );
@@ -71,7 +71,7 @@ export default function Categories() {
               return (
                 <Link
                   key={category.id}
-                  href={`/recipes/category/${slug}`}
+                  href={`/recipes/category/${slug}/`}
                   data-testid={`category-card-${category.id}`}
                 >
                   <Card className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg motion-safe:hover:scale-[1.02] motion-safe:transform transition-all duration-300 cursor-pointer border border-warm-peach/30">

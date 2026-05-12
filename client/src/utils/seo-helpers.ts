@@ -147,7 +147,7 @@ export function generateBreadcrumbs(
       const categorySlug = getCategorySlug(recipe.recipeCategory.name);
       breadcrumbs.push({
         name: recipe.recipeCategory.name,
-        href: `/recipes/category/${categorySlug}`,
+        href: `/recipes/category/${categorySlug}/`,
       });
     }
     if (recipe?.name) {

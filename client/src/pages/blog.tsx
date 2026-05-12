@@ -57,7 +57,7 @@ export default function Blog() {
                 </p>
                 <p className="text-sm text-neutral-600">
                   In the meantime, explore our{" "}
-                  <Link href="/recipes" className="text-accent-600 hover:text-accent-700 font-semibold">
+                  <Link href="/recipes/" className="text-accent-600 hover:text-accent-700 font-semibold">
                     recipe collection
                   </Link>
                   {" "}for some culinary inspiration.

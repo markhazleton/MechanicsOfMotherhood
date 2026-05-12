@@ -78,6 +78,25 @@ function normalizeRoutePath(rawPath = '') {
   return `${cleanPath.replace(/\/+$/, '')}/`;
 }
 
+function normalizeCategoryRoutePath(rawPath = '', categoryName = '') {
+  const fallbackSlug = nameToSlug(categoryName || 'category');
+  const pathOnly = (rawPath || '').split(/[?#]/)[0] || '';
+  let cleanPath = pathOnly.startsWith('/') ? pathOnly : `/${pathOnly}`;
+
+  if (!cleanPath || cleanPath === '/') {
+    cleanPath = `/recipes/category/${fallbackSlug}`;
+  }
+
+  cleanPath = cleanPath.replace(/^\/recipe\/category\//, '/recipes/category/');
+
+  const categoryMatch = cleanPath.match(/^\/recipes\/category\/([^/]+)/i);
+  if (categoryMatch && categoryMatch[1]) {
+    return `/recipes/category/${categoryMatch[1].toLowerCase()}`;
+  }
+
+  return cleanPath;
+}
+
 function toCanonicalUrl(routePath) {
   return `${SITE_URL}${normalizeRoutePath(routePath)}`;
 }
@@ -124,7 +143,10 @@ function generateSitemap() {
   // Category pages (normalize provided url if present)
   categories.forEach(category => {
     if (!category || !category.name || !category.isActive) return;
-    let raw = category.url || `/recipes/category/${nameToSlug(category.name)}`;
+    let raw = normalizeCategoryRoutePath(
+      category.url || `/recipes/category/${nameToSlug(category.name)}`,
+      category.name
+    );
     raw = raw.replace(/https?:\/\/[^/]+/, '');
     const normalized = raw.startsWith('/') ? raw : '/' + raw;
     // TODO: when category objects include updated timestamp, replace with that value

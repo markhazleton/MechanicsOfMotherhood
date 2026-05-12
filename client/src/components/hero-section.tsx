@@ -14,7 +14,7 @@ export default function HeroSection() {
     e.preventDefault();
     const query = searchQuery.trim();
     if (!query) return;
-    navigate(`/recipes?search=${encodeURIComponent(query)}`);
+    navigate(`/recipes/?search=${encodeURIComponent(query)}`);
   };
 
   return (
@@ -68,7 +68,7 @@ export default function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <Link href="/recipes">
+            <Link href="/recipes/">
               <Button
                 size="lg"
                 variant="accent"
@@ -80,7 +80,7 @@ export default function HeroSection() {
                 <ArrowRight className="ml-2" size={18} />
               </Button>
             </Link>
-            <Link href="/categories">
+            <Link href="/categories/">
               <Button
                 variant="outline"
                 size="lg"

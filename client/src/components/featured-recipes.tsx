@@ -40,7 +40,7 @@ export default function FeaturedRecipes() {
               variant="outline"
               className="px-4 py-2 rounded-full text-sm font-medium border-border hover:bg-accent-50 hover:text-accent-700 hover:border-accent-300 dark:hover:bg-accent-900/30 dark:hover:text-accent-300 transition-all"
               data-testid={`category-button-${category.name.toLowerCase().replace(/\s+/g, '-')}`}
-              onClick={() => navigate(`/recipes/category/${getCategorySlug(category.name)}`)}
+              onClick={() => navigate(`/recipes/category/${getCategorySlug(category.name)}/`)}
             >
               {category.name}
             </Button>
@@ -108,7 +108,7 @@ export default function FeaturedRecipes() {
               analytics.trackButtonClick('browse_all_recipes', 'featured_recipes', {
                 source: 'homepage'
               });
-              navigate("/recipes");
+              navigate("/recipes/");
             }}
           >
             <ChefHat className="mr-2" size={20} />

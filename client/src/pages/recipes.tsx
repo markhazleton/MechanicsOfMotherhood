@@ -182,7 +182,7 @@ export default function Recipes() {
               </select>
 
               {/* Browse Categories Link */}
-              <Link href="/categories">
+              <Link href="/categories/">
                 <Button
                   variant="outline"
                   className="px-4 py-2"

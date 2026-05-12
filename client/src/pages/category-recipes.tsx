@@ -17,8 +17,9 @@ import type { Recipe, Category } from "@/data/api-types";
 import { nameToSlug, getCategorySlug } from "@/utils/slugify";
 
 export default function CategoryRecipes() {
-  const [, params] = useRoute("/recipes/category/:categorySlug");
-  const categorySlug = params?.categorySlug;
+  const [, paramsNoSlash] = useRoute("/recipes/category/:categorySlug");
+  const [, paramsWithSlash] = useRoute("/recipes/category/:categorySlug/");
+  const categorySlug = paramsNoSlash?.categorySlug || paramsWithSlash?.categorySlug;
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   
@@ -59,7 +60,7 @@ export default function CategoryRecipes() {
     hasPrevious: page > 1,
     total: totalRecipes,
   };
-  const currentPath = categorySlug ? `/recipes/category/${categorySlug}` : "/recipes";
+  const currentPath = categorySlug ? `/recipes/category/${categorySlug}/` : "/recipes/";
   const currentUrl = generateCanonicalUrl(currentPath);
   const categoryStructuredData = currentCategory
     ? generateItemListStructuredData(
@@ -94,7 +95,7 @@ export default function CategoryRecipes() {
   // Handle case where category doesn't exist
   if (!categorySlug || !currentCategory) {
     return (
-  <div className="min-h-screen bg-warm-cream">
+      <div className="min-h-screen bg-warm-cream">
         <SeoHead
           title="Category Not Found"
           description="The requested recipe category could not be found."
@@ -102,12 +103,12 @@ export default function CategoryRecipes() {
           robots="noindex, nofollow"
         />
         <Navigation />
-  <div className="bg-warm-cream border-b border-warm-peach/30">
+        <div className="bg-warm-cream border-b border-warm-peach/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <BreadcrumbNav items={generateBreadcrumbs('/categories')} />
           </div>
         </div>
-  <section className="bg-gradient-to-b from-warm-peach/20 to-transparent py-16 border-b border-warm-peach/30">
+        <section className="bg-gradient-to-b from-warm-peach/20 to-transparent py-16 border-b border-warm-peach/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center py-12">
               <div className="text-6xl mb-4">🔧</div>
@@ -118,12 +119,12 @@ export default function CategoryRecipes() {
                 The category "{categorySlug}" doesn't exist in our home kitchen.
               </p>
               <div className="space-x-4">
-                <Link href="/categories">
+                <Link href="/categories/">
                   <Button variant="brand">
                     Browse All Categories
                   </Button>
                 </Link>
-                <Link href="/recipes">
+                <Link href="/recipes/">
                   <Button variant="outline">
                     View All Recipes
                   </Button>
@@ -159,7 +160,7 @@ export default function CategoryRecipes() {
       {/* Breadcrumb Navigation */}
   <div className="bg-warm-cream border-b border-warm-peach/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <BreadcrumbNav items={generateBreadcrumbs(`/recipes/category/${categorySlug}`, undefined, currentCategory?.name)} />
+          <BreadcrumbNav items={generateBreadcrumbs(`/recipes/category/${categorySlug}/`, undefined, currentCategory?.name)} />
         </div>
       </div>
 
@@ -167,7 +168,7 @@ export default function CategoryRecipes() {
   <section className="bg-gradient-to-b from-warm-peach/20 to-transparent py-16 border-b border-warm-peach/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-6">
-            <Link href="/categories">
+            <Link href="/categories/">
               <Button variant="ghost" className="mb-4 text-neutral-700 hover:text-brand-800">
                 <ArrowLeft size={16} className="mr-2" />
                 Back to Categories
@@ -291,7 +292,7 @@ export default function CategoryRecipes() {
               <p className="text-neutral-700 mb-6">
                 We don't have any recipes in this category yet.
               </p>
-              <Link href="/recipes">
+              <Link href="/recipes/">
                 <Button variant="brand">
                   Browse All Recipes
                 </Button>

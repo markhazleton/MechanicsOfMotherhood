@@ -62,9 +62,9 @@ export default function Footer() {
             <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-300 mb-4">Navigation</h4>
             <ul className="space-y-3">
               <li><Link href="/" className={linkClasses}>Home</Link></li>
-              <li><Link href="/recipes" className={linkClasses}>All Recipes</Link></li>
-              <li><Link href="/categories" className={linkClasses}>Categories</Link></li>
-              <li><Link href="/blog" className={linkClasses}>Blog</Link></li>
+              <li><Link href="/recipes/" className={linkClasses}>All Recipes</Link></li>
+              <li><Link href="/categories/" className={linkClasses}>Categories</Link></li>
+              <li><Link href="/blog/" className={linkClasses}>Blog</Link></li>
             </ul>
           </div>
 
@@ -72,11 +72,11 @@ export default function Footer() {
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-300 mb-4">Categories</h4>
             <ul className="space-y-3">
-              <li><Link href="/recipes/category/main-course" className={linkClasses}>Main Course</Link></li>
-              <li><Link href="/recipes/category/quick-meals" className={linkClasses}>Quick Meals</Link></li>
-              <li><Link href="/recipes/category/dessert" className={linkClasses}>Dessert</Link></li>
-              <li><Link href="/recipes/category/appetizer" className={linkClasses}>Appetizer</Link></li>
-              <li><Link href="/recipes/category/soup" className={linkClasses}>Soup</Link></li>
+              <li><Link href="/recipes/category/main-course/" className={linkClasses}>Main Course</Link></li>
+              <li><Link href="/recipes/category/quick-meals/" className={linkClasses}>Quick Meals</Link></li>
+              <li><Link href="/recipes/category/dessert/" className={linkClasses}>Dessert</Link></li>
+              <li><Link href="/recipes/category/appetizer/" className={linkClasses}>Appetizer</Link></li>
+              <li><Link href="/recipes/category/soup/" className={linkClasses}>Soup</Link></li>
             </ul>
           </div>
 
@@ -84,11 +84,11 @@ export default function Footer() {
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-300 mb-4">More</h4>
             <ul className="space-y-3">
-              <li><Link href="/recipes/category/slow-cooker" className={linkClasses}>Slow Cooker</Link></li>
-              <li><Link href="/recipes/category/breakfast" className={linkClasses}>Breakfast</Link></li>
-              <li><Link href="/recipes/category/side-dishes" className={linkClasses}>Side Dishes</Link></li>
-              <li><Link href="/recipes/category/drink" className={linkClasses}>Drinks</Link></li>
-              <li><Link href="/recipes/category/salad" className={linkClasses}>Salad</Link></li>
+              <li><Link href="/recipes/category/slow-cooker/" className={linkClasses}>Slow Cooker</Link></li>
+              <li><Link href="/recipes/category/breakfast/" className={linkClasses}>Breakfast</Link></li>
+              <li><Link href="/recipes/category/side-dishes/" className={linkClasses}>Side Dishes</Link></li>
+              <li><Link href="/recipes/category/drink/" className={linkClasses}>Drinks</Link></li>
+              <li><Link href="/recipes/category/salad/" className={linkClasses}>Salad</Link></li>
             </ul>
           </div>
         </div>

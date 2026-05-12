@@ -15,6 +15,37 @@ interface RecipeSearchIndexEntry {
 const normalizeSearchText = (value: string): string =>
   value.toLowerCase().replace(/\s+/g, " ").trim();
 
+const normalizeCategoryUrl = (value: string, categoryName?: string): string => {
+  const fallbackSlug = (categoryName || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  const source = (value || "").trim();
+  let path = source ? source.split(/[?#]/)[0] : "";
+  if (path && !path.startsWith("/")) path = `/${path}`;
+
+  if (!path) {
+    return `/recipes/category/${fallbackSlug}/`;
+  }
+
+  path = path.replace(/^\/recipe\/category\//, "/recipes/category/");
+
+  const categoryMatch = path.match(/^\/recipes\/category\/([^/]+)/i);
+  if (categoryMatch?.[1]) {
+    return `/recipes/category/${categoryMatch[1].toLowerCase()}/`;
+  }
+
+  if (fallbackSlug) {
+    return `/recipes/category/${fallbackSlug}/`;
+  }
+
+  const trimmed = path.replace(/\/+$/, "");
+  return trimmed === "/" ? "/" : `${trimmed}/`;
+};
+
 const recipeSearchIndex: RecipeSearchIndexEntry[] = (recipesData as Recipe[]).map((recipe) => {
   const searchParts = [
     recipe.name,
@@ -155,7 +186,10 @@ export function getRecipesByCategory(categoryId: number): Recipe[] {
  * Get all categories
  */
 export function getCategories(): Category[] {
-  return categoriesData as Category[];
+  return (categoriesData as Category[]).map((category) => ({
+    ...category,
+    url: normalizeCategoryUrl(category.url || "", category.name),
+  }));
 }
 
 /**
@@ -171,7 +205,8 @@ export function getCategoryById(id: number): Category | undefined {
  */
 export function getCategoryBySlug(slug: string): Category | undefined {
   const categories = getCategories();
-  return categories.find((category) => category.url === slug);
+  const normalizedInput = normalizeCategoryUrl(slug, "");
+  return categories.find((category) => normalizeCategoryUrl(category.url || "", category.name) === normalizedInput);
 }
 
 /**
