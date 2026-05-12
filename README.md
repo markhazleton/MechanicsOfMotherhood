@@ -321,7 +321,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 [🏠 Homepage](https://mechanicsofmotherhood.com) • [📱 Live Demo](https://mechanicsofmotherhood.com) • [📚 Documentation](https://github.com/markhazleton/MechanicsOfMotherhood/wiki) • [💬 Community](https://github.com/markhazleton/MechanicsOfMotherhood/discussions)
 
-**Developed by [Mark Hazleton](https://markhazleton.com)** — Mark Hazleton, Solutions Architect
+**Built by [Mark Hazleton](https://markhazleton.com)** — Mark Hazleton, Solutions Architect
 Part of the [Make Bold Spark](https://makeboldspark.com) portfolio · [Make Bold Solutions](https://makeboldsolutions.com)
 
 ⭐ **Star this repo if you find it useful!** ⭐
