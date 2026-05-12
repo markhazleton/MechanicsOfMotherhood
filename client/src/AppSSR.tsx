@@ -30,6 +30,7 @@ const AppSSR: React.FC<AppSSRProps> = ({ ssrPath, helmetContext }) => {
             <Route path="/recipes" component={Recipes} />
             <Route path="/recipes/" component={Recipes} />
             <Route path="/recipe/:slug" component={RecipeDetail} />
+            <Route path="/recipe/:slug/" component={RecipeDetail} />
             <Route path="/categories" component={Categories} />
             <Route path="/categories/" component={Categories} />
             <Route path="/recipes/category/:categorySlug" component={CategoryRecipes} />

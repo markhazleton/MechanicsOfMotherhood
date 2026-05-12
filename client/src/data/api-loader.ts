@@ -168,10 +168,11 @@ export function getRecipeSlug(recipe: Recipe): string {
 export function getRecipeUrl(recipe: Recipe): string {
   // Use the API's recipeURL if available, otherwise construct from slug
   if (recipe.recipeURL && recipe.recipeURL.startsWith("/recipe/")) {
-    return recipe.recipeURL;
+    const url = recipe.recipeURL;
+    return url.endsWith('/') ? url : `${url}/`;
   }
   // Fallback to constructed URL
-  return `/recipe/${getRecipeSlug(recipe)}`;
+  return `/recipe/${getRecipeSlug(recipe)}/`;
 }
 
 /**
