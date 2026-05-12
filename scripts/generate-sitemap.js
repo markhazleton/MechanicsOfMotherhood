@@ -71,6 +71,17 @@ function nameToSlug(name) {
     .replace(/-+/g, '-');
 }
 
+function normalizeRoutePath(rawPath = '') {
+  const pathOnly = rawPath.split(/[?#]/)[0] || '/';
+  const cleanPath = pathOnly.startsWith('/') ? pathOnly : `/${pathOnly}`;
+  if (cleanPath === '/') return '/';
+  return `${cleanPath.replace(/\/+$/, '')}/`;
+}
+
+function toCanonicalUrl(routePath) {
+  return `${SITE_URL}${normalizeRoutePath(routePath)}`;
+}
+
 // Generate sitemap entries
 function generateSitemap() {
   const urls = [];
@@ -85,7 +96,7 @@ function generateSitemap() {
   
   staticPages.forEach(page => {
     urls.push({
-      loc: `${SITE_URL}${page.url}`,
+      loc: toCanonicalUrl(page.url),
       lastmod: new Date().toISOString().split('T')[0],
       changefreq: page.changefreq,
       priority: page.priority
@@ -103,7 +114,7 @@ function generateSitemap() {
     }
     if (!slug) return;
     urls.push({
-      loc: `${SITE_URL}/recipe/${slug}`,
+      loc: toCanonicalUrl(`/recipe/${slug}`),
       lastmod: formatDate(recipe.modifiedDT || recipe.lastViewDT),
       changefreq: 'monthly',
       priority: '0.8'
@@ -118,7 +129,7 @@ function generateSitemap() {
     const normalized = raw.startsWith('/') ? raw : '/' + raw;
     // TODO: when category objects include updated timestamp, replace with that value
     urls.push({
-      loc: `${SITE_URL}${normalized}`,
+      loc: toCanonicalUrl(normalized),
       lastmod: new Date().toISOString().split('T')[0],
       changefreq: 'weekly',
       priority: '0.75'

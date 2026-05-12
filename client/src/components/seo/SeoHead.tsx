@@ -1,5 +1,18 @@
 import * as HelmetAsync from 'react-helmet-async';
 
+function normalizeCanonicalUrl(input: string): string {
+  try {
+    const parsed = new URL(input);
+    const pathname = parsed.pathname || '/';
+    const normalizedPath = pathname === '/'
+      ? '/'
+      : `${pathname.replace(/\/+$/, '')}/`;
+    return `${parsed.origin}${normalizedPath}`;
+  } catch {
+    return input;
+  }
+}
+
 interface SeoHeadProps {
   title?: string;
   description?: string;
@@ -53,8 +66,10 @@ export default function SeoHead({
       runtimePath = pathname;
     } catch {/* ignore */}
   }
-  const canonical = url
-    || (runtimeOrigin && runtimePath ? `${runtimeOrigin}${runtimePath}` : 'https://mechanicsofmotherhood.com/');
+  const canonical = normalizeCanonicalUrl(
+    url
+      || (runtimeOrigin && runtimePath ? `${runtimeOrigin}${runtimePath}` : 'https://mechanicsofmotherhood.com/')
+  );
 
   return (
   <HelmetAsync.Helmet>

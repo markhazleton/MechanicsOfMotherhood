@@ -18,6 +18,13 @@ export const SITE_CONFIG = {
   logo: "/images/logos/MOM-Logo-Full.png",
 };
 
+function normalizeCanonicalPath(rawPath: string): string {
+  const pathOnly = (rawPath || "/").split(/[?#]/)[0] || "/";
+  const cleanPath = pathOnly.startsWith("/") ? pathOnly : `/${pathOnly}`;
+  if (cleanPath === "/") return "/";
+  return `${cleanPath.replace(/\/+$/, "")}/`;
+}
+
 /**
  * Generate page title with site name
  */
@@ -54,8 +61,7 @@ export function generateRecipeDescription(recipe: Recipe): string {
  * Generate canonical URL
  */
 export function generateCanonicalUrl(path: string): string {
-  const cleanPath = path.startsWith("/") ? path : `/${path}`;
-  return `${SITE_CONFIG.url}${cleanPath}`;
+  return `${SITE_CONFIG.url}${normalizeCanonicalPath(path)}`;
 }
 
 /**

@@ -61,7 +61,7 @@ describe("generateRecipeDescription", () => {
 describe("generateCanonicalUrl", () => {
   it("prefixes site url", () => {
     const url = generateCanonicalUrl("/recipe/test-pancakes");
-    expect(url).toMatch(/https?:\/\/.*\/recipe\/test-pancakes$/);
+    expect(url).toMatch(/https?:\/\/.*\/recipe\/test-pancakes\/$/);
   });
 });
 
