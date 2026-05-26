@@ -9,16 +9,17 @@ import CategoryRecipes from '@/pages/category-recipes';
 import Blog from '@/pages/blog';
 import NotFound from '@/pages/not-found';
 
-// Debug validation to ensure imports are defined during SSR build
-if (typeof Home !== 'function') console.warn('[SSR] Home component undefined');
-if (typeof Recipes !== 'function') console.warn('[SSR] Recipes component undefined');
-if (typeof RecipeDetail !== 'function') console.warn('[SSR] RecipeDetail component undefined');
-if (typeof Categories !== 'function') console.warn('[SSR] Categories component undefined');
-if (typeof CategoryRecipes !== 'function') console.warn('[SSR] CategoryRecipes component undefined');
-if (typeof Blog !== 'function') console.warn('[SSR] Blog component undefined');
-if (typeof NotFound !== 'function') console.warn('[SSR] NotFound component undefined');
+if (process.env.NODE_ENV === 'development') {
+  if (typeof Home !== 'function') console.warn('[SSR] Home component undefined');
+  if (typeof Recipes !== 'function') console.warn('[SSR] Recipes component undefined');
+  if (typeof RecipeDetail !== 'function') console.warn('[SSR] RecipeDetail component undefined');
+  if (typeof Categories !== 'function') console.warn('[SSR] Categories component undefined');
+  if (typeof CategoryRecipes !== 'function') console.warn('[SSR] CategoryRecipes component undefined');
+  if (typeof Blog !== 'function') console.warn('[SSR] Blog component undefined');
+  if (typeof NotFound !== 'function') console.warn('[SSR] NotFound component undefined');
+}
 const HelmetProvider = (HelmetAsync as Record<string, unknown>).HelmetProvider as React.ComponentType<{context?: unknown; children: React.ReactNode}> || (({ children }: { children: React.ReactNode }) => children);
-if ((HelmetAsync as Record<string, unknown>).HelmetProvider === undefined) console.warn('[SSR] HelmetProvider undefined (using pass-through)');
+if (process.env.NODE_ENV === 'development' && (HelmetAsync as Record<string, unknown>).HelmetProvider === undefined) console.warn('[SSR] HelmetProvider undefined (using pass-through)');
 
 interface AppSSRProps { ssrPath: string; helmetContext?: Record<string, unknown> }
 const AppSSR: React.FC<AppSSRProps> = ({ ssrPath, helmetContext }) => {
