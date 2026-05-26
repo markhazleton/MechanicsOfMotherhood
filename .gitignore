@@ -223,3 +223,6 @@ vite.config.ts.*
 # Generated data-quality reports
 copilot/data-quality/*.md
 !copilot/data-quality/.gitkeep
+
+# DevSpark — personal overrides (never commit)
+.documentation/*/commands/

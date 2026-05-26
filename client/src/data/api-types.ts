@@ -1,5 +1,5 @@
 // Auto-generated types from API data
-// Generated on 2026-05-12T23:07:22.759Z
+// Generated on 2026-05-26T23:01:48.807Z
 
 export interface Recipe {
   id: number;

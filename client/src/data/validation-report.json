@@ -1,40 +1,25 @@
 {
-  "timestamp": "2026-05-12T23:07:23.431Z",
+  "timestamp": "2026-05-26T23:01:49.407Z",
   "validation": {
     "errors": [],
     "warnings": [],
     "metrics": {
-      "totalRecipes": 110,
-      "validRecipes": 110,
+      "totalRecipes": 0,
+      "validRecipes": 0,
       "recipesWithImages": 0,
-      "recipesWithRatings": 63,
-      "approvedRecipes": 84,
-      "categoryDistribution": {
-        "Main Course": 29,
-        "Sauce": 1,
-        "Dessert": 8,
-        "Appetizer": 10,
-        "Quick Meals": 4,
-        "Drink": 27,
-        "Breakfast": 2,
-        "Bread": 1,
-        "Side Dishes": 3,
-        "Slow Cooker": 7,
-        "Soup": 9,
-        "Vegetable": 7,
-        "Salad": 1,
-        "Dips": 1
-      },
+      "recipesWithRatings": 0,
+      "approvedRecipes": 0,
+      "categoryDistribution": {},
       "missingFields": {
         "name": 0,
-        "description": 1,
+        "description": 0,
         "ingredients": 0,
         "instructions": 0,
         "category": 0
       },
-      "totalCategories": 14,
+      "totalCategories": 0,
       "totalWebsites": 1,
-      "totalMenuItems": 129
+      "totalMenuItems": 5
     },
     "qualityScore": 0
   },

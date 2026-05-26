@@ -137,12 +137,12 @@ export function generateBreadcrumbs(
   const breadcrumbs: Array<{ name: string; href: string }> = [];
 
   if (path.includes("/recipes/category/")) {
-    breadcrumbs.push({ name: "Recipes", href: "/recipes" });
+    breadcrumbs.push({ name: "Recipes", href: "/recipes/" });
     if (categoryName) {
       breadcrumbs.push({ name: categoryName, href: path });
     }
   } else if (path.includes("/recipe/")) {
-    breadcrumbs.push({ name: "Recipes", href: "/recipes" });
+    breadcrumbs.push({ name: "Recipes", href: "/recipes/" });
     if (recipe?.recipeCategory?.name) {
       const categorySlug = getCategorySlug(recipe.recipeCategory.name);
       breadcrumbs.push({
@@ -153,12 +153,12 @@ export function generateBreadcrumbs(
     if (recipe?.name) {
       breadcrumbs.push({ name: recipe.name, href: path });
     }
-  } else if (path === "/recipes") {
-    breadcrumbs.push({ name: "Recipes", href: "/recipes" });
-  } else if (path === "/categories") {
-    breadcrumbs.push({ name: "Categories", href: "/categories" });
-  } else if (path === "/blog") {
-    breadcrumbs.push({ name: "Blog", href: "/blog" });
+  } else if (path === "/recipes" || path === "/recipes/") {
+    breadcrumbs.push({ name: "Recipes", href: "/recipes/" });
+  } else if (path === "/categories" || path === "/categories/") {
+    breadcrumbs.push({ name: "Categories", href: "/categories/" });
+  } else if (path === "/blog" || path === "/blog/") {
+    breadcrumbs.push({ name: "Blog", href: "/blog/" });
   } else if (path === "/") {
     // Home gets no additional crumb beyond Workshop (added in component)
   } else if (path === "/404" || path === "*") {
@@ -279,7 +279,7 @@ export function generateBlogStructuredData() {
     "@context": "https://schema.org",
     "@type": "Blog",
     name: "Mechanics of Motherhood Blog",
-    url: `${SITE_CONFIG.url}/blog`,
+    url: `${SITE_CONFIG.url}/blog/`,
     description:
       "Tips, tricks, and stories from the Mechanics of Motherhood home kitchen",
   };

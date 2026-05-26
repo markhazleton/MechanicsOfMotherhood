@@ -131,7 +131,7 @@ for (const r of recipes.slice(0, 250)) { // safety cap
     const keywordsRaw = r.seO_Keywords ? r.seO_Keywords.split(/\r?\n/).map(l=>l.trim()).filter(Boolean).map(l=>l.replace(/^[\-\d.]*\s*/, '')) : [];
     const keywords = keywordsRaw.length ? keywordsRaw.join(', ') : undefined;
     const site = 'https://mechanicsofmotherhood.com';
-    const canonical = `${site}/recipe/${slug}`;
+    const canonical = `${site}/recipe/${slug}/`;
     // Prefer first provided image if available; fallback to generic OG image
     const imageUrl = (r.images && r.images.length && r.images[0].url) ? r.images[0].url.replace(/^https?:\/\/[^/]+/, 'https://mechanicsofmotherhood.com') : `${site}/images/logos/MOM-Logo-Full.png`;
     const recipeSchema = {
@@ -159,7 +159,7 @@ for (const r of recipes.slice(0, 250)) { // safety cap
       "@type":"BreadcrumbList",
       itemListElement: [
         { "@type":"ListItem", position: 1, name: "Home", item: site + '/' },
-        { "@type":"ListItem", position: 2, name: "Recipes", item: site + '/recipes' },
+        { "@type":"ListItem", position: 2, name: "Recipes", item: site + '/recipes/' },
         { "@type":"ListItem", position: 3, name: r.name, item: canonical }
       ]
     };
@@ -180,7 +180,7 @@ for (const c of categories) {
     const categoryRecipes = recipes.filter(r=> r.recipeCategory && r.recipeCategory.name && r.recipeCategory.name.toLowerCase() === c.name.toLowerCase()).slice(0,50);
     const itemListElements = categoryRecipes.map((r,i)=> {
       const slug = extractRecipeSlug(r);
-      return { "@type":"ListItem", position: i+1, url: `${site}/recipe/${slug}`, name: r.name };
+      return { "@type":"ListItem", position: i+1, url: `${site}/recipe/${slug}/`, name: r.name };
     });
     const listSchema = itemListElements.length ? {
       "@context":"https://schema.org",
@@ -193,7 +193,7 @@ for (const c of categories) {
       "@type":"BreadcrumbList",
       itemListElement: [
         { "@type":"ListItem", position: 1, name: "Home", item: site + '/' },
-        { "@type":"ListItem", position: 2, name: "Recipes", item: site + '/recipes' },
+        { "@type":"ListItem", position: 2, name: "Recipes", item: site + '/recipes/' },
         { "@type":"ListItem", position: 3, name: `${c.name} Recipes`, item: categoryUrl }
       ]
     };

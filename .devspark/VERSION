@@ -1,0 +1,4 @@
+version: 2.4.0
+installed: 2026-05-26
+method: claude-code-quickstart
+migrated-from: legacy-layout
