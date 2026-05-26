@@ -50,11 +50,14 @@ Mechanics of Motherhood is a modern, responsive recipe management web applicatio
 
 ```
 MechanicsOfMotherhood/
+├── .claude/                 # Claude Code slash commands
+├── .devspark/               # DevSpark tooling (scripts, templates, commands)
+├── .documentation/          # Living project docs (constitution, specs, releases)
 ├── .github/                 # GitHub Actions & Copilot instructions
 ├── client/                  # Frontend React application
-├── scripts/                 # Build and utility scripts
-├── attached_assets/         # API specifications and documentation
 ├── copilot/                 # Generated documentation (put all .md files here)
+├── output/                  # Build/script output artifacts
+├── scripts/                 # Build and utility scripts
 └── dist/                    # Build output (auto-generated)
 ```
 
