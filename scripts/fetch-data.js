@@ -698,13 +698,29 @@ async function main() {
     // Save individual data files using the quality-validated and fixed data
     console.log('');
     console.log('💾 Saving validated data files...');
-    saveDataFile('recipes.json', finalData.recipes);
-    saveDataFile('categories.json', finalData.categories);
+
+    // Guard: never overwrite recipes/categories with empty arrays when the API fails.
+    // An empty result indicates a server-side error (e.g. missing DB table), not a
+    // legitimate empty dataset — keep the existing committed file instead.
+    if (finalData.recipes.length > 0) {
+      saveDataFile('recipes.json', finalData.recipes);
+    } else {
+      console.warn('⚠️  API returned 0 recipes — skipping recipes.json overwrite to protect existing data.');
+    }
+    if (finalData.categories.length > 0) {
+      saveDataFile('categories.json', finalData.categories);
+    } else {
+      console.warn('⚠️  API returned 0 categories — skipping categories.json overwrite to protect existing data.');
+    }
     saveDataFile('websites.json', finalData.websites);
     saveDataFile('menu-items.json', finalData.menuItems);
-    
-    // Save combined data file
-    saveDataFile('api-data.json', finalData);
+
+    // Save combined data file only when core data is present
+    if (finalData.recipes.length > 0 && finalData.categories.length > 0) {
+      saveDataFile('api-data.json', finalData);
+    } else {
+      console.warn('⚠️  Skipping api-data.json overwrite because recipes or categories are empty.');
+    }
     
     // Generate TypeScript types
     generateTypes(finalData.recipes, finalData.categories, finalData.websites);
