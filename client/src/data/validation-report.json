@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-05-27T01:30:00.522Z",
+  "timestamp": "2026-11-05T04:15:10.952Z",
   "validation": {
     "errors": [],
     "warnings": [],
@@ -23,18 +23,7 @@
     },
     "qualityScore": 0
   },
-  "apiEndpoints": {
-    "recipeApi": "https://web.makeboldspark.com/api/recipespark",
-    "webCmsApi": "https://web.makeboldspark.com/api/WebCMS"
-  },
-  "fetchMetadata": {
-    "fetchedAt": "2026-05-27T01:30:00.521Z",
-    "totalRecipes": 0,
-    "totalCategories": 0,
-    "totalWebsites": 1,
-    "totalMenuItems": 5,
-    "recipeMenuItems": 1,
-    "contentMenuItems": 4
-  },
-  "phase": "initial-validation"
+  "validationMode": "standalone",
+  "dataSource": "api-data.json",
+  "fixIssuesMode": false
 }
