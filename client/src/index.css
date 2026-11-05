@@ -1,142 +1,211 @@
-/* Modern Recipe Blog - Tailwind CSS v4 Design System */
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+/* ==========================================================================
+   Mechanics of Motherhood — Tailwind CSS v4 design tokens
+   Visual language: Make Bold Solutions Design System
+     Rust   #982407  primary (actions, key headline moments)
+     Ember  #C6620C  secondary accent (eyebrows, highlights, stars)
+     Ink    #1E1E1E  text and dark surfaces (warm near-black)
+     Cream  #F8F6F2  page surface; white is reserved for cards
+   Display: Be Vietnam Pro · Text/UI: Inter Tight (loaded in index.html)
+   ========================================================================== */
 
 @import "tailwindcss";
 
+/* `dark:` follows the `.dark` class set by the theme toggle (not the OS media query) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  /* Typography */
-  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  --font-display: "Playfair Display", Georgia, serif;
+  /* ---- Typography ---- */
+  --font-sans: "Inter Tight", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Be Vietnam Pro", "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Colors - Neutral (Slate-based for better readability) */
-  --color-neutral-50: hsl(210 40% 98%);
-  --color-neutral-100: hsl(210 40% 96%);
-  --color-neutral-200: hsl(214 32% 91%);
-  --color-neutral-300: hsl(213 27% 84%);
-  --color-neutral-400: hsl(215 20% 65%);
-  --color-neutral-500: hsl(215 16% 47%);
-  --color-neutral-600: hsl(215 19% 35%);
-  --color-neutral-700: hsl(215 25% 27%);
-  --color-neutral-800: hsl(217 33% 17%);
-  --color-neutral-900: hsl(222 47% 11%);
-  --color-neutral-950: hsl(229 84% 5%);
+  /* ---- Brand: Rust (primary) ---- */
+  --color-brand-50: #fbeeea;
+  --color-brand-100: #f4d2c8;
+  --color-brand-200: #e6a392;
+  --color-brand-300: #d4715a;
+  --color-brand-400: #b8431f;
+  --color-brand-500: #982407;
+  --color-brand-600: #841e05;
+  --color-brand-700: #6c1804;
+  --color-brand-800: #531203;
+  --color-brand-900: #3a0c02;
+  --color-brand-950: #260801;
 
-  /* Colors - Brand (Rich warm brown - darker for better contrast) */
-  --color-brand-50: hsl(30 60% 97%);
-  --color-brand-100: hsl(28 55% 92%);
-  --color-brand-200: hsl(26 52% 82%);
-  --color-brand-300: hsl(24 48% 68%);
-  --color-brand-400: hsl(22 45% 52%);
-  --color-brand-500: hsl(20 50% 42%);
-  --color-brand-600: hsl(18 55% 34%);
-  --color-brand-700: hsl(16 58% 26%);
-  --color-brand-800: hsl(14 60% 20%);
-  --color-brand-900: hsl(12 62% 16%);
-  --color-brand-950: hsl(10 65% 10%);
+  /* ---- Accent: Ember (secondary) ---- */
+  --color-accent-50: #fdf1e6;
+  --color-accent-100: #f9dabc;
+  --color-accent-200: #f2b277;
+  --color-accent-300: #e88f3d;
+  --color-accent-400: #d97518;
+  --color-accent-500: #c6620c;
+  --color-accent-600: #a8520a;
+  --color-accent-700: #864108;
+  --color-accent-800: #653106;
+  --color-accent-900: #452104;
+  --color-accent-950: #2b1402;
 
-  /* Colors - Accent (Coral/Tomato - vibrant and appetizing) */
-  --color-accent-50: hsl(12 100% 97%);
-  --color-accent-100: hsl(12 95% 92%);
-  --color-accent-200: hsl(12 90% 84%);
-  --color-accent-300: hsl(12 85% 72%);
-  --color-accent-400: hsl(12 80% 58%);
-  --color-accent-500: hsl(12 76% 48%);
-  --color-accent-600: hsl(12 82% 40%);
-  --color-accent-700: hsl(12 85% 32%);
-  --color-accent-800: hsl(12 88% 26%);
-  --color-accent-900: hsl(12 90% 20%);
+  /* ---- Neutral: warm Ink ramp ---- */
+  --color-neutral-50: #f4f2ec;
+  --color-neutral-100: #ece9e2;
+  --color-neutral-200: #ddd9d0;
+  --color-neutral-300: #c2bfb6;
+  --color-neutral-400: #9b988f;
+  --color-neutral-500: #76736c;
+  --color-neutral-600: #56544f;
+  --color-neutral-700: #3d3d3b;
+  --color-neutral-800: #2c2c2b;
+  --color-neutral-900: #1e1e1e;
+  --color-neutral-950: #141413;
 
-  /* Colors - Backgrounds (Clean, readable) */
-  --color-warm-cream: hsl(40 33% 98%);
-  --color-warm-peach: hsl(30 50% 95%);
-  --color-warm-sage: hsl(140 25% 95%);
-  --color-warm-lavender: hsl(260 40% 97%);
+  --color-cream: #f8f6f2;
+  --color-cream-deep: #efece4;
 
-  /* Colors - Success (Teal / Green) */
-  --color-success-50: hsl(165 70% 96%);
-  --color-success-100: hsl(165 66% 90%);
-  --color-success-200: hsl(166 64% 80%);
-  --color-success-300: hsl(167 60% 65%);
-  --color-success-400: hsl(169 58% 50%);
-  --color-success-500: hsl(171 58% 43%);
-  --color-success-600: hsl(173 60% 36%);
-  --color-success-700: hsl(175 62% 28%);
-  --color-success-800: hsl(176 65% 22%);
-  --color-success-900: hsl(178 70% 16%);
-  --color-success: var(--color-success-600);
-  --color-success-foreground: 0 0% 100%;
+  /* ---- Semantic surfaces & text (light theme; dark overrides below) ---- */
+  --color-background: #f8f6f2;          /* page: cream */
+  --color-foreground: #1e1e1e;          /* strong text: ink-900 */
+  --color-body: #2c2c2b;                /* running text: ink-800 */
+  --color-card: #ffffff;                /* elevated surfaces */
+  --color-card-foreground: #1e1e1e;
+  --color-muted: #efece4;               /* sunken surfaces: cream-deep */
+  --color-muted-foreground: #56544f;    /* ink-600 (7.0:1 on cream; ink-500 fails AA) */
+  --color-border: #ddd9d0;              /* hairlines: ink-200 */
+  --color-border-subtle: #ece9e2;       /* ink-100 */
+  --color-input: #ddd9d0;
+  --color-ring: #c6620c;                /* ember focus */
 
-  /* Colors - Destructive (Red) */
-  --color-destructive-50: hsl(0 85% 97%);
-  --color-destructive-100: hsl(0 93% 94%);
-  --color-destructive-200: hsl(0 96% 89%);
-  --color-destructive-300: hsl(0 94% 82%);
-  --color-destructive-400: hsl(0 91% 71%);
-  --color-destructive-500: hsl(0 84% 60%);
-  --color-destructive-600: hsl(0 72% 51%);
-  --color-destructive-700: hsl(0 74% 42%);
-  --color-destructive-800: hsl(0 70% 35%);
-  --color-destructive-900: hsl(0 63% 31%);
-  --color-destructive: var(--color-destructive-600);
-  --color-destructive-foreground: 0 0% 100%;
+  --color-primary: #982407;             /* rust-500 */
+  --color-primary-hover: #841e05;       /* rust-600 */
+  --color-primary-foreground: #f8f6f2;
+  --color-primary-soft: #fbeeea;        /* rust-50 */
+  --color-primary-ink: #841e05;         /* rust text on soft / light surfaces */
 
-  /* Colors - Warning (Amber) */
-  --color-warning-50: hsl(38 100% 97%);
-  --color-warning-100: hsl(38 97% 92%);
-  --color-warning-200: hsl(38 96% 85%);
-  --color-warning-300: hsl(38 94% 76%);
-  --color-warning-400: hsl(38 92% 65%);
-  --color-warning-500: hsl(38 90% 55%);
-  --color-warning-600: hsl(32 85% 48%);
-  --color-warning-700: hsl(28 75% 40%);
-  --color-warning-800: hsl(25 70% 33%);
-  --color-warning-900: hsl(22 65% 28%);
-  --color-warning: var(--color-warning-500);
-  --color-warning-foreground: 0 0% 0%;
+  --color-accent: #a8520a;              /* ember-600: AA with white text */
+  --color-accent-hover: #864108;
+  --color-accent-foreground: #ffffff;
+  --color-accent-soft: #fdf1e6;
+  --color-accent-ink: #864108;
 
-  /* Semantic Colors - High contrast for readability */
-  --color-background: hsl(0 0% 100%);
-  --color-foreground: var(--color-neutral-900);
-  --color-muted: var(--color-neutral-100);
-  --color-muted-foreground: var(--color-neutral-600);
-  --color-card: hsl(0 0% 100%);
-  --color-card-foreground: var(--color-neutral-900);
-  --color-border: var(--color-neutral-200);
-  --color-primary: var(--color-accent-600);
-  --color-primary-foreground: hsl(0 0% 100%);
-  --color-secondary: var(--color-neutral-100);
-  --color-secondary-foreground: var(--color-neutral-900);
-  --color-ring: var(--color-accent-500);
-  --color-input: var(--color-neutral-200);
+  --color-link: #982407;
+  --color-link-hover: #a8520a;
+  --color-eyebrow: #a8520a;             /* ember-600, 5.0:1 on cream */
+  --color-star: #c6620c;
 
-  /* Spacing */
-  --spacing-2: 0.5rem;
-  --spacing-3: 0.75rem;
-  --spacing-4: 1rem;
-  --spacing-6: 1.5rem;
-  --spacing-8: 2rem;
-  --spacing-12: 3rem;
+  --color-secondary: #ece9e2;
+  --color-secondary-foreground: #3d3d3b;
+  --color-popover: #1e1e1e;
+  --color-popover-foreground: #f8f6f2;
 
-  /* Border Radius */
-  --radius-sm: 0.25rem;
-  --radius: 0.625rem;
-  --radius-lg: 0.875rem;
-  --radius-card: 0.75rem;
+  --color-inverse: #1e1e1e;             /* dark brand bands, footer */
+  --color-inverse-2: #2c2c2b;
+  --color-inverse-foreground: #f8f6f2;
+  --color-inverse-muted: #c2bfb6;
+  --color-inverse-border: #3d3d3b;
+  --color-inverse-eyebrow: #e88f3d;
 
-  /* Shadows - Softer and warmer */
-  --shadow-sm: 0 1px 3px 0 hsl(25 20% 0% / 0.08), 0 1px 2px -1px hsl(25 20% 0% / 0.06);
-  --shadow-md: 0 4px 6px -1px hsl(25 20% 0% / 0.08), 0 2px 4px -2px hsl(25 20% 0% / 0.06);
-  --shadow-lg: 0 10px 15px -3px hsl(25 20% 0% / 0.08), 0 4px 6px -4px hsl(25 20% 0% / 0.06);
+  /* ---- Status (muted, finance-grade) ---- */
+  --color-success: #2f6f4c;
+  --color-success-soft: #e4efe7;
+  --color-warning: #8a5f12;
+  --color-warning-soft: #f6edd6;
+  --color-destructive: #a8321a;
+  --color-destructive-soft: #f6e2dc;
+  --color-destructive-foreground: #ffffff;
+  --color-info: #2f5a8f;
+  --color-info-soft: #e2e9f2;
+
+  /* ---- Radii: modest, geometric ---- */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 16px;
+
+  /* ---- Shadows: warm-tinted, tight ---- */
+  --shadow-xs: 0 1px 2px rgba(30, 30, 30, 0.06);
+  --shadow-sm: 0 1px 3px rgba(30, 30, 30, 0.08), 0 1px 2px rgba(30, 30, 30, 0.05);
+  --shadow-md: 0 4px 12px rgba(30, 30, 30, 0.08), 0 2px 4px rgba(30, 30, 30, 0.05);
+  --shadow-lg: 0 12px 28px rgba(30, 30, 30, 0.1), 0 4px 10px rgba(30, 30, 30, 0.06);
+  --shadow-xl: 0 24px 48px rgba(30, 30, 30, 0.14);
+  --shadow-brand: 0 8px 24px rgba(152, 36, 7, 0.2);
+
+  /* ---- Motion: quick, no bounce ---- */
+  --ease-standard: cubic-bezier(0.2, 0, 0.1, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ---- Letter spacing ---- */
+  --tracking-tighter: -0.03em;
+  --tracking-tight: -0.015em;
+  --tracking-eyebrow: 0.18em;
+
+  /* ---- Layout ---- */
+  --container-site: 1200px;
+  --container-prose: 68ch;
 }
 
-/* Base Layer */
+/* ---- Dark theme: warm ink surfaces, cream text, lighter brand tints ---- */
+:root.dark {
+  --color-background: #1e1e1e;
+  --color-foreground: #f8f6f2;
+  --color-body: #ece9e2;
+  --color-card: #2c2c2b;
+  --color-card-foreground: #f8f6f2;
+  --color-muted: #262625;
+  --color-muted-foreground: #c2bfb6;
+  --color-border: #3d3d3b;
+  --color-border-subtle: #2c2c2b;
+  --color-input: #56544f;
+  --color-ring: #e88f3d;
+
+  --color-primary: #982407;
+  --color-primary-hover: #b8431f;
+  --color-primary-foreground: #f8f6f2;
+  --color-primary-soft: #3a0c02;
+  --color-primary-ink: #e6a392;
+
+  --color-accent: #a8520a;
+  --color-accent-hover: #c6620c;
+  --color-accent-soft: #452104;
+  --color-accent-ink: #f2b277;
+
+  --color-link: #e88f3d;
+  --color-link-hover: #f2b277;
+  --color-eyebrow: #e88f3d;
+  --color-star: #e88f3d;
+
+  --color-secondary: #3d3d3b;
+  --color-secondary-foreground: #ece9e2;
+
+  --color-inverse: #141413;
+  --color-inverse-2: #1e1e1e;
+  --color-inverse-border: #2c2c2b;
+
+  --color-success: #8fc7a5;
+  --color-success-soft: #1d3326;
+  --color-warning: #e3bd6b;
+  --color-warning-soft: #3a2c0c;
+  --color-destructive: #f0a08e;
+  --color-destructive-soft: #3d1a12;
+  --color-info: #9dbbe0;
+  --color-info-soft: #1b2a3d;
+
+  color-scheme: dark;
+}
+
 @layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     font-family: var(--font-sans);
-    background-color: hsl(var(--color-background));
-    color: hsl(var(--color-foreground));
-    line-height: 1.6;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--color-body);
+    background-color: var(--color-background);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   h1,
@@ -146,368 +215,119 @@
   h5,
   h6 {
     font-family: var(--font-display);
-    font-weight: 600;
-    line-height: 1.3;
-    color: hsl(var(--color-brand-800));
-  }
-}
-
-/* Component Layer */
-@layer components {
-  .mom-card {
-    background-color: hsl(var(--color-card));
-    border-radius: var(--radius-card);
-    border: 1px solid hsl(var(--color-border));
-    box-shadow: var(--shadow-md);
-  }
-
-  .mom-button-primary {
-    background-color: hsl(var(--color-primary));
-    color: hsl(var(--color-primary-foreground));
-    border-radius: var(--radius);
-    font-weight: 600;
-    padding: var(--spacing-3) var(--spacing-6);
-  }
-
-  /* Semantic Heading Scale */
-  .heading-display {
-    font-weight: 800;
-    letter-spacing: -0.025em;
-    display: block;
-    line-height: 1.05;
-    font-size: clamp(2.75rem, 6vw, 4.5rem);
-  }
-  .heading-xl {
-    font-weight: 800;
-    letter-spacing: -0.025em;
-    line-height: 1.1;
-    font-size: 1.875rem;
-  }
-  @media (min-width: 768px) {
-    .heading-xl {
-      font-size: 2.25rem;
-    }
-  }
-  .heading-lg {
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    color: var(--color-foreground);
     line-height: 1.15;
-    font-size: 1.5rem;
-  }
-  @media (min-width: 768px) {
-    .heading-lg {
-      font-size: 1.875rem;
-    }
-  }
-  .heading-md {
-    font-weight: 600;
-    line-height: 1.2;
-    font-size: 1.25rem;
-  }
-  @media (min-width: 768px) {
-    .heading-md {
-      font-size: 1.5rem;
-    }
-  }
-  .heading-sm {
-    font-weight: 600;
-    font-size: 1.125rem;
-    line-height: 1.25;
+    letter-spacing: var(--tracking-tight);
+    font-weight: 700;
+    text-wrap: balance;
   }
 
-  /* Utility tokens mapping (alias layer) */
-  .text-brand-900 {
-    color: hsl(var(--color-brand-900));
-  }
-  .text-brand-600 {
-    color: hsl(var(--color-brand-600));
-  }
-  .bg-brand-600 {
-    background-color: hsl(var(--color-brand-600));
-  }
-  .bg-brand-700 {
-    background-color: hsl(var(--color-brand-700));
-  }
-  .bg-accent-500 {
-    background-color: hsl(var(--color-accent-500));
-  }
-  .bg-accent-600 {
-    background-color: hsl(var(--color-accent-600));
-  }
-  /* Success & Destructive utility aliases */
-  .bg-success-soft {
-    background-color: hsl(var(--color-success-50));
-  }
-  .bg-success-100 {
-    background-color: hsl(var(--color-success-100));
-  }
-  .bg-success-300 {
-    background-color: hsl(var(--color-success-300));
-  }
-  .text-success-700 {
-    color: hsl(var(--color-success-700));
-  }
-  .border-success-300 {
-    border-color: hsl(var(--color-success-300));
-  }
-  .hover\:bg-success-100:hover {
-    background-color: hsl(var(--color-success-100));
-  }
-  /* Foreground helpers */
-  .bg-destructive {
-    background-color: hsl(var(--color-destructive));
-  }
-  .text-destructive-foreground {
-    color: hsl(var(--color-destructive-foreground));
-  }
-  .bg-warning-soft {
-    background-color: hsl(var(--color-warning-50));
-  }
-  .text-warning-700 {
-    color: hsl(var(--color-warning-700));
-  }
-  .border-warning-300 {
-    border-color: hsl(var(--color-warning-300));
-  }
-  .hover\:bg-warning-100:hover {
-    background-color: hsl(var(--color-warning-100));
+  p {
+    text-wrap: pretty;
   }
 
-  /* Warm background utilities */
-  .bg-warm-cream {
-    background-color: var(--color-warm-cream);
-  }
-  .bg-warm-peach {
-    background-color: var(--color-warm-peach);
-  }
-  .bg-warm-sage {
-    background-color: var(--color-warm-sage);
-  }
-  .bg-warm-lavender {
-    background-color: var(--color-warm-lavender);
+  ::selection {
+    background: var(--color-accent-200);
+    color: var(--color-neutral-900);
   }
 
-  /* Shared hero gradient utility - Warm tones */
-  .bg-hero-brand-accent {
-    background-image: linear-gradient(
-      135deg,
-      hsl(var(--color-accent-600) / 0.92) 0%,
-      hsl(var(--color-brand-600) / 0.88) 45%,
-      hsl(var(--color-accent-700) / 0.9) 100%
-    );
-  }
-  .dark .bg-hero-brand-accent {
-    background-image: linear-gradient(
-      140deg,
-      hsl(var(--color-accent-700) / 0.85) 0%,
-      hsl(var(--color-brand-700) / 0.78) 42%,
-      hsl(var(--color-accent-800) / 0.82) 100%
-    );
-  }
-  .hero-overlay {
-    position: relative;
-  }
-  .hero-overlay::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    /* Layer order: pattern noise -> radial tint -> vertical fade */
-    background:
-      /* Subtle cross-hatch / noise pattern (pure CSS, no network) */ repeating-linear-gradient(
-        45deg,
-        hsl(var(--color-brand-900) / 0.04) 0 2px,
-        transparent 2px 6px
-      ),
-      radial-gradient(
-        circle at 50% 30%,
-        hsl(var(--color-brand-50) / 0.25),
-        transparent 60%
-      ),
-      linear-gradient(
-        to bottom,
-        hsl(var(--color-background) / 0) 0%,
-        hsl(var(--color-background) / 0.9) 90%
-      );
-    mix-blend-mode: normal;
-    pointer-events: none;
-    z-index: 0;
-  }
-  .hero-overlay > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Hero display title embellishment for future image/pattern layering */
-  .hero-title {
-    text-shadow: 0 1px 2px hsl(var(--color-neutral-900) / 0.15),
-      0 2px 8px hsl(var(--color-neutral-900) / 0.12);
-  }
-  .dark .hero-title {
-    text-shadow: 0 2px 4px hsl(var(--color-neutral-900) / 0.6),
-      0 4px 16px hsl(var(--color-neutral-900) / 0.4);
-  }
-
-  /* Button semantic variants (used via classNames or future CVA extension) */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    font-weight: 600;
-    border-radius: 9999px;
-    transition: color 0.15s, background-color 0.15s, border-color 0.15s,
-      box-shadow 0.15s;
-    position: relative;
-  }
-  .btn:focus-visible {
-    outline: 2px solid hsl(var(--color-ring));
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
     outline-offset: 2px;
   }
-  .btn-primary {
-    background-color: hsl(var(--color-brand-600));
-    color: #fff;
-  }
-  .btn-primary:hover {
-    background-color: hsl(var(--color-brand-500));
-  }
-  .btn-accent {
-    background-color: hsl(var(--color-accent-500));
-    color: #fff;
-  }
-  .btn-accent:hover {
-    background-color: hsl(var(--color-accent-600));
-  }
-  .btn-outline-brand {
-    background-color: hsla(var(--color-background) / 0.9);
-    color: hsl(var(--color-brand-900));
-    border: 1px solid hsl(var(--color-border));
-  }
-  .btn-outline-brand:hover {
-    background-color: hsl(var(--color-accent-500));
-    color: #fff;
-  }
 
-  /* Badge semantic variants */
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    line-height: 1;
+  select {
+    color: var(--color-foreground);
+  }
+}
+
+@layer components {
+  /* Signature letter-spaced uppercase label */
+  .eyebrow {
+    font-family: var(--font-sans);
     font-weight: 600;
-    padding: 0.375rem 0.75rem;
-    border: 1px solid hsl(var(--color-border));
-    transition: background-color 0.15s, color 0.15s;
-  }
-  .badge-brand {
-    background-color: hsl(var(--color-brand-600));
-    color: #fff;
-    border-color: transparent;
-  }
-  .badge-accent {
-    background-color: hsl(var(--color-accent-500));
-    color: #fff;
-    border-color: transparent;
-  }
-  .badge-outline {
-    background-color: transparent;
-    color: hsl(var(--color-neutral-700));
-    border-color: hsl(var(--color-neutral-300));
+    font-size: 0.875rem;
+    line-height: 1.2;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-eyebrow);
   }
 
-  /* Inverted prose (for future dark surfaces) */
-  .prose.prose-invert-brand {
-    --tw-prose-body: hsl(var(--color-neutral-100));
-    --tw-prose-headings: hsl(var(--color-accent-200));
-    --tw-prose-links: hsl(var(--color-accent-300));
-    --tw-prose-links-hover: hsl(var(--color-accent-500));
-    --tw-prose-strong: hsl(var(--color-accent-200));
-    --tw-prose-bullets: hsl(var(--color-accent-300));
-    --tw-prose-quotes: hsl(var(--color-neutral-100));
-    --tw-prose-code: hsl(var(--color-accent-300));
-    --tw-prose-pre-bg: hsl(var(--color-neutral-800));
+  /* Page container: 1200px max with fluid gutter */
+  .site-container {
+    width: 100%;
+    max-width: var(--container-site);
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 4vw, 2.5rem);
   }
 
-  /* Dark Mode Token Overrides */
-  @layer base {
-    :root.dark {
-      --color-background: hsl(222 47% 11%);
-      --color-foreground: hsl(210 40% 98%);
-      --color-card: hsl(217 33% 17%);
-      --color-card-foreground: hsl(210 40% 98%);
-      --color-border: hsl(215 25% 27%);
-      --color-muted: hsl(217 33% 17%);
-      --color-muted-foreground: hsl(215 20% 65%);
-      --color-secondary: hsl(215 25% 27%);
-      --color-secondary-foreground: hsl(210 40% 98%);
-      --color-input: hsl(215 25% 27%);
-      --color-ring: var(--color-accent-400);
-      --color-primary: var(--color-accent-500);
-      /* Dark adjusted success/destructive/warning for contrast */
-      --color-success-50: hsl(170 55% 11%);
-      --color-success-100: hsl(170 55% 14%);
-      --color-success-200: hsl(170 55% 18%);
-      --color-success-300: hsl(170 55% 24%);
-      --color-success-400: hsl(170 55% 30%);
-      --color-success-500: hsl(170 60% 38%);
-      --color-success-600: hsl(170 65% 46%);
-      --color-success-700: hsl(170 70% 60%);
-      --color-success-800: hsl(170 75% 72%);
-      --color-success-900: hsl(170 80% 82%);
-      --color-destructive-50: hsl(0 65% 12%);
-      --color-destructive-100: hsl(0 70% 16%);
-      --color-destructive-200: hsl(0 72% 22%);
-      --color-destructive-300: hsl(0 74% 30%);
-      --color-destructive-400: hsl(0 76% 38%);
-      --color-destructive-500: hsl(0 78% 46%);
-      --color-destructive-600: hsl(0 82% 55%);
-      --color-destructive-700: hsl(0 85% 65%);
-      --color-destructive-800: hsl(0 88% 75%);
-      --color-destructive-900: hsl(0 92% 82%);
-      --color-warning-50: hsl(38 60% 12%);
-      --color-warning-100: hsl(38 65% 16%);
-      --color-warning-200: hsl(38 65% 20%);
-      --color-warning-300: hsl(38 70% 28%);
-      --color-warning-400: hsl(38 75% 36%);
-      --color-warning-500: hsl(38 80% 44%);
-      --color-warning-600: hsl(38 85% 54%);
-      --color-warning-700: hsl(38 88% 64%);
-      --color-warning-800: hsl(38 90% 72%);
-      --color-warning-900: hsl(38 95% 80%);
-    }
+  /* Section rhythm */
+  .section-y {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
   }
-  /* Typography plugin brand variant (legacy placeholder `prose-brand` now implemented)
-     We avoid @apply to keep build strict — rely on user adding both classes: `prose prose-brand`. */
-  .prose.prose-brand {
-    --tw-prose-body: hsl(var(--color-neutral-700));
-    --tw-prose-headings: hsl(var(--color-brand-900));
-    --tw-prose-links: hsl(var(--color-brand-600));
-    --tw-prose-links-hover: hsl(var(--color-brand-500));
-    --tw-prose-strong: hsl(var(--color-brand-900));
-    --tw-prose-bullets: hsl(var(--color-brand-600));
-    --tw-prose-quotes: hsl(var(--color-neutral-800));
-    --tw-prose-code: hsl(var(--color-brand-600));
-    --tw-prose-pre-bg: hsl(var(--color-neutral-100));
+
+  /* Rendered recipe lists (HTML produced by markdown-helpers) */
+  .ingredients-list ul {
+    display: grid;
+    gap: 0.625rem;
+  }
+  .ingredients-list li {
+    position: relative;
+    padding-left: 1.25rem;
+    line-height: 1.5;
+  }
+  .ingredients-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 1px;
+    background: var(--color-accent-500);
+  }
+
+  .instructions-list ol,
+  .instructions-list ul {
+    counter-reset: step;
+    display: grid;
+    gap: 1.25rem;
+  }
+  .instructions-list li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 3rem;
+    min-height: 2rem;
+    line-height: 1.6;
+    padding-top: 0.2rem;
+  }
+  .instructions-list li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    color: var(--color-primary-foreground);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.875rem;
   }
 }
 
-/* Legacy Compatibility */
-.font-mechanical {
-  font-family: var(--font-display);
-  font-weight: 700;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
-
-.font-industrial {
-  font-family: var(--font-sans);
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.font-friendly {
-  font-family: var(--font-sans);
-}
-
-/* Removed legacy brand utility classes (btn-brand-*, text-brand-*, bg-brand-*) now replaced by Tailwind palette utilities. */
 
 /* =============================
    Print Styles
@@ -528,7 +348,6 @@
   .print-only {
     display: block !important;
   }
-  /* Hide interactive / navigational chrome */
   nav,
   footer,
   header,
@@ -540,11 +359,9 @@
   .analytics-debug {
     display: none !important;
   }
-  /* Hero & gradient overlays */
   .recipe-hero-section {
     display: none !important;
   }
-  /* Cards: flatten styling */
   .recipe-detail-page .shadow,
   .recipe-detail-page .shadow-md,
   .recipe-detail-page .shadow-lg,
@@ -554,7 +371,6 @@
   .recipe-detail-page .border {
     border-color: #ccc !important;
   }
-  /* Grid -> single column */
   .recipe-content-grid {
     display: block !important;
   }
@@ -564,11 +380,9 @@
     break-inside: avoid;
     page-break-inside: avoid;
   }
-  /* Remove background tints */
   .recipe-detail-page [class*="bg-"] {
     background: #fff !important;
   }
-  /* Typography adjustments */
   .recipe-print-header h1 {
     font-size: 2rem !important;
     margin-bottom: 0.5rem;
@@ -587,15 +401,16 @@
     margin: 0 0 1rem 0;
     border-radius: 4px;
   }
-  /* Lists readability */
   .ingredients-list li,
-  .instructions-list li,
-  .ingredients-list div,
-  .instructions-list div {
+  .instructions-list li {
     font-size: 0.95rem;
     line-height: 1.35;
   }
-  /* Hide non-essential sections */
+  .instructions-list li::before {
+    background: #fff !important;
+    color: #111 !important;
+    border: 1px solid #111;
+  }
   .recipe-tags,
   .additional-recipe-info,
   .additional-info,
@@ -603,11 +418,9 @@
   .share-actions {
     display: none !important;
   }
-  /* Buttons */
   button {
     display: none !important;
   }
-  /* Link URLs (optional: comment out if not desired) */
   a[href]:after {
     content: "";
   }

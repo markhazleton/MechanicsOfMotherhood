@@ -1,42 +1,35 @@
-import { Newspaper, ArrowRight } from "lucide-react";
-import { useLocation } from "wouter";
+import { ArrowRight, Newspaper } from "lucide-react";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 
 export default function BlogSection() {
-  const [, navigate] = useLocation();
-
   return (
-    <section id="blog" className="py-16 md:py-20 bg-background transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            From the Blog
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Cooking tips, meal planning ideas, and stories from our kitchen to yours.
-          </p>
-        </div>
-
-        {/* Coming Soon Message */}
-        <div className="bg-card rounded-2xl p-8 md:p-10 text-center max-w-lg mx-auto border border-border shadow-sm">
-          <div className="w-14 h-14 bg-accent-100 dark:bg-accent-900/40 rounded-full flex items-center justify-center mx-auto mb-5">
-            <Newspaper className="w-7 h-7 text-accent-600 dark:text-accent-400" />
+    <section id="blog" className="section-y bg-background">
+      <div className="site-container">
+        <div className="grid items-center gap-8 rounded-lg border border-border bg-card p-8 shadow-sm md:grid-cols-[auto_1fr_auto] md:p-10">
+          <span className="grid size-14 place-items-center rounded-md bg-primary-soft text-primary-ink">
+            <Newspaper size={26} aria-hidden="true" />
+          </span>
+          <div>
+            <p className="eyebrow mb-2">From the blog</p>
+            <h2 className="font-display text-2xl font-bold text-foreground md:text-3xl">
+              Kitchen notes are coming soon
+            </h2>
+            <p className="mt-3 max-w-[60ch] text-muted-foreground">
+              We're writing up cooking tips, meal-planning ideas, and stories from our kitchen
+              to yours. Check back soon for new articles.
+            </p>
           </div>
-          <h3 className="text-xl font-semibold text-foreground mb-3">
-            Coming Soon
-          </h3>
-          <p className="text-muted-foreground mb-6">
-            We're working on helpful articles and cooking tips. Check back soon for new content.
-          </p>
           <Button
+            asChild
             variant="outline"
-            className="px-6"
+            className="justify-self-start md:justify-self-end"
             data-testid="button-view-blog"
-            aria-label="View blog page"
-            onClick={() => navigate('/blog')}
           >
-            Visit Blog
-            <ArrowRight className="ml-2" size={16} />
+            <Link href="/blog/" aria-label="Visit the blog">
+              Visit the blog
+              <ArrowRight aria-hidden="true" />
+            </Link>
           </Button>
         </div>
       </div>

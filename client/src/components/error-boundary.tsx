@@ -54,7 +54,7 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       if (this.state.transient) {
         return (
-          <div className="min-h-screen flex items-center justify-center text-sm text-gray-500">
+          <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">
             <div>Recovering…</div>
           </div>
         );
@@ -62,30 +62,30 @@ export class ErrorBoundary extends Component<Props, State> {
       if (this.props.fallback) return this.props.fallback;
 
       return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex items-center justify-center">
+        <div className="flex min-h-screen items-center justify-center bg-background">
           <div className="max-w-md mx-auto text-center p-6">
             <div className="mb-6">
-              <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="mx-auto mb-4 grid size-14 place-items-center rounded-md bg-destructive-soft">
+                <svg className="size-7 text-destructive" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
               </div>
               
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              <h1 className="mb-2 font-display text-2xl font-bold text-foreground">
                 Something went wrong
               </h1>
               
-              <p className="text-gray-600 mb-4">
+              <p className="mb-4 text-muted-foreground">
                 We're sorry, but something unexpected happened. Please try refreshing the page.
               </p>
-              <p className="text-xs text-gray-400 mb-6">If the issue persists contact support and share this code: <code>{this.state.error?.name}</code></p>
+              <p className="mb-6 text-xs text-muted-foreground">If the issue persists contact support and share this code: <code>{this.state.error?.name}</code></p>
               
               {!import.meta.env.PROD && this.state.error && (
-                <details className="text-left bg-gray-100 p-4 rounded-lg mb-6">
-                  <summary className="cursor-pointer font-medium text-gray-700">
+                <details className="mb-6 rounded-md bg-muted p-4 text-left">
+                  <summary className="cursor-pointer font-medium text-foreground">
                     Error Details (Development)
                   </summary>
-                  <pre className="mt-2 text-sm text-red-600 whitespace-pre-wrap">
+                  <pre className="mt-2 whitespace-pre-wrap text-sm text-destructive">
                     {this.state.error.stack}
                   </pre>
                 </details>

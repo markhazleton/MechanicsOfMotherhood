@@ -1,15 +1,16 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { AlertCircle } from "lucide-react";
+import { Link } from "wouter";
+import { ArrowRight, Compass } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
 import SeoHead from "@/components/seo/SeoHead";
+import { Button } from "@/components/ui/button";
 import { generateBreadcrumbs, generateCanonicalUrl } from "@/utils/seo-helpers";
 
 export default function NotFound() {
   const breadcrumbs = generateBreadcrumbs('/404');
   return (
-  <div className="min-h-screen bg-warm-cream flex flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <SeoHead
         title="404 Page Not Found"
         description="The page you were looking for does not exist."
@@ -17,23 +18,35 @@ export default function NotFound() {
         robots="noindex, nofollow"
       />
       <Navigation />
-  <div className="bg-warm-cream border-b border-warm-peach/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <div className="breadcrumb-nav border-b border-border-subtle">
+        <div className="site-container py-3">
           <BreadcrumbNav items={breadcrumbs} />
         </div>
       </div>
-      <div className="flex-1 w-full flex items-center justify-center px-4">
-        <Card className="w-full max-w-md mx-4 bg-white rounded-xl shadow-md border border-warm-peach/30">
-          <CardContent className="pt-6">
-            <div className="flex mb-4 gap-2 items-center">
-              <AlertCircle className="h-8 w-8 text-accent-600" />
-              <h1 className="font-display text-2xl font-bold text-brand-800">404 Page Not Found</h1>
-            </div>
-            <p className="mt-4 text-sm text-neutral-700">
-              The page you were looking for doesn't exist or was moved.
-            </p>
-          </CardContent>
-        </Card>
+      <div className="site-container flex flex-1 items-center py-16 md:py-24">
+        <div className="max-w-xl">
+          <span className="mb-6 grid size-14 place-items-center rounded-md bg-primary-soft text-primary-ink">
+            <Compass size={26} aria-hidden="true" />
+          </span>
+          <p className="eyebrow mb-4">Error 404</p>
+          <h1 className="font-display text-[clamp(2.25rem,3.5vw+1rem,3.5rem)] font-extrabold leading-[1.05] tracking-[-0.03em] text-foreground">
+            Page not found
+          </h1>
+          <p className="mt-5 text-lg text-muted-foreground">
+            The page you were looking for doesn't exist or was moved.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Button asChild>
+              <Link href="/recipes/">
+                Browse recipes
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link href="/">Go home</Link>
+            </Button>
+          </div>
+        </div>
       </div>
       <Footer />
     </div>

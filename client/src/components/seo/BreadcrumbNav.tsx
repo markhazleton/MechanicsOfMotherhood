@@ -20,11 +20,11 @@ export default function BreadcrumbNav({ items, className = '' }: BreadcrumbProps
   ];
 
   return (
-    <nav 
-      className={`flex items-center space-x-2 text-sm text-text-subtle ${className}`}
+    <nav
+      className={`text-sm text-muted-foreground ${className}`}
       aria-label="Breadcrumb"
     >
-      <ol className="flex items-center space-x-2">
+      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
         {allItems.map((item, index) => {
           const isLast = index === allItems.length - 1;
           const isHome = index === 0;
@@ -32,29 +32,29 @@ export default function BreadcrumbNav({ items, className = '' }: BreadcrumbProps
           const target = item.href ?? item.url ?? '#';
 
           return (
-            <li key={index} className="flex items-center">
+            <li key={index} className="flex min-w-0 items-center">
               {index > 0 && (
-                <ChevronRight 
-                  className="w-4 h-4 text-gray-400 mr-2" 
-                  aria-hidden="true" 
+                <ChevronRight
+                  className="mr-2 size-3.5 shrink-0 text-neutral-400"
+                  aria-hidden="true"
                 />
               )}
-              
+
               {isLast ? (
-                <span 
-                  className="font-medium text-text-strong truncate max-w-[200px]"
+                <span
+                  className="max-w-[220px] truncate font-medium text-foreground"
                   aria-current="page"
                   title={item.name}
                 >
                   {item.name}
                 </span>
               ) : (
-                <Link 
+                <Link
                   href={target}
-                  className="flex items-center text-brand-600 hover:text-accent-600 transition-colors truncate max-w-[150px]"
+                  className="flex max-w-[160px] items-center truncate rounded-xs transition-colors hover:text-link-hover"
                   title={item.name}
                 >
-                  {isHome && <Home className="w-4 h-4 mr-1" aria-hidden="true" />}
+                  {isHome && <Home className="mr-1.5 size-3.5" aria-hidden="true" />}
                   {item.name}
                 </Link>
               )}

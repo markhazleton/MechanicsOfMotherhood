@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Filter, Users, Star, ArrowRight } from "lucide-react";
+import { Search, LayoutGrid, X, SearchX } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import MarkdownContent from "@/components/markdown-content";
 import SeoHead from "@/components/seo/SeoHead";
-import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
+import PageHeader from "@/components/page-header";
+import RecipeCard from "@/components/recipe-card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { getRecipes, getCategories, searchRecipes, getRecipeUrl } from "@/data/api-loader";
-import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
+import { getRecipes, getCategories, searchRecipes } from "@/data/api-loader";
 import { generateCanonicalUrl, generateBreadcrumbs } from "@/utils/seo-helpers";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import type { Recipe, Category } from "@/data/api-types";
@@ -92,8 +90,16 @@ export default function Recipes() {
     ? `Search results for "${activeSearch}" - ${recipeCount} recipes found. Tested recipes and meal planning solutions for busy families.`
     : `Browse our collection of ${recipeCount}+ tested recipes for working mothers. Quick meals, family favorites, and easy meal planning.`;
 
+  const clearSearch = () => {
+    setActiveSearch("");
+    setSearchQuery("");
+    updateSearchInUrl("");
+  };
+
+  const selectedCategoryName = categories?.find(c => c.id.toString() === selectedCategory)?.name;
+
   return (
-    <div className="min-h-screen bg-background transition-colors">
+    <div className="min-h-screen bg-background">
       {/* SEO Head */}
       <SeoHead
         title={activeSearch ? `Search: ${activeSearch} - Recipes` : 'Recipes - Family Favorites'}
@@ -112,142 +118,93 @@ export default function Recipes() {
 
       <Navigation />
 
-      {/* Breadcrumb Navigation */}
-      <div className="bg-muted/50 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <BreadcrumbNav items={breadcrumbs} />
-        </div>
-      </div>
+      <PageHeader
+        breadcrumbs={breadcrumbs}
+        eyebrow="Recipe collection"
+        title="All recipes"
+        description="Browse our collection of family-tested recipes — search by name or ingredient, or narrow it down by category."
+      >
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+          <form onSubmit={handleSearch} className="w-full lg:max-w-md" role="search">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} aria-hidden="true" />
+              <Input
+                type="search"
+                aria-label="Search recipes"
+                placeholder="Search recipes…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+                data-testid="recipe-search-input"
+              />
+            </div>
+          </form>
 
-      {/* Header */}
-      <section className="bg-gradient-to-b from-accent-50/50 dark:from-accent-950/20 to-transparent py-12 md:py-16 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              All Recipes
-            </h1>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Browse our collection of family-tested recipes
-            </p>
+          <div className="flex flex-wrap gap-3">
+            <label className="sr-only" htmlFor="category-filter">Filter by category</label>
+            <select
+              id="category-filter"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="h-11 rounded-md border border-input bg-card px-3.5 pr-9 text-[15px] font-medium text-foreground shadow-xs transition-[border-color,box-shadow] duration-[120ms] focus-visible:border-ring focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
+              data-testid="category-filter"
+              title="Filter recipes by category"
+            >
+              <option value="">All categories</option>
+              {(categories || []).map((category: Category) => (
+                <option key={category.id} value={category.id.toString()}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+
+            <Button asChild variant="outline" className="h-11" data-testid="browse-categories-button">
+              <Link href="/categories/">
+                <LayoutGrid aria-hidden="true" />
+                Browse categories
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </PageHeader>
+
+      {/* Recipes Grid */}
+      <section className="py-10 md:py-14" aria-labelledby="recipe-results-heading">
+        <div className="site-container">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <h2 id="recipe-results-heading" className="text-[15px] font-sans font-medium tracking-normal text-muted-foreground" aria-live="polite">
+              Showing <span className="font-semibold text-foreground">{filteredRecipes.length}</span> recipe{filteredRecipes.length !== 1 ? 's' : ''}
+              {activeSearch && <> for “<span className="font-semibold text-foreground">{activeSearch}</span>”</>}
+              {selectedCategoryName && <> in <span className="font-semibold text-foreground">{selectedCategoryName}</span></>}
+            </h2>
             {activeSearch && (
-              <div className="mt-4 text-center">
-                <span className="text-brand-600 font-semibold">
-                  Showing results for "{activeSearch}"
-                </span>
-                <button 
-                  onClick={() => {
-                    setActiveSearch("");
-                    setSearchQuery("");
-                    updateSearchInUrl("");
-                  }}
-                  className="ml-2 text-accent-600 hover:underline text-sm"
-                >
-                  Clear search
-                </button>
-              </div>
+              <Button variant="ghost" size="sm" onClick={clearSearch}>
+                <X aria-hidden="true" />
+                Clear search
+              </Button>
             )}
           </div>
 
-          {/* Search and Filters */}
-          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
-            <form onSubmit={handleSearch} className="flex-1 max-w-md w-full">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-                <Input
-                  type="text"
-                  placeholder="Search recipes..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-background border-border"
-                  data-testid="recipe-search-input"
-                />
-              </div>
-            </form>
-
-            <div className="flex flex-wrap gap-3">
-              {/* Category Filter */}
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 bg-background text-foreground font-medium shadow-sm transition-colors"
-                data-testid="category-filter"
-                title="Filter recipes by category"
-              >
-                <option value="">All Categories</option>
-                {(categories || []).map((category: Category) => (
-                  <option key={category.id} value={category.id.toString()}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-
-              {/* Browse Categories Link */}
-              <Link href="/categories/">
-                <Button
-                  variant="outline"
-                  className="px-4 py-2"
-                  data-testid="browse-categories-button"
-                >
-                  <Filter className="w-4 h-4 mr-2" />
-                  Categories
-                </Button>
-              </Link>
+          {filteredRecipes.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {filteredRecipes.map((recipe: Recipe, index: number) => (
+                <RecipeCard key={recipe.id} recipe={recipe} priority={index < 4} />
+              ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Recipes Grid */}
-      <section className="py-12 md:py-16 bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredRecipes.map((recipe: Recipe) => (
-              <Link key={recipe.id} href={getRecipeUrl(recipe)}>
-                <Card className="h-full overflow-hidden group cursor-pointer hover:border-accent-300 dark:hover:border-accent-700 transition-all duration-200" data-testid={`recipe-card-${recipe.id}`}>
-                  <div className="relative">
-                    <img
-                      src={getRecipeImageUrl(recipe)}
-                      alt={getRecipeImageAlt(recipe)}
-                      className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute top-2 right-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
-                      <Star size={12} fill="currentColor" className="text-yellow-400" />
-                      <span>{recipe.averageRating || 5}</span>
-                    </div>
-                  </div>
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold text-base mb-2 text-foreground line-clamp-2 group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors">
-                      {recipe.name}
-                    </h3>
-                    <div className="text-muted-foreground text-sm mb-3 line-clamp-2">
-                      <MarkdownContent
-                        content={recipe.description || ''}
-                        summary={true}
-                        className="text-sm"
-                      />
-                    </div>
-                    <div className="flex items-center justify-between text-xs border-t border-border pt-3">
-                      <span className="flex items-center text-muted-foreground font-medium">
-                        <Users size={14} className="mr-1" />
-                        Serves {recipe.servings}
-                      </span>
-                      <span className="text-accent-600 dark:text-accent-400 font-medium flex items-center gap-1">
-                        View
-                        <ArrowRight size={12} />
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
-
-          {/* Show results count */}
-          <div className="text-center mt-10 text-muted-foreground">
-            Showing {filteredRecipes.length} recipe{filteredRecipes.length !== 1 ? 's' : ''}
-            {activeSearch && ` for "${activeSearch}"`}
-            {selectedCategory && ` in ${categories?.find(c => c.id.toString() === selectedCategory)?.name}`}
-          </div>
+          ) : (
+            <div className="rounded-lg border border-border bg-card px-6 py-14 text-center shadow-sm">
+              <span className="mx-auto mb-5 grid size-14 place-items-center rounded-md bg-primary-soft text-primary-ink">
+                <SearchX size={26} aria-hidden="true" />
+              </span>
+              <h3 className="font-display text-xl font-bold text-foreground">No recipes found</h3>
+              <p className="mx-auto mt-2 max-w-md text-muted-foreground">
+                Try a different search term or category, or browse the full collection.
+              </p>
+              <Button className="mt-6" onClick={() => { clearSearch(); setSelectedCategory(""); }}>
+                Show all recipes
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 

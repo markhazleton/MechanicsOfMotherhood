@@ -17,7 +17,7 @@ export default function Home() {
   const combinedStructuredData = [websiteStructuredData, organizationStructuredData];
 
   return (
-    <main className="min-h-screen bg-background text-foreground transition-colors">
+    <div className="min-h-screen bg-background">
       {/* SEO Head for homepage */}
       <SeoHead
         title={SITE_CONFIG.seo.title}
@@ -31,9 +31,9 @@ export default function Home() {
       <Navigation />
       <HeroSection />
       <FeaturedRecipes />
-      <BlogSection />
       <CommunitySection />
+      <BlogSection />
       <Footer />
-    </main>
+    </div>
   );
 }
