@@ -1,14 +1,27 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Home, BookOpen, Newspaper, Menu } from "lucide-react";
+import { Search, Home, BookOpen, LayoutGrid, Newspaper, Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { searchRecipes } from "@/data/api-loader";
 import DarkModeToggle from "@/components/dark-mode-toggle";
 import SITE_CONFIG from "@/lib/site-config";
 const logoIcon = "/images/logos/MOM-Logo-Icon.png";
+
+const navLinks = [
+  { href: "/", label: "Home", icon: Home },
+  { href: "/recipes/", label: "Recipes", icon: BookOpen },
+  { href: "/categories/", label: "Categories", icon: LayoutGrid },
+  { href: "/blog/", label: "Blog", icon: Newspaper },
+];
+
+function normalizePath(path: string): string {
+  const clean = (path || "/").split(/[?#]/)[0] || "/";
+  if (clean === "/") return "/";
+  return clean.replace(/\/+$/, "");
+}
 
 export default function Navigation() {
   const [location, navigate] = useLocation();
@@ -32,117 +45,137 @@ export default function Navigation() {
     }
   };
 
-  const normalizePath = (path: string): string => {
-    const clean = (path || "/").split(/[?#]/)[0] || "/";
-    if (clean === "/") return "/";
-    return clean.replace(/\/+$/, "");
+  const isActive = (href: string) => {
+    const current = normalizePath(location);
+    const target = normalizePath(href);
+    if (target === "/") return current === "/";
+    // Recipe detail and category pages live under the Recipes / Categories sections
+    if (target === "/recipes") return current === "/recipes" || current.startsWith("/recipe/");
+    return current === target || current.startsWith(`${target}/`);
   };
 
-  const navLinks = [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/recipes/", label: "Recipes", icon: BookOpen },
-    { href: "/blog/", label: "Blog", icon: Newspaper },
-  ];
-
-  const NavLink = ({ href, label, icon: Icon }: { href: string; label: string; icon: React.ComponentType<{ size?: number }> }) => {
-    const active = normalizePath(location) === normalizePath(href);
-    return (
-      <Link
-        href={href}
-        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 ${active ? "text-accent-600 bg-accent-50 dark:bg-accent-900/30 dark:text-accent-400" : "text-neutral-700 dark:text-neutral-300 hover:text-accent-600 dark:hover:text-accent-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"}`}
-        data-testid={`nav-link-${label.toLowerCase().replace(/\s+/g, "-")}`}
-      >
-        <Icon size={18} />
-        <span>{label}</span>
-      </Link>
-    );
-  };
+  const testId = (label: string) => `nav-link-${label.toLowerCase().replace(/\s+/g, "-")}`;
 
   return (
-    <nav className="bg-background/95 backdrop-blur-md border-b border-border shadow-sm sticky top-0 z-50 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3" data-testid="logo-link">
-            <div className="relative">
-              <img
-                src={logoIcon}
-                alt="MoM Logo"
-                className="h-10 w-10 object-contain"
-                onError={(e) => {
-                  console.error('Logo failed to load from:', e.currentTarget.src);
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                }}
-              />
-              {/* Fallback icon */}
-              <div className="hidden h-10 w-10 bg-accent-500 rounded-full flex items-center justify-center">
-                <BookOpen className="text-white" size={20} />
+    <nav
+      aria-label="Main"
+      className="navigation sticky top-0 z-50 border-b border-border-subtle bg-background/90 backdrop-blur-md supports-[backdrop-filter]:bg-background/80"
+    >
+      <div className="site-container flex h-[72px] items-center justify-between gap-4">
+        {/* Logo */}
+        <Link href="/" className="group flex shrink-0 items-center gap-3 rounded-md" data-testid="logo-link">
+          <img
+            src={logoIcon}
+            alt=""
+            width={40}
+            height={40}
+            className="size-10 rounded-md object-contain dark:bg-cream dark:p-0.5"
+          />
+          <span className="flex flex-col leading-none">
+            <span className="font-display text-xl font-extrabold tracking-[-0.02em] text-foreground">
+              {SITE_CONFIG.name.short}<span className="text-primary dark:text-brand-200"> Recipes</span>
+            </span>
+            <span className="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+              {SITE_CONFIG.name.full}
+            </span>
+          </span>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <div className="hidden items-center gap-1 lg:flex">
+          {navLinks.map(({ href, label }) => {
+            const active = isActive(href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                aria-current={active ? "page" : undefined}
+                className={`relative rounded-sm px-3.5 py-2 text-[15px] font-medium transition-colors duration-[120ms] ${
+                  active
+                    ? "text-primary-ink after:absolute after:inset-x-3.5 after:-bottom-[17px] after:h-0.5 after:bg-primary dark:after:bg-brand-300"
+                    : "text-body hover:text-link-hover"
+                }`}
+                data-testid={testId(label)}
+              >
+                {label}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Search, theme, mobile menu */}
+        <div className="flex items-center gap-2">
+          <form onSubmit={handleSearch} className="relative hidden md:block" role="search">
+            <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} aria-hidden="true" />
+            <Input
+              type="search"
+              aria-label="Search recipes"
+              placeholder="Search recipes…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-10 w-56 pl-9 xl:w-64"
+              data-testid="search-input"
+            />
+          </form>
+          <div className="hidden md:block">
+            <DarkModeToggle className="dark-mode-toggle" />
+          </div>
+
+          {/* Mobile Menu */}
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden [&_svg]:size-[22px]"
+                aria-label="Open menu"
+                data-testid="mobile-menu-button"
+              >
+                <Menu />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[380px]">
+              <SheetTitle className="eyebrow mt-1">Menu</SheetTitle>
+              <form onSubmit={handleSearch} className="relative mt-6" role="search">
+                <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} aria-hidden="true" />
+                <Input
+                  type="search"
+                  aria-label="Search recipes"
+                  placeholder="Search recipes…"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                  data-testid="mobile-search-input"
+                />
+              </form>
+              <div className="mt-6 flex flex-col gap-1">
+                {navLinks.map(({ href, label, icon: Icon }) => {
+                  const active = isActive(href);
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      onClick={() => setIsOpen(false)}
+                      aria-current={active ? "page" : undefined}
+                      className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-base font-medium transition-colors ${
+                        active
+                          ? "bg-primary-soft text-primary-ink"
+                          : "text-body hover:bg-secondary"
+                      }`}
+                      data-testid={`mobile-${testId(label)}`}
+                    >
+                      <Icon size={18} aria-hidden="true" />
+                      {label}
+                    </Link>
+                  );
+                })}
               </div>
-            </div>
-            <div className="flex flex-col">
-              <h1 className="text-xl font-bold tracking-tight text-foreground">{SITE_CONFIG.name.short} Recipes</h1>
-              <span className="text-xs text-muted-foreground font-medium -mt-0.5">{SITE_CONFIG.name.tagline}</span>
-            </div>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <NavLink key={link.href} {...link} />
-            ))}
-          </div>
-
-          {/* Search and Mobile Menu */}
-          <div className="flex items-center space-x-3">
-            {/* Desktop Search */}
-            <form onSubmit={handleSearch} className="relative hidden md:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-              <Input
-                type="text"
-                placeholder="Search recipes..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 w-64 bg-background border-border rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
-                data-testid="search-input"
-              />
-            </form>
-            <div className="hidden md:block">
-              <DarkModeToggle className="dark-mode-toggle" />
-            </div>
-
-            {/* Mobile Menu */}
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="md:hidden focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2" data-testid="mobile-menu-button">
-                  <Menu className="text-foreground" size={22} />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-background">
-                <div className="flex flex-col space-y-2 mt-6">
-                  {navLinks.map((link) => (
-                    <NavLink key={link.href} {...link} />
-                  ))}
-                  <div className="pt-4 mt-4 border-t border-border">
-                    <DarkModeToggle className="w-full justify-center" />
-                  </div>
-
-                  {/* Mobile Search */}
-                  <form onSubmit={handleSearch} className="relative mt-4">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-                    <Input
-                      type="text"
-                      placeholder="Search recipes..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 bg-background border-border"
-                      data-testid="mobile-search-input"
-                    />
-                  </form>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
+              <div className="mt-6 flex items-center justify-between border-t border-border pt-6">
+                <span className="text-sm font-medium text-muted-foreground">Theme</span>
+                <DarkModeToggle />
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </nav>

@@ -2,21 +2,21 @@
   <!-- Industrial gradient background matching MoM theme -->
   <defs>
     <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FEFEFE;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#F8FAFC;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#FBFAF7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F8F6F2;stop-opacity:1" />
     </linearGradient>
 
     <!-- Industrial gradient for main plate -->
     <linearGradient id="plateGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#F1F5F9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EFECE4;stop-opacity:1" />
     </linearGradient>
 
     <!-- Mechanical shadow filter -->
     <filter id="mechanicalShadow" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
       <feOffset dx="2" dy="4" result="offsetblur" />
-      <feFlood flood-color="#3E4A59" flood-opacity="0.15" />
+      <feFlood flood-color="#3D3D3B" flood-opacity="0.15" />
       <feComposite in2="offsetblur" operator="in" />
       <feMerge>
         <feMergeNode />
@@ -26,7 +26,7 @@
 
     <!-- Pattern for industrial texture -->
     <pattern id="gridPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#E2E8F0" stroke-width="0.5" opacity="0.3" />
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#DDD9D0" stroke-width="0.5" opacity="0.3" />
     </pattern>
   </defs>
 
@@ -35,27 +35,27 @@
   <rect width="400" height="300" fill="url(#gridPattern)" />
 
   <!-- Workshop-style border frame -->
-  <rect x="15" y="15" width="370" height="270" fill="none" stroke="#5D8FA8" stroke-width="2"
+  <rect x="15" y="15" width="370" height="270" fill="none" stroke="#C6620C" stroke-width="2"
     opacity="0.4" />
-  <rect x="12" y="12" width="376" height="276" fill="none" stroke="#3E4A59" stroke-width="1"
+  <rect x="12" y="12" width="376" height="276" fill="none" stroke="#3D3D3B" stroke-width="1"
     opacity="0.3" />
 
   <!-- Main cooking vessel/plate with industrial styling -->
   <circle cx="200" cy="130" r="75" fill="url(#plateGradient)" filter="url(#mechanicalShadow)" />
-  <circle cx="200" cy="130" r="70" fill="none" stroke="#E2E8F0" stroke-width="2" />
-  <circle cx="200" cy="130" r="65" fill="none" stroke="#CBD5E1" stroke-width="1" />
+  <circle cx="200" cy="130" r="70" fill="none" stroke="#DDD9D0" stroke-width="2" />
+  <circle cx="200" cy="130" r="65" fill="none" stroke="#C2BFB6" stroke-width="1" />
 
   <!-- Mechanical utensil icons in MoM style -->
 
   <!-- Wrench (representing tools/mechanics) -->
   <g transform="translate(200, 130)" opacity="0.4">
     <!-- Wrench body -->
-    <rect x="-2" y="-25" width="4" height="35" fill="#637A87" rx="2" />
+    <rect x="-2" y="-25" width="4" height="35" fill="#76736C" rx="2" />
     <!-- Wrench head -->
-    <rect x="-8" y="-30" width="16" height="8" fill="#637A87" rx="2" />
+    <rect x="-8" y="-30" width="16" height="8" fill="#76736C" rx="2" />
     <rect x="-6" y="-28" width="12" height="4" fill="#FFFFFF" />
     <!-- Adjustment mechanism -->
-    <circle cx="0" cy="-26" r="2" fill="#E16259" />
+    <circle cx="0" cy="-26" r="2" fill="#982407" />
   </g>
 
   <!-- Gear/Cog (mechanical theme) -->
@@ -63,49 +63,49 @@
     <!-- Gear teeth -->
     <path
       d="M-15,-3 L-12,-8 L-8,-8 L-5,-3 L-3,-5 L2,-8 L8,-8 L12,-5 L15,-3 L12,3 L8,8 L2,8 L-3,5 L-5,3 L-8,8 L-12,8 L-15,3 Z"
-      fill="#637A87" />
+      fill="#76736C" />
     <!-- Gear center -->
-    <circle cx="0" cy="0" r="6" fill="#5D8FA8" />
+    <circle cx="0" cy="0" r="6" fill="#C6620C" />
     <circle cx="0" cy="0" r="3" fill="#FFFFFF" />
   </g>
 
   <!-- Spoon with industrial handle -->
   <g transform="translate(250, 140)" opacity="0.35">
     <!-- Handle -->
-    <rect x="0" y="-5" width="3" height="25" fill="#637A87" />
+    <rect x="0" y="-5" width="3" height="25" fill="#76736C" />
     <!-- Spoon bowl -->
-    <ellipse cx="1.5" cy="-12" rx="6" ry="8" fill="#637A87" />
-    <ellipse cx="1.5" cy="-12" rx="4" ry="6" fill="#E2E8F0" />
+    <ellipse cx="1.5" cy="-12" rx="6" ry="8" fill="#76736C" />
+    <ellipse cx="1.5" cy="-12" rx="4" ry="6" fill="#DDD9D0" />
     <!-- Handle grip detail -->
-    <rect x="0" y="15" width="3" height="3" fill="#E16259" />
+    <rect x="0" y="15" width="3" height="3" fill="#982407" />
   </g>
 
   <!-- Recipe ingredients as mechanical components -->
   <g opacity="0.3">
     <!-- Bolt/screw (representing precision) -->
     <g transform="translate(120, 90)">
-      <rect x="-1" y="-8" width="2" height="16" fill="#5D8FA8" />
-      <circle cx="0" cy="-8" r="3" fill="#637A87" />
-      <path d="M-2,-8 L2,-8 M-2,-6 L2,-6" stroke="#E2E8F0" stroke-width="0.5" />
+      <rect x="-1" y="-8" width="2" height="16" fill="#C6620C" />
+      <circle cx="0" cy="-8" r="3" fill="#76736C" />
+      <path d="M-2,-8 L2,-8 M-2,-6 L2,-6" stroke="#DDD9D0" stroke-width="0.5" />
     </g>
 
     <!-- Washer/ring component -->
     <g transform="translate(290, 100)">
-      <circle cx="0" cy="0" r="6" fill="#5D8FA8" opacity="0.6" />
+      <circle cx="0" cy="0" r="6" fill="#C6620C" opacity="0.6" />
       <circle cx="0" cy="0" r="3" fill="#FFFFFF" />
     </g>
 
     <!-- Spring coil -->
     <g transform="translate(110, 180)">
       <path d="M0,0 Q-3,-3 0,-6 Q3,-9 0,-12 Q-3,-15 0,-18"
-        stroke="#5D8FA8" stroke-width="2" fill="none" />
+        stroke="#C6620C" stroke-width="2" fill="none" />
     </g>
 
     <!-- Mechanical bearing -->
     <g transform="translate(290, 190)">
-      <circle cx="0" cy="0" r="5" fill="#637A87" />
-      <circle cx="0" cy="0" r="3" fill="#E2E8F0" />
-      <circle cx="0" cy="0" r="1" fill="#5D8FA8" />
+      <circle cx="0" cy="0" r="5" fill="#76736C" />
+      <circle cx="0" cy="0" r="3" fill="#DDD9D0" />
+      <circle cx="0" cy="0" r="1" fill="#C6620C" />
     </g>
   </g>
 
@@ -113,12 +113,12 @@
   <g transform="translate(200, 280)">
     <!-- Small gear -->
     <path d="M-6,-2 L-4,-4 L-2,-4 L0,-2 L2,-4 L4,-4 L6,-2 L4,2 L2,4 L0,2 L-2,4 L-4,4 L-6,2 Z"
-      fill="#E16259" opacity="0.4" />
-    <circle cx="0" cy="0" r="2" fill="#5D8FA8" opacity="0.6" />
+      fill="#982407" opacity="0.4" />
+    <circle cx="0" cy="0" r="2" fill="#C6620C" opacity="0.6" />
   </g>
 
   <!-- Industrial corner brackets -->
-  <g stroke="#637A87" stroke-width="1" fill="none" opacity="0.2">
+  <g stroke="#76736C" stroke-width="1" fill="none" opacity="0.2">
     <!-- Top left -->
     <path d="M25,25 L35,25 M25,25 L25,35" />
     <!-- Top right -->

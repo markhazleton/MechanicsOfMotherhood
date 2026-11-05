@@ -33,72 +33,87 @@ export default function Footer() {
       .catch(() => {});
   }, []);
 
-  const linkClasses = "text-neutral-400 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900 rounded";
+  const linkClasses = "text-inverse-muted transition-colors duration-[120ms] hover:text-inverse-foreground focus-visible:outline-inverse-eyebrow rounded-xs";
+  const headingClasses = "mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-inverse-eyebrow";
+
+  const columns = [
+    {
+      title: "Explore",
+      links: [
+        { href: "/", label: "Home" },
+        { href: "/recipes/", label: "All Recipes" },
+        { href: "/categories/", label: "Categories" },
+        { href: "/blog/", label: "Blog" },
+      ],
+    },
+    {
+      title: "Categories",
+      links: [
+        { href: "/recipes/category/main-course/", label: "Main Course" },
+        { href: "/recipes/category/quick-meals/", label: "Quick Meals" },
+        { href: "/recipes/category/dessert/", label: "Dessert" },
+        { href: "/recipes/category/appetizer/", label: "Appetizer" },
+        { href: "/recipes/category/soup/", label: "Soup" },
+      ],
+    },
+    {
+      title: "More",
+      links: [
+        { href: "/recipes/category/slow-cooker/", label: "Slow Cooker" },
+        { href: "/recipes/category/breakfast/", label: "Breakfast" },
+        { href: "/recipes/category/side-dishes/", label: "Side Dishes" },
+        { href: "/recipes/category/drink/", label: "Drinks" },
+        { href: "/recipes/category/salad/", label: "Salad" },
+      ],
+    },
+  ];
 
   return (
-    <footer className="bg-neutral-900 text-white py-12 md:py-16 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+    <footer className="bg-inverse text-inverse-foreground">
+      <div className="site-container py-14 md:py-20">
+        <div className="mb-12 grid grid-cols-2 gap-10 md:grid-cols-12">
           {/* Brand Column */}
-          <div className="md:col-span-1">
-            <div className="flex items-center space-x-3 mb-4">
-              <img
-                src={logoIcon}
-                alt={`${SITE_CONFIG.name.short} Recipes`}
-                className="h-10 w-10 object-contain filter brightness-0 invert"
-              />
-              <div>
-                <h3 className="text-xl font-bold tracking-tight">{SITE_CONFIG.name.short} Recipes</h3>
-                <p className="text-xs text-neutral-400">{SITE_CONFIG.name.tagline}</p>
-              </div>
+          <div className="col-span-2 md:col-span-5">
+            <div className="mb-5 flex items-center gap-3">
+              <span className="grid size-12 place-items-center rounded-md bg-cream">
+                <img
+                  src={logoIcon}
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="size-10 object-contain"
+                />
+              </span>
+              <span className="font-display text-xl font-extrabold tracking-[-0.02em] text-inverse-foreground">
+                {SITE_CONFIG.name.short}<span className="text-inverse-eyebrow"> Recipes</span>
+              </span>
             </div>
-            <p className="text-neutral-400 text-sm mb-5 leading-relaxed">
-              Simple, tested recipes for busy families. Good food, made easy.
+            <p className="max-w-sm text-[15px] leading-relaxed text-inverse-muted">
+              Simple, tested recipes for busy families. Good food, made easy — so you can spend
+              less time planning and more time at the table.
             </p>
           </div>
 
-          {/* Navigation */}
-          <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-300 mb-4">Navigation</h4>
-            <ul className="space-y-3">
-              <li><Link href="/" className={linkClasses}>Home</Link></li>
-              <li><Link href="/recipes/" className={linkClasses}>All Recipes</Link></li>
-              <li><Link href="/categories/" className={linkClasses}>Categories</Link></li>
-              <li><Link href="/blog/" className={linkClasses}>Blog</Link></li>
-            </ul>
-          </div>
-
-          {/* Popular Categories */}
-          <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-300 mb-4">Categories</h4>
-            <ul className="space-y-3">
-              <li><Link href="/recipes/category/main-course/" className={linkClasses}>Main Course</Link></li>
-              <li><Link href="/recipes/category/quick-meals/" className={linkClasses}>Quick Meals</Link></li>
-              <li><Link href="/recipes/category/dessert/" className={linkClasses}>Dessert</Link></li>
-              <li><Link href="/recipes/category/appetizer/" className={linkClasses}>Appetizer</Link></li>
-              <li><Link href="/recipes/category/soup/" className={linkClasses}>Soup</Link></li>
-            </ul>
-          </div>
-
-          {/* More Categories */}
-          <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-300 mb-4">More</h4>
-            <ul className="space-y-3">
-              <li><Link href="/recipes/category/slow-cooker/" className={linkClasses}>Slow Cooker</Link></li>
-              <li><Link href="/recipes/category/breakfast/" className={linkClasses}>Breakfast</Link></li>
-              <li><Link href="/recipes/category/side-dishes/" className={linkClasses}>Side Dishes</Link></li>
-              <li><Link href="/recipes/category/drink/" className={linkClasses}>Drinks</Link></li>
-              <li><Link href="/recipes/category/salad/" className={linkClasses}>Salad</Link></li>
-            </ul>
-          </div>
+          {columns.map((column) => (
+            <div key={column.title} className="md:col-span-2 last:col-span-2 md:last:col-span-3">
+              <h2 className={headingClasses}>{column.title}</h2>
+              <ul className="space-y-2.5 text-[15px]">
+                {column.links.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className={linkClasses}>{link.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-neutral-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-neutral-500 text-sm" data-testid="copyright-text">
+        <div className="flex flex-col gap-3 border-t border-inverse-border pt-8 text-sm text-inverse-muted md:flex-row md:items-center md:justify-between">
+          <p data-testid="copyright-text">
             © {currentYear} {SITE_CONFIG.name.full} ({SITE_CONFIG.name.short}). All rights reserved.
           </p>
-          <p className="text-neutral-500 text-sm">
+          <p>
             <a href="https://mechanicsofmotherhood.com" className={linkClasses}>Mechanics Of Motherhood</a>
             {' — built by '}
             <a href="https://markhazleton.com" className={linkClasses}>Mark Hazleton</a>
@@ -106,7 +121,7 @@ export default function Footer() {
             <a href="https://makeboldsolutions.com" className={linkClasses}>Make Bold Solutions</a>
           </p>
           {buildInfo && (
-            <div className="text-xs text-neutral-600 font-mono" data-testid="build-info">
+            <div className="font-mono text-xs text-neutral-400" data-testid="build-info">
               build {buildInfo.hash} • {buildInfo.date}
             </div>
           )}

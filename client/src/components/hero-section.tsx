@@ -1,14 +1,20 @@
 import { useState } from "react";
-import { ChefHat, BookOpen, Star, ArrowRight, Search } from "lucide-react";
+import { ArrowRight, Search, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useLocation } from "wouter";
 import apiData from "@/data/api-data.json";
+import { getFeaturedRecipes, getRecipeUrl } from "@/data/api-loader";
+import { getRecipeImageAlt, getRecipeImageUrl } from "@/utils/image-helpers";
 
 export default function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("");
   const [, navigate] = useLocation();
   const { metadata: stats } = apiData;
+  // Prefer a featured recipe that has a real photo; otherwise show the brand mark
+  const featured = getFeaturedRecipes(6);
+  const spotlight = featured.find((r) => r.images?.[0]?.trim()) ?? featured[0];
+  const hasPhoto = Boolean(spotlight?.images?.[0]?.trim());
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,103 +24,127 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-accent-50 via-background to-brand-50 dark:from-neutral-900 dark:via-background dark:to-neutral-800 py-16 md:py-24 overflow-hidden transition-colors">
-      {/* Decorative background pattern */}
-      <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-      }} />
+    <section className="overflow-hidden bg-background">
+      <div className="site-container grid items-center gap-12 py-14 md:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:py-24">
+        <div>
+          <p className="eyebrow">Family-tested recipes</p>
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-accent-100 dark:bg-accent-900/40 text-accent-700 dark:text-accent-300 px-4 py-2 rounded-full text-sm font-medium mb-6">
-            <ChefHat size={16} />
-            <span>Family-Tested Recipes</span>
-          </div>
-
-          {/* Main heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 tracking-tight" data-testid="hero-title">
-            Delicious Recipes for
-            <span className="block text-accent-600 dark:text-accent-400">Busy Families</span>
+          <h1
+            className="mt-5 font-display text-[clamp(2.6rem,4.6vw+0.5rem,4.25rem)] font-extrabold leading-[1.04] tracking-[-0.03em] text-foreground"
+            data-testid="hero-title"
+          >
+            Delicious recipes for{" "}
+            <span className="text-primary dark:text-brand-200">busy families.</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            Simple, tested recipes that work for real life. Quick weeknight dinners,
-            meal prep ideas, and family favorites all in one place.
+          <p className="mt-6 max-w-[48ch] text-lg leading-relaxed text-muted-foreground md:text-xl">
+            Simple, tested recipes that work for real life — quick weeknight dinners,
+            meal-prep ideas, and family favorites, all in one place.
           </p>
 
           <form
             onSubmit={handleSearchSubmit}
-            className="max-w-2xl mx-auto mb-8"
+            className="mt-8 max-w-xl"
+            role="search"
             data-testid="home-recipe-search-form"
           >
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+                <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} aria-hidden="true" />
                 <Input
                   type="search"
-                  placeholder="Search all recipes..."
+                  aria-label="Search all recipes"
+                  placeholder="Search all recipes…"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-12 bg-background border-border"
+                  className="h-12 pl-10 text-base"
                   data-testid="home-recipe-search-input"
                 />
               </div>
-              <Button type="submit" size="lg" className="h-12 px-6" data-testid="home-recipe-search-button">
-                Search Recipes
+              <Button type="submit" size="lg" data-testid="home-recipe-search-button">
+                Search
               </Button>
             </div>
           </form>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <Link href="/recipes/">
-              <Button
-                size="lg"
-                variant="accent"
-                className="px-8 py-6 text-lg font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-accent-500/25 hover:shadow-xl hover:shadow-accent-500/30"
-                data-testid="button-browse-recipes"
-              >
-                <BookOpen className="mr-2" size={20} />
-                Browse Recipes
-                <ArrowRight className="ml-2" size={18} />
-              </Button>
-            </Link>
-            <Link href="/categories/">
-              <Button
-                variant="outline"
-                size="lg"
-                className="px-8 py-6 text-lg font-semibold rounded-xl border-2 hover:bg-muted transition-all duration-200"
-                data-testid="button-view-categories"
-              >
-                View Categories
-              </Button>
-            </Link>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 md:gap-8 max-w-2xl mx-auto">
-            {stats ? (
-              <>
-                <div className="text-center p-4 rounded-xl bg-card/50 dark:bg-card/30 backdrop-blur-sm border border-border" data-testid="stat-recipes">
-                  <div className="text-2xl md:text-3xl font-bold text-accent-600 dark:text-accent-400 mb-1">{stats.totalRecipes}+</div>
-                  <div className="text-xs md:text-sm text-muted-foreground font-medium">Recipes</div>
-                </div>
-                <div className="text-center p-4 rounded-xl bg-card/50 dark:bg-card/30 backdrop-blur-sm border border-border" data-testid="stat-categories">
-                  <div className="text-2xl md:text-3xl font-bold text-accent-600 dark:text-accent-400 mb-1">{stats.totalCategories}</div>
-                  <div className="text-xs md:text-sm text-muted-foreground font-medium">Categories</div>
-                </div>
-                <div className="text-center p-4 rounded-xl bg-card/50 dark:bg-card/30 backdrop-blur-sm border border-border" data-testid="stat-rating">
-                  <div className="flex items-center justify-center gap-1 text-2xl md:text-3xl font-bold text-accent-600 dark:text-accent-400 mb-1">
-                    4.8 <Star size={20} fill="currentColor" />
-                  </div>
-                  <div className="text-xs md:text-sm text-muted-foreground font-medium">Avg Rating</div>
-                </div>
-              </>
-            ) : null}
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Button asChild size="lg" variant="default" data-testid="button-browse-recipes">
+              <Link href="/recipes/">
+                Browse recipes
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outlineBrand" data-testid="button-view-categories">
+              <Link href="/categories/">View categories</Link>
+            </Button>
           </div>
         </div>
+
+        {spotlight && (
+          <div className="relative mx-auto w-full max-w-md lg:max-w-none">
+            <div aria-hidden="true" className="absolute -bottom-5 -left-5 hidden h-2/5 w-2/5 rounded-lg bg-brand-100 sm:block dark:bg-brand-900" />
+            <Link
+              href={getRecipeUrl(spotlight)}
+              className="group relative block overflow-hidden rounded-xl bg-muted shadow-xl"
+              data-testid="hero-spotlight"
+            >
+              {hasPhoto ? (
+                <img
+                  src={getRecipeImageUrl(spotlight)}
+                  alt={getRecipeImageAlt(spotlight)}
+                  loading="eager"
+                  fetchPriority="high"
+                  className="aspect-[4/5] w-full object-cover lg:aspect-[5/6]"
+                />
+              ) : (
+                <div className="grid aspect-[4/5] w-full place-items-center bg-cream-deep lg:aspect-[5/6] dark:bg-neutral-800">
+                  <span className="grid size-48 place-items-center rounded-xl bg-card shadow-md md:size-56">
+                    <img
+                      src="/images/logos/MOM-Logo-Icon.png"
+                      alt=""
+                      width={160}
+                      height={160}
+                      className="size-36 object-contain md:size-44"
+                    />
+                  </span>
+                </div>
+              )}
+              <div className="absolute inset-x-4 bottom-4 rounded-lg border border-border bg-card/95 p-4 shadow-md backdrop-blur-sm">
+                <p className="eyebrow text-xs">Featured recipe</p>
+                <p className="mt-1.5 line-clamp-1 font-display text-lg font-bold text-foreground group-hover:text-primary-ink">
+                  {spotlight.name}
+                </p>
+              </div>
+            </Link>
+          </div>
+        )}
       </div>
+
+      {/* Stat strip */}
+      {stats ? (
+        <div className="border-y border-border-subtle bg-card">
+          <dl className="site-container grid grid-cols-3 gap-6 py-7">
+            <div className="flex flex-col-reverse text-center" data-testid="stat-recipes">
+              <dt className="mt-2 text-xs font-medium tracking-[0.04em] text-muted-foreground md:text-sm">Recipes</dt>
+              <dd className="font-display text-3xl font-extrabold leading-none text-primary md:text-4xl dark:text-brand-200">
+                {stats.totalRecipes}+
+              </dd>
+            </div>
+            <div className="flex flex-col-reverse text-center" data-testid="stat-categories">
+              <dt className="mt-2 text-xs font-medium tracking-[0.04em] text-muted-foreground md:text-sm">Categories</dt>
+              <dd className="font-display text-3xl font-extrabold leading-none text-primary md:text-4xl dark:text-brand-200">
+                {stats.totalCategories}
+              </dd>
+            </div>
+            <div className="flex flex-col-reverse text-center" data-testid="stat-rating">
+              <dt className="mt-2 text-xs font-medium tracking-[0.04em] text-muted-foreground md:text-sm">Avg rating</dt>
+              <dd className="flex items-center justify-center gap-1.5 font-display text-3xl font-extrabold leading-none text-primary md:text-4xl dark:text-brand-200">
+                4.8 <Star className="size-6 fill-star text-star" aria-hidden="true" />
+              </dd>
+            </div>
+          </dl>
+        </div>
+      ) : null}
     </section>
   );
 }

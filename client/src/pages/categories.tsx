@@ -2,10 +2,9 @@ import { Link } from "wouter";
 import { ArrowRight, ChefHat } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
+import PageHeader from "@/components/page-header";
 import SeoHead from "@/components/seo/SeoHead";
 import { generateBreadcrumbs, generateCanonicalUrl, generateItemListStructuredData } from "@/utils/seo-helpers";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getCategorySlug } from "@/utils/slugify";
 import { getCategories, getRecipes } from "@/data/api-loader";
@@ -32,7 +31,7 @@ export default function Categories() {
   );
 
   return (
-  <div className="min-h-screen bg-warm-cream">
+    <div className="min-h-screen bg-background">
       <SeoHead
         title="Recipe Categories"
         description={`Browse ${categoriesWithCounts.length} recipe categories and discover family-tested meals by topic.`}
@@ -41,73 +40,62 @@ export default function Categories() {
         structuredData={structuredData}
       />
       <Navigation />
-      {/* Breadcrumb Navigation */}
-  <div className="bg-warm-cream border-b border-warm-peach/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <BreadcrumbNav items={breadcrumbs} />
-        </div>
-      </div>
 
-      {/* Header */}
-  <section className="bg-gradient-to-b from-warm-peach/20 to-transparent py-16 border-b border-warm-peach/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="font-display heading-xl text-brand-800 mb-4">
-              Recipe Categories
-            </h1>
-            <p className="text-neutral-700 text-lg max-w-2xl mx-auto">
-              Browse our organized collection of tested recipes by category
-            </p>
-          </div>
-        </div>
-      </section>
+      <PageHeader
+        breadcrumbs={breadcrumbs}
+        eyebrow="Browse by category"
+        title="Recipe categories"
+        description="Our tested recipes, organized the way you plan meals — from quick weeknight dinners to slow-cooker Sundays."
+      />
 
       {/* Categories Grid */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {categoriesWithCounts.map((category: Category & { recipeCount: number }) => {
-              const slug = getCategorySlug(category.name);
-              return (
-                <Link
-                  key={category.id}
-                  href={`/recipes/category/${slug}/`}
-                  data-testid={`category-card-${category.id}`}
-                >
-                  <Card className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg motion-safe:hover:scale-[1.02] motion-safe:transform transition-all duration-300 cursor-pointer border border-warm-peach/30">
-                    <div className="bg-gradient-to-br from-brand-600 to-brand-800 p-8 text-white">
-                      <ChefHat size={32} className="mb-4" />
-                      <h3 className="font-bold text-xl mb-2">
-                        {category.name}
-                      </h3>
-                      {category.description && (
-                        <p className="text-white/80 text-sm line-clamp-2">
-                          {category.description}
-                        </p>
-                      )}
+      <section className="py-10 md:py-14">
+        <div className="site-container">
+          {categoriesWithCounts.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {categoriesWithCounts.map((category: Category & { recipeCount: number }) => {
+                const slug = getCategorySlug(category.name);
+                return (
+                  <Link
+                    key={category.id}
+                    href={`/recipes/category/${slug}/`}
+                    className="group flex h-full flex-col rounded-lg border border-border border-t-[3px] border-t-primary bg-card p-6 shadow-sm transition-[box-shadow,transform] duration-200 ease-standard hover:-translate-y-0.5 hover:shadow-md"
+                    data-testid={`category-card-${category.id}`}
+                  >
+                    <span className="mb-5 grid size-11 place-items-center rounded-md bg-primary-soft text-primary-ink">
+                      <ChefHat size={22} aria-hidden="true" />
+                    </span>
+                    <h2 className="font-display text-xl font-bold text-foreground transition-colors group-hover:text-primary-ink">
+                      {category.name}
+                    </h2>
+                    {category.description && (
+                      <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
+                        {category.description}
+                      </p>
+                    )}
+                    <div className="mt-auto flex items-center justify-between pt-6">
+                      <Badge variant="accent">
+                        {category.recipeCount} recipe{category.recipeCount !== 1 ? 's' : ''}
+                      </Badge>
+                      <ArrowRight
+                        size={18}
+                        className="text-link transition-transform duration-200 group-hover:translate-x-0.5"
+                        aria-hidden="true"
+                      />
                     </div>
-                    <CardContent className="p-4 bg-warm-cream/50">
-                      <div className="flex items-center justify-between">
-                        <Badge variant="accent">
-                          {category.recipeCount} Recipe{category.recipeCount !== 1 ? 's' : ''}
-                        </Badge>
-                        <ArrowRight size={16} className="text-accent-600" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Empty State */}
-          {categoriesWithCounts.length === 0 && (
-            <div className="text-center py-12 bg-white rounded-xl shadow-md border border-warm-peach/30">
-              <ChefHat size={64} className="mx-auto text-accent-500 mb-4" />
-              <h3 className="text-xl font-semibold text-brand-800 mb-2">
-                No Categories Available
-              </h3>
-              <p className="text-neutral-700">
+                  </Link>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="rounded-lg border border-border bg-card px-6 py-14 text-center shadow-sm">
+              <span className="mx-auto mb-5 grid size-14 place-items-center rounded-md bg-primary-soft text-primary-ink">
+                <ChefHat size={26} aria-hidden="true" />
+              </span>
+              <h2 className="font-display text-xl font-bold text-foreground">
+                No categories available
+              </h2>
+              <p className="mt-2 text-muted-foreground">
                 Categories are being loaded from our recipe collection.
               </p>
             </div>

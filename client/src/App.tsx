@@ -77,7 +77,7 @@ function AppRouter({ ssrPath }: AppRouterProps) {
       {/* Skip Link */}
       <a
         href="#main-content"
-  className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] bg-brand-900 text-white px-4 py-2 rounded shadow-md"
+  className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] rounded-md bg-neutral-900 px-4 py-2 font-semibold text-cream shadow-md"
       >
         Skip to content
       </a>
@@ -123,13 +123,6 @@ function App({ ssrPath, helmetContext }: AppProps) {
       {React.createElement((HelmetAsync as Record<string, unknown>).HelmetProvider as React.ComponentType<{context?: unknown}> || React.Fragment, { context: helmetContext },
         <TooltipProvider>
           <Toaster />
-          {/* Reduced motion helper class */}
-          <style>{`
-            @media (prefers-reduced-motion: reduce) {
-              .motion-safe:hover:scale-105:hover { transform: none; }
-              .motion-safe:transition-none { transition: none !important; }
-            }
-          `}</style>
           <AppRouter ssrPath={ssrPath} />
         </TooltipProvider>
       )}

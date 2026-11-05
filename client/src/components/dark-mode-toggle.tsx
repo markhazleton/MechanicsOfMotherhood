@@ -8,7 +8,12 @@ export function DarkModeToggle({ className = '' }: { className?: string }) {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('mom-theme') : null;
+    let stored: string | null = null;
+    try {
+      stored = localStorage.getItem('mom-theme');
+    } catch {
+      // Ignore localStorage errors in private browsing
+    }
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     const enabled = stored ? stored === 'dark' : prefersDark;
     setIsDark(enabled);
@@ -31,11 +36,11 @@ export function DarkModeToggle({ className = '' }: { className?: string }) {
   return (
     <Button
       type="button"
-      variant="outlineBrand"
-      size="sm"
+      variant="outline"
+      size="icon"
       aria-label={isDark ? 'Activate light mode' : 'Activate dark mode'}
       onClick={toggle}
-      className={className}
+      className={`size-10 ${className}`}
     >
       {isDark ? (
         <Sun className="size-4" />

@@ -1,9 +1,10 @@
-import { Clock } from "lucide-react";
+import { ArrowRight, Clock } from "lucide-react";
 import { Link } from "wouter";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
+import PageHeader from "@/components/page-header";
 import SeoHead from "@/components/seo/SeoHead";
+import { Button } from "@/components/ui/button";
 import { generateBreadcrumbs, generateBlogStructuredData } from "@/utils/seo-helpers";
 import SITE_CONFIG from "@/lib/site-config";
 
@@ -11,7 +12,7 @@ export default function Blog() {
   const breadcrumbs = generateBreadcrumbs('/blog');
   const blogStructuredData = generateBlogStructuredData();
   return (
-  <div className="min-h-screen bg-warm-cream">
+    <div className="min-h-screen bg-background">
       <SeoHead
         title={`${SITE_CONFIG.name.full} (${SITE_CONFIG.name.short}) Blog`}
         description={`Tips, tricks, and stories from ${SITE_CONFIG.name.full}. Meal planning, cooking tips, and family-friendly recipes.`}
@@ -20,50 +21,36 @@ export default function Blog() {
         structuredData={blogStructuredData}
       />
       <Navigation />
-      {/* Breadcrumb Navigation */}
-  <div className="bg-warm-cream border-b border-warm-peach/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <BreadcrumbNav items={breadcrumbs} />
-        </div>
-      </div>
 
-  {/* Header */}
-  <section className="bg-gradient-to-r from-brand-800 to-accent-600 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {SITE_CONFIG.name.short}'s Blog
-          </h1>
-          <p className="text-xl max-w-2xl mx-auto">
-            Tips, tricks, and stories from real moms
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        breadcrumbs={breadcrumbs}
+        eyebrow="The MoM blog"
+        title={`${SITE_CONFIG.name.short}'s blog`}
+        description="Tips, tricks, and stories from real moms — meal planning, cooking know-how, and life around the family table."
+      />
 
-      {/* Coming Soon Content */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="max-w-md mx-auto">
-              <div className="bg-white rounded-xl p-8 shadow-md border border-warm-peach/30">
-                <div className="w-16 h-16 bg-accent-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow">
-                  <Clock className="w-8 h-8 text-white" />
-                </div>
-                <h2 className="font-display text-2xl font-semibold text-brand-800 mb-4">
-                  Coming Soon!
-                </h2>
-                <p className="text-neutral-700 mb-6">
-                  We're working hard to bring you insightful articles, cooking tips, and family stories.
-                  Check back soon for our latest blog posts!
-                </p>
-                <p className="text-sm text-neutral-600">
-                  In the meantime, explore our{" "}
-                  <Link href="/recipes/" className="text-accent-600 hover:text-accent-700 font-semibold">
-                    recipe collection
-                  </Link>
-                  {" "}for some culinary inspiration.
-                </p>
-              </div>
-            </div>
+      <section className="py-12 md:py-16">
+        <div className="site-container">
+          <div className="max-w-2xl rounded-lg border border-border border-t-[3px] border-t-primary bg-card p-8 shadow-sm md:p-10">
+            <span className="mb-6 grid size-14 place-items-center rounded-md bg-primary-soft text-primary-ink">
+              <Clock size={26} aria-hidden="true" />
+            </span>
+            <h2 className="font-display text-2xl font-bold text-foreground md:text-3xl">
+              Coming soon
+            </h2>
+            <p className="mt-4 text-body">
+              We're working on helpful articles, cooking tips, and family stories. Check back
+              soon for our first posts.
+            </p>
+            <p className="mt-3 text-muted-foreground">
+              In the meantime, the recipe collection has plenty of inspiration.
+            </p>
+            <Button asChild className="mt-8">
+              <Link href="/recipes/">
+                Explore recipes
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>

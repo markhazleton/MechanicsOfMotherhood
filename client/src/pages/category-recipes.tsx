@@ -1,17 +1,15 @@
 import { useState, useEffect } from "react";
 import { useRoute, Link } from "wouter";
-import { Search, ArrowLeft, Users, Star, ArrowRight } from "lucide-react";
+import { Search, ArrowLeft, ArrowRight, SearchX, CircleHelp } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
+import PageHeader from "@/components/page-header";
+import RecipeCard from "@/components/recipe-card";
 import SeoHead from "@/components/seo/SeoHead";
 import { generateBreadcrumbs, generateCanonicalUrl, generateItemListStructuredData } from "@/utils/seo-helpers";
-import MarkdownContent from "@/components/markdown-content";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { getCategories, getRecipeUrl, getRecipesByCategory } from "@/data/api-loader";
-import { getRecipeImageUrl, getRecipeImageAlt } from "@/utils/image-helpers";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import type { Recipe, Category } from "@/data/api-types";
 import { nameToSlug, getCategorySlug } from "@/utils/slugify";
@@ -22,37 +20,37 @@ export default function CategoryRecipes() {
   const categorySlug = paramsNoSlash?.categorySlug || paramsWithSlash?.categorySlug;
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  
+
   // Initialize analytics
   const analytics = useAnalytics();
 
   // Get category details using static data
   const categories = getCategories();
-  
+
   // Find category by matching both basic slug and enhanced slug
-  const currentCategory = categories.find((cat: Category) => 
+  const currentCategory = categories.find((cat: Category) =>
     getCategorySlug(cat.name) === categorySlug || nameToSlug(cat.name) === categorySlug
   );
   const categoryId = currentCategory?.id;
 
   // Get recipes for this category using static data
   const allCategoryRecipes = categoryId ? getRecipesByCategory(categoryId) : [];
-  
+
   // Apply pagination and search filters
   const pageSize = 12;
   const startIndex = (page - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-  const filteredRecipes = searchQuery 
-    ? allCategoryRecipes.filter(recipe => 
+  const filteredRecipes = searchQuery
+    ? allCategoryRecipes.filter(recipe =>
         recipe.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (recipe.description && recipe.description.toLowerCase().includes(searchQuery.toLowerCase()))
       )
     : allCategoryRecipes;
-  
+
   const recipes = filteredRecipes.slice(startIndex, endIndex);
   const totalRecipes = filteredRecipes.length;
   const totalPages = Math.ceil(totalRecipes / pageSize);
-  
+
   const pagination = {
     currentPage: page,
     totalPages,
@@ -92,10 +90,19 @@ export default function CategoryRecipes() {
     }
   }, [currentCategory, analytics, categorySlug, totalRecipes]);
 
+  const backLink = (
+    <Button asChild variant="ghost" size="sm" className="-ml-3 text-muted-foreground hover:text-foreground">
+      <Link href="/categories/">
+        <ArrowLeft aria-hidden="true" />
+        All categories
+      </Link>
+    </Button>
+  );
+
   // Handle case where category doesn't exist
   if (!categorySlug || !currentCategory) {
     return (
-      <div className="min-h-screen bg-warm-cream">
+      <div className="min-h-screen bg-background">
         <SeoHead
           title="Category Not Found"
           description="The requested recipe category could not be found."
@@ -103,43 +110,33 @@ export default function CategoryRecipes() {
           robots="noindex, nofollow"
         />
         <Navigation />
-        <div className="bg-warm-cream border-b border-warm-peach/30">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-            <BreadcrumbNav items={generateBreadcrumbs('/categories')} />
+        <PageHeader
+          breadcrumbs={generateBreadcrumbs('/categories')}
+          before={
+            <span className="grid size-14 place-items-center rounded-md bg-primary-soft text-primary-ink">
+              <CircleHelp size={26} aria-hidden="true" />
+            </span>
+          }
+          eyebrow="Category not found"
+          title="We couldn't find that category"
+          description={`The category "${categorySlug}" doesn't exist in our home kitchen.`}
+        >
+          <div className="flex flex-wrap gap-3">
+            <Button asChild>
+              <Link href="/categories/">Browse all categories</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link href="/recipes/">View all recipes</Link>
+            </Button>
           </div>
-        </div>
-        <section className="bg-gradient-to-b from-warm-peach/20 to-transparent py-16 border-b border-warm-peach/30">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">🔧</div>
-              <h1 className="font-display heading-lg text-brand-800 mb-4">
-                Category Not Found
-              </h1>
-              <p className="text-neutral-700 mb-6">
-                The category "{categorySlug}" doesn't exist in our home kitchen.
-              </p>
-              <div className="space-x-4">
-                <Link href="/categories/">
-                  <Button variant="brand">
-                    Browse All Categories
-                  </Button>
-                </Link>
-                <Link href="/recipes/">
-                  <Button variant="outline">
-                    View All Recipes
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
+        </PageHeader>
         <Footer />
       </div>
     );
   }
 
   return (
-  <div className="min-h-screen bg-warm-cream">
+    <div className="min-h-screen bg-background">
       <SeoHead
         title={`${currentCategory.name} Recipes`}
         description={
@@ -157,120 +154,55 @@ export default function CategoryRecipes() {
         structuredData={categoryStructuredData}
       />
       <Navigation />
-      {/* Breadcrumb Navigation */}
-  <div className="bg-warm-cream border-b border-warm-peach/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <BreadcrumbNav items={generateBreadcrumbs(`/recipes/category/${categorySlug}/`, undefined, currentCategory?.name)} />
-        </div>
-      </div>
 
-      {/* Header */}
-  <section className="bg-gradient-to-b from-warm-peach/20 to-transparent py-16 border-b border-warm-peach/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6">
-            <Link href="/categories/">
-              <Button variant="ghost" className="mb-4 text-neutral-700 hover:text-brand-800">
-                <ArrowLeft size={16} className="mr-2" />
-                Back to Categories
-              </Button>
-            </Link>
+      <PageHeader
+        breadcrumbs={generateBreadcrumbs(`/recipes/category/${categorySlug}/`, undefined, currentCategory?.name)}
+        before={backLink}
+        eyebrow={`${allCategoryRecipes.length} recipe${allCategoryRecipes.length !== 1 ? 's' : ''}`}
+        title={`${currentCategory?.name || 'Category'} recipes`}
+        description={currentCategory?.description || undefined}
+      >
+        <form onSubmit={handleSearch} className="max-w-md" role="search">
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} aria-hidden="true" />
+            <Input
+              type="search"
+              aria-label={`Search ${currentCategory.name} recipes`}
+              placeholder="Search recipes in this category…"
+              value={searchQuery}
+              onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+              className="pl-10"
+              data-testid="category-recipe-search-input"
+            />
           </div>
-
-          <div className="text-center mb-8">
-            <h1 className="font-display heading-xl text-brand-800 mb-4">
-              {currentCategory?.name || 'Category'} Recipes
-            </h1>
-            {currentCategory?.description && (
-              <p className="text-neutral-700 text-lg max-w-2xl mx-auto">
-                {currentCategory.description}
-              </p>
-            )}
-          </div>
-
-          {/* Search */}
-          <div className="flex flex-col lg:flex-row gap-6 items-center justify-center">
-            <form onSubmit={handleSearch} className="flex-1 max-w-md">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500" size={16} />
-                <Input
-                  type="text"
-                  placeholder="Search recipes in this category..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                  data-testid="category-recipe-search-input"
-                />
-              </div>
-            </form>
-          </div>
-        </div>
-      </section>
+        </form>
+      </PageHeader>
 
       {/* Recipes Grid */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-10 md:py-14">
+        <div className="site-container">
           {recipes.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {recipes.map((recipe: Recipe) => (
-                  <Card key={recipe.id} className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg motion-safe:hover:scale-[1.02] motion-safe:transform transition-all duration-300 border border-warm-peach/30" data-testid={`recipe-card-${recipe.id}`}>
-                    <img
-                      src={getRecipeImageUrl(recipe)}
-                      alt={getRecipeImageAlt(recipe)}
-                      className="w-full h-40 object-cover"
-                    />
-                    <CardContent className="p-5">
-                      <div className="flex items-center justify-end mb-2">
-                        <div className="flex items-center text-accent-600" aria-label="Recipe rating">
-                          <Star size={12} fill="currentColor" />
-                          <span className="ml-1 text-xs">{recipe.averageRating ?? '–'}</span>
-                        </div>
-                      </div>
-                      <h3 className="font-display font-semibold text-lg mb-2 text-brand-800 line-clamp-2">
-                        {recipe.name}
-                      </h3>
-                      <div className="text-neutral-700 text-sm mb-3 line-clamp-2">
-                        <MarkdownContent
-                          content={recipe.description || ''}
-                          summary={true}
-                          className="text-sm"
-                        />
-                      </div>
-                      <div className="flex items-center justify-between text-xs text-neutral-700">
-                        <span className="flex items-center">
-                          <Users size={12} className="mr-1" />
-                          {recipe.servings}
-                        </span>
-                        <Link href={getRecipeUrl(recipe)}>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-accent-600 hover:text-accent-700 p-0 h-auto"
-                            data-testid={`view-recipe-${recipe.id}`}
-                          >
-                            <ArrowRight size={14} className="mr-1" />
-                            View
-                          </Button>
-                        </Link>
-                      </div>
-                    </CardContent>
-                  </Card>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {recipes.map((recipe: Recipe, index: number) => (
+                  <RecipeCard key={recipe.id} recipe={recipe} showCategory={false} priority={index < 4} />
                 ))}
               </div>
 
               {/* Pagination */}
-              {pagination && (pagination.totalPages > 1) && (
-                <div className="flex items-center justify-center space-x-4 mt-12">
+              {pagination.totalPages > 1 && (
+                <nav aria-label="Pagination" className="mt-12 flex items-center justify-center gap-4">
                   <Button
                     variant="outline"
                     disabled={!pagination.hasPrevious}
                     onClick={() => setPage(page - 1)}
                     data-testid="pagination-prev"
                   >
+                    <ArrowLeft aria-hidden="true" />
                     Previous
                   </Button>
-                  <span className="text-gray-600">
-                    Page {pagination.currentPage} of {pagination.totalPages}
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Page <span className="text-foreground">{pagination.currentPage}</span> of {pagination.totalPages}
                   </span>
                   <Button
                     variant="outline"
@@ -279,24 +211,27 @@ export default function CategoryRecipes() {
                     data-testid="pagination-next"
                   >
                     Next
+                    <ArrowRight aria-hidden="true" />
                   </Button>
-                </div>
+                </nav>
               )}
             </>
           ) : (
-            <div className="text-center py-12 bg-white rounded-xl shadow-md border border-warm-peach/30">
-              <div className="text-6xl mb-4">🍽️</div>
-              <h3 className="text-xl font-bold text-brand-800 mb-2">
-                No Recipes Found
-              </h3>
-              <p className="text-neutral-700 mb-6">
-                We don't have any recipes in this category yet.
+            <div className="rounded-lg border border-border bg-card px-6 py-14 text-center shadow-sm">
+              <span className="mx-auto mb-5 grid size-14 place-items-center rounded-md bg-primary-soft text-primary-ink">
+                <SearchX size={26} aria-hidden="true" />
+              </span>
+              <h2 className="font-display text-xl font-bold text-foreground">
+                No recipes found
+              </h2>
+              <p className="mx-auto mt-2 max-w-md text-muted-foreground">
+                {searchQuery
+                  ? "Nothing in this category matches that search. Try another term."
+                  : "We don't have any recipes in this category yet."}
               </p>
-              <Link href="/recipes/">
-                <Button variant="brand">
-                  Browse All Recipes
-                </Button>
-              </Link>
+              <Button asChild className="mt-6">
+                <Link href="/recipes/">Browse all recipes</Link>
+              </Button>
             </div>
           )}
         </div>

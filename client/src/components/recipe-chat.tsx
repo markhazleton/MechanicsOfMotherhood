@@ -12,10 +12,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, ChefHat, Loader2 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { initializeChatSession, sendChatMessage, getChatHints } from '@/api/chat';
 import type { ChatMessage, ChatSession, ChatHint } from '@/types/chat';
 
@@ -124,120 +122,112 @@ export function RecipeChat({
   };
 
   return (
-    <Card className={`recipe-chat ${className}`}>
-      <CardHeader className="bg-gradient-to-r from-warm-peach to-warm-cream border-b border-warm-peach/30">
-        <div className="flex items-center gap-3">
-          <div className="bg-accent-500 text-white p-2.5 rounded-lg">
-            <ChefHat className="h-5 w-5" />
-          </div>
-          <div>
-            <CardTitle className="text-xl font-display text-brand-800">
-              Talk to MoM about this Recipe
-            </CardTitle>
-            <CardDescription className="text-brand-600">
-              Ask about ingredients, servings, substitutions, and more
-            </CardDescription>
-          </div>
+    <section
+      className={`recipe-chat overflow-hidden rounded-lg border border-border bg-card shadow-sm ${className}`}
+      aria-labelledby="recipe-chat-heading"
+    >
+      <div className="flex items-center gap-4 border-b border-border-subtle px-6 py-5 md:px-8">
+        <span className="grid size-11 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground">
+          <ChefHat className="size-5" aria-hidden="true" />
+        </span>
+        <div>
+          <p className="eyebrow text-xs">Ask MoM</p>
+          <h2 id="recipe-chat-heading" className="mt-1 font-display text-xl font-bold text-foreground">
+            Talk to MoM about this recipe
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Ask about ingredients, servings, substitutions, and more.
+          </p>
         </div>
-      </CardHeader>
+      </div>
 
-      <CardContent className="p-0">
-        {/* Messages Area */}
-        <div className="h-96 overflow-y-auto p-6 space-y-4 bg-warm-cream/30">
-          {messages.map((message) => (
+      {/* Messages Area */}
+      <div className="h-96 space-y-4 overflow-y-auto bg-muted px-6 py-6 md:px-8" aria-live="polite">
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+          >
             <div
-              key={message.id}
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              className={`max-w-[80%] rounded-lg px-4 py-3 shadow-xs ${
+                message.role === 'user'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'border border-border bg-card text-body'
+              }`}
             >
-              <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                  message.role === 'user'
-                    ? 'bg-accent-500 text-white shadow-md'
-                    : 'bg-white text-brand-900 shadow-md border border-warm-peach/30'
-                }`}
-              >
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                  {message.content}
-                </p>
-                <span className="text-xs opacity-70 mt-1 block">
-                  {message.timestamp.toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </span>
-              </div>
+              <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                {message.content}
+              </p>
+              <span className="mt-1 block text-xs opacity-75">
+                {message.timestamp.toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </span>
             </div>
+          </div>
+        ))}
+
+        {isLoading && (
+          <div className="flex justify-start">
+            <div className="rounded-lg border border-border bg-card px-4 py-3 shadow-xs">
+              <Loader2 className="size-4 animate-spin text-primary-ink" aria-label="MoM is typing" />
+            </div>
+          </div>
+        )}
+
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Hint Chips */}
+      <div className="border-t border-border-subtle px-6 py-4 md:px-8">
+        <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+          Quick questions
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {hints.slice(0, 6).map((hint) => (
+            <button
+              key={hint.id}
+              type="button"
+              className="rounded-sm border border-border bg-card px-2.5 py-1.5 text-xs font-semibold text-secondary-foreground transition-colors duration-[120ms] hover:border-primary hover:text-primary-ink"
+              onClick={() => handleHintClick(hint)}
+            >
+              {hint.label}
+            </button>
           ))}
-
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-white text-brand-900 rounded-2xl px-4 py-3 shadow-md border border-warm-peach/30">
-                <Loader2 className="h-4 w-4 animate-spin text-accent-500" />
-              </div>
-            </div>
-          )}
-
-          <div ref={messagesEndRef} />
         </div>
+      </div>
 
-        {/* Hint Chips */}
-        <div className="px-6 py-4 border-t border-warm-peach/30 bg-white/50">
-          <p className="text-xs font-semibold text-brand-700 mb-2">
-            Quick questions:
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {hints.slice(0, 6).map((hint) => (
-              <Badge
-                key={hint.id}
-                variant="outline"
-                className="cursor-pointer hover:bg-accent-50 hover:border-accent-400 transition-all"
-                onClick={() => handleHintClick(hint)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    handleHintClick(hint);
-                  }
-                }}
-              >
-                {hint.label}
-              </Badge>
-            ))}
-          </div>
+      {/* Input Area */}
+      <div className="border-t border-border-subtle px-6 py-5 md:px-8">
+        <div className="flex gap-3">
+          <Input
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyPress}
+            placeholder="Ask about ingredients, substitutions, tips…"
+            className="flex-1"
+            disabled={isLoading}
+            aria-label="Chat message input"
+          />
+          <Button
+            onClick={handleSendMessage}
+            disabled={!inputValue.trim() || isLoading}
+            size="icon"
+            className="size-11"
+            aria-label="Send message"
+          >
+            {isLoading ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <Send />
+            )}
+          </Button>
         </div>
-
-        {/* Input Area */}
-        <div className="p-6 bg-white border-t border-warm-peach/30">
-          <div className="flex gap-3">
-            <Input
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="Ask about ingredients, substitutions, tips..."
-              className="flex-1 rounded-lg border-warm-peach/50 focus:border-accent-400 focus:ring-accent-400"
-              disabled={isLoading}
-              aria-label="Chat message input"
-            />
-            <Button
-              onClick={handleSendMessage}
-              disabled={!inputValue.trim() || isLoading}
-              size="lg"
-              variant="accent"
-              className="rounded-lg"
-              aria-label="Send message"
-            >
-              {isLoading ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                <Send className="h-5 w-5" />
-              )}
-            </Button>
-          </div>
-          <p className="text-xs text-muted-foreground mt-2 text-center">
-            Powered by MoM AI (experimental)
-          </p>
-        </div>
-      </CardContent>
-    </Card>
+        <p className="mt-2.5 text-center text-xs text-muted-foreground">
+          Powered by MoM AI (experimental)
+        </p>
+      </div>
+    </section>
   );
 }

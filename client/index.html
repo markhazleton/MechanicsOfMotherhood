@@ -16,6 +16,17 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self' https:; script-src 'self' https://www.googletagmanager.com https://static.cloudflareinsights.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data:; connect-src 'self' https:; upgrade-insecure-requests"
     />
+    <meta name="theme-color" content="#f8f6f2" />
+    <!-- Apply saved / preferred color theme before first paint to avoid a flash -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('mom-theme');
+          var dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (dark) document.documentElement.classList.add('dark');
+        } catch (e) {}
+      })();
+    </script>
     <title>Mechanics of Motherhood - Engineering Better Meals</title>
     <meta
       name="description"
@@ -78,25 +89,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <!-- Critical fonts preload -->
+    <!-- Brand fonts (Make Bold design system): Be Vietnam Pro display, Inter Tight text -->
     <link
       rel="preload"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Roboto+Condensed:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700;800&amp;family=Inter+Tight:ital,wght@0,400..700;1,400..700&amp;display=swap"
       as="style"
       onload="this.onload=null;this.rel='stylesheet'"
     />
     <noscript>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Roboto+Condensed:wght@400;700&display=swap"
-        rel="stylesheet"
-      />
+      <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700;800&amp;family=Inter+Tight:ital,wght@0,400..700;1,400..700&amp;display=swap" rel="stylesheet" />
     </noscript>
     <!-- Removed legacy GitHub Pages SPA redirect script: prerendered static routes make it unnecessary -->
   </head>
   <body>
     <a
       href="#root"
-      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-black text-white px-4 py-2 rounded z-50"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-neutral-900 text-cream px-4 py-2 rounded-md z-50"
       >Skip to content</a
     >
     <!-- Root mount point (single id attribute to avoid hydration anomalies) -->
