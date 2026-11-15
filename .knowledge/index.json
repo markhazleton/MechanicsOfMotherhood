@@ -1,0 +1,62 @@
+{
+  "generated": {
+    "by": "build-knowledge-index",
+    "at": "2026-11-15T15:42:49Z"
+  },
+  "roots": [
+    {
+      "path": ".devspark/",
+      "owner": "framework",
+      "purpose": "framework payload"
+    },
+    {
+      "path": ".devspark.work/",
+      "owner": "repo",
+      "purpose": "work products"
+    },
+    {
+      "path": ".knowledge/",
+      "owner": "repo",
+      "purpose": "current authoritative knowledge and published user-facing guidance"
+    },
+    {
+      "path": ".archive/",
+      "owner": "repo",
+      "purpose": "landing place for old work products, grouped by release"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "governance-constitution",
+      "type": "governance",
+      "form": "flat-document",
+      "role": "governance",
+      "path": ".knowledge/governance/constitution.md",
+      "title": "Mechanics of Motherhood Constitution",
+      "headings": [
+        "Mechanics of Motherhood Constitution",
+        "Core Principles",
+        "I. TypeScript Strictness",
+        "II. Testing Standards",
+        "III. Code Quality & Linting",
+        "IV. File Naming Conventions",
+        "V. Styling & Design System",
+        "VI. React Component Standards",
+        "VII. Accessibility",
+        "VIII. Observability & Logging",
+        "IX. CI/CD & Quality Gates",
+        "X. Build & Deployment",
+        "Technology Stack",
+        "Compliance Levels",
+        "Governance",
+        "Amendment Process",
+        "Compliance",
+        "Versioning"
+      ]
+    }
+  ],
+  "edges": [],
+  "dangling_references": [],
+  "entities": [],
+  "stale_entities": []
+}

@@ -1,16 +1,153 @@
 #!/usr/bin/env bash
+# DevSpark - (c) 2026 Make Bold Solutions. Source: https://dev.makeboldspark.com
 # Common functions and variables for all scripts
 
 # Get repository root, with fallback for non-git repositories
 get_repo_root() {
-    if git rev-parse --show-toplevel >/dev/null 2>&1; then
-        git rev-parse --show-toplevel
+    local top
+    if top="$(git rev-parse --show-toplevel 2>/dev/null)"; then
+        printf '%s\n' "$top"
     else
         # Fall back to script location for non-git repos
         local script_dir
         script_dir="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
         (cd "$script_dir/../../.." && pwd)
     fi
+}
+
+# Single canonical resolver for build_knowledge_index.py. The framework-managed copy under
+# .devspark/scripts/ always wins when present, so every caller (CI, site-audit, create-pr,
+# get-pr-context, release-context, /devspark-explain) agrees on one implementation. The repo-root
+# copy is used only when .devspark/scripts/ has none -- DevSpark's own self-hosted repo, where
+# scripts/ IS the canonical source packaged into .devspark/scripts/ for every installed repository.
+resolve_knowledge_engine() {
+    local repo_root="$1"
+    local devspark_copy="$repo_root/.devspark/scripts/build_knowledge_index.py"
+    local root_copy="$repo_root/scripts/build_knowledge_index.py"
+    if [[ -f "$devspark_copy" ]]; then
+        echo "$devspark_copy"
+    elif [[ -f "$root_copy" ]]; then
+        echo "$root_copy"
+    fi
+}
+
+# Canonical installed-version lookup. Every artifact that records its own DevSpark provenance
+# resolves the version here instead of re-implementing stamp parsing.
+get_devspark_version() {
+    local repo_root="${1:-$(get_repo_root)}"
+    local version="unknown"
+    local candidate
+
+    for candidate in "$repo_root/.devspark/VERSION" "$repo_root/.documentation/DEVSPARK_VERSION"; do
+        [[ -f "$candidate" ]] || continue
+        version="$(sed -n 's/^[[:space:]]*version:[[:space:]]*\([^[:space:]]\{1,\}\).*/\1/p' "$candidate" | head -n 1)"
+        if [[ -z "$version" ]]; then
+            # Legacy stamps may hold a bare semver with no key.
+            local bare
+            bare="$(head -n 1 "$candidate" | tr -d '[:space:]')"
+            if [[ "$bare" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+                version="$bare"
+            fi
+        fi
+        [[ -n "$version" ]] && break
+    done
+
+    echo "${version:-unknown}"
+}
+
+get_devspark_revision() {
+    local repo_root="${1:-$(get_repo_root)}"
+    git -C "$repo_root" rev-parse --short HEAD 2>/dev/null || true
+}
+
+get_default_doc_taxon() {
+    local relative_path="$1"
+    local content="${2:-}"
+    local normalized_path="${relative_path//\\//}"
+    local deprecated_pattern='pydantic_agent|AGENT_REGISTRY|REPO_MODE_AGENTS|data_field|function_name|display_card_id'
+
+    if [[ "$normalized_path" =~ ^docs/ ]] ||
+        { [[ "$normalized_path" =~ ^\.documentation/ ]] && [[ "$content" =~ $deprecated_pattern ]]; }; then
+        echo 'STALE_REFERENCE'
+        return
+    fi
+
+    case "$normalized_path" in
+        .knowledge/reference/*|.knowledge/reference-data/*) echo 'REFERENCE_DATA' ;;
+        .knowledge/integrations/*|.knowledge/operations/*|.knowledge/scripts/*) echo 'OPERATIONS_RUNBOOK' ;;
+        .knowledge/legal/*) echo 'AUTHORITATIVE_REFERENCE' ;;
+        .knowledge/plans/*) echo 'STALE_REFERENCE' ;;
+        CHANGELOG.md) echo 'HISTORICAL_RECORD' ;;
+        .github/copilot-instructions.md) echo 'AUTHORITATIVE_REFERENCE' ;;
+        .knowledge/governance/*) echo 'AUTHORITATIVE_REFERENCE' ;;
+        .knowledge/architecture/*) echo 'ENGINEERING_PATTERN' ;;
+        .devspark.work/releases/*) echo 'RESEARCH_OR_CONTEXT' ;;
+        .devspark.work/quickfixes/*) echo 'RESEARCH_OR_CONTEXT' ;;
+        .devspark.work/pr-review/*) echo 'RESEARCH_OR_CONTEXT' ;;
+        .devspark.work/audit/*) echo 'RESEARCH_OR_CONTEXT' ;;
+        .devspark.work/improvement-loop/*) echo 'RESEARCH_OR_CONTEXT' ;;
+        .devspark.work/templates/*|.devspark.work/commands/*) echo 'ENGINEERING_PATTERN' ;;
+        .devspark.work/scripts/*) echo 'OPERATIONS_RUNBOOK' ;;
+        .documentation/*) echo 'AUTHORITATIVE_REFERENCE' ;;
+        *) echo 'AUTHORITATIVE_REFERENCE' ;;
+    esac
+}
+
+resolve_doc_taxon() {
+    local repo_root="$1"
+    local relative_path="$2"
+    local content="${3:-}"
+    local normalized_path="${relative_path//\\//}"
+    local explicit_type
+    explicit_type=$(printf '%s\n' "$content" | sed -nE "s/^type:[[:space:]]*['\"]?([a-z][a-z0-9-]*).*/\1/p" | head -n 1)
+    if [[ -n "$explicit_type" ]]; then
+        # bash 3.2 compatible (macOS system bash lacks ${var^^} case expansion).
+        printf '%s\n' "$explicit_type" | tr '[:lower:]' '[:upper:]' | tr '-' '_'
+        return
+    fi
+
+    local registry="$repo_root/.knowledge/taxonomy-registry.json"
+    if [[ -f "$registry" ]]; then
+        local registry_rows
+        if ! registry_rows=$(python3 - "$registry" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], encoding="utf-8") as stream:
+    registry = json.load(stream)
+mappings = registry.get("mappings")
+if not isinstance(mappings, list):
+    raise ValueError("mappings must be an array")
+for mapping in mappings:
+    print("\t".join((
+        str(mapping.get("pathPattern", "")),
+        str(mapping.get("nodeType", "")),
+        str(mapping.get("workProductType", "")),
+    )))
+PY
+        ); then
+            echo "Invalid taxonomy registry '$registry'" >&2
+            return 1
+        fi
+        local pattern node_type work_type
+        while IFS=$'\t' read -r pattern node_type work_type; do
+            [[ -n "$pattern" ]] || continue
+            # Registry patterns are globs, so the right-hand side stays unquoted on purpose.
+            # shellcheck disable=SC2053
+            if [[ "$normalized_path" == $pattern ]]; then
+                if [[ -n "$node_type" ]]; then
+                    printf '%s\n' "$node_type" | tr '[:lower:]' '[:upper:]' | tr '-' '_'
+                    return
+                fi
+                if [[ -n "$work_type" ]]; then
+                    printf '%s\n' "$work_type" | tr '[:lower:]' '[:upper:]' | tr '-' '_'
+                    return
+                fi
+            fi
+        done <<< "$registry_rows"
+    fi
+
+    get_default_doc_taxon "$normalized_path" "$content"
 }
 
 # Get current branch, with fallback for non-git repositories
@@ -30,7 +167,7 @@ get_current_branch() {
     # For non-git repos, try to find the latest feature directory
     local repo_root
     repo_root=$(get_repo_root)
-    local specs_dir="$repo_root/.documentation/specs"
+    local specs_dir="$repo_root/.devspark.work/specs"
 
     if [[ -d "$specs_dir" ]]; then
         local latest_feature=""
@@ -65,6 +202,96 @@ has_git() {
     git rev-parse --show-toplevel >/dev/null 2>&1
 }
 
+# Unified branch index: max integer across ALL numbered branches, spec
+# directories, AND quickfix records, plus 1. Derived live from the repository --
+# never a stored counter. For any input set with no quickfix records this equals
+# the legacy get_next_branch_number (the verify:snapshot-neutral invariant).
+get_next_unified_index() {
+    local no_fetch="${1:-}"
+    local repo_root
+    repo_root="$(get_repo_root)"
+    if [[ "$no_fetch" != "--no-fetch" ]]; then
+        # Never block on a credential prompt (offline-safe); fail fast instead.
+        GIT_TERMINAL_PROMPT=0 git -c credential.interactive=false fetch --all --prune >/dev/null 2>&1 || true
+    fi
+
+    local highest=0 n clean name base d f b
+
+    # 1. Branches (local + remote), pattern ^(digits)-
+    while IFS= read -r b; do
+        clean="$(printf '%s' "$b" | sed -E 's/^\*?[[:space:]]+//; s#^remotes/[^/]+/##')"
+        if [[ "$clean" =~ ^([0-9]+)- ]]; then
+            n=$((10#${BASH_REMATCH[1]}))
+            (( n > highest )) && highest=$n
+        fi
+    done < <(git branch -a 2>/dev/null || true)
+
+    # 2. Spec directories, pattern ^(digits)
+    local specs_dir="$repo_root/.devspark.work/specs"
+    if [[ -d "$specs_dir" ]]; then
+        for d in "$specs_dir"/*; do
+            [[ -d "$d" ]] || continue
+            name="$(basename "$d")"
+            if [[ "$name" =~ ^([0-9]+) ]]; then
+                n=$((10#${BASH_REMATCH[1]}))
+                (( n > highest )) && highest=$n
+            fi
+        done
+    fi
+
+    # 3. Quickfix records: legacy QF-YYYY-NNN and new NNN-fix-*
+    local qf_dir="$repo_root/.devspark.work/quickfixes"
+    if [[ -d "$qf_dir" ]]; then
+        for f in "$qf_dir"/*.md; do
+            [[ -f "$f" ]] || continue
+            base="$(basename "$f" .md)"
+            if [[ "$base" =~ ^QF-[0-9]{4}-([0-9]+)$ ]]; then
+                n=$((10#${BASH_REMATCH[1]}))
+                (( n > highest )) && highest=$n
+            elif [[ "$base" =~ ^([0-9]+)-fix- ]]; then
+                n=$((10#${BASH_REMATCH[1]}))
+                (( n > highest )) && highest=$n
+            fi
+        done
+    fi
+
+    echo $((highest + 1))
+}
+
+# Canonical short-name normalizer: lowercase, non-alphanumerics to
+# hyphens, collapse repeats, trim leading/trailing hyphens.
+clean_branch_name() {
+    local name="$1"
+    echo "$name" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/-\+/-/g' | sed 's/^-//' | sed 's/-$//'
+}
+
+# Collision guard: prints "true" if this 3-digit index is already owned
+# by a branch (local/remote) or a spec directory, else "false".
+test_index_collision() {
+    local number="$1"
+    local repo_root="${2:-$(get_repo_root)}"
+    local prefix
+    prefix="$(printf '%03d-' "$((10#$number))")"
+
+    local specs_dir="$repo_root/.devspark.work/specs"
+    if [[ -d "$specs_dir" ]]; then
+        local d
+        for d in "$specs_dir"/"$prefix"*; do
+            if [[ -d "$d" ]]; then echo "true"; return 0; fi
+        done
+    fi
+
+    local b clean
+    while IFS= read -r b; do
+        clean="$(printf '%s' "$b" | sed -E 's/^\*?[[:space:]]+//; s#^remotes/[^/]+/##')"
+        case "$clean" in
+            "$prefix"*) echo "true"; return 0 ;;
+        esac
+    done < <(git branch -a 2>/dev/null || true)
+
+    echo "false"
+}
+
 check_feature_branch() {
     local branch="$1"
     local has_git_repo="$2"
@@ -84,14 +311,47 @@ check_feature_branch() {
     return 0
 }
 
-get_feature_dir() { echo "$1/.documentation/specs/$2"; }
+get_feature_dir() { echo "$1/.devspark.work/specs/$2"; }
+
+resolve_template_path() {
+    local repo_root="$1"
+    local template_name="$2"
+
+    local candidates=(
+        "$repo_root/.devspark.work/templates/$template_name"
+        "$repo_root/.devspark/templates/$template_name"
+        "$repo_root/templates/$template_name"
+    )
+
+    local candidate
+    for candidate in "${candidates[@]}"; do
+        if [[ -f "$candidate" ]]; then
+            echo "$candidate"
+            return 0
+        fi
+    done
+
+    return 1
+}
 
 # Find feature directory by numeric prefix instead of exact branch match
 # This allows multiple branches to work on the same spec (e.g., 004-fix-bug, 004-add-feature)
 find_feature_dir_by_prefix() {
     local repo_root="$1"
     local branch_name="$2"
-    local specs_dir="$repo_root/.documentation/specs"
+    local specs_dir="$repo_root/.devspark.work/specs"
+
+    #  (type-aware routing): a NNN-fix-<slug> branch is a quickfix, whose
+    # record lives under .devspark.work/quickfixes/, not specs/.
+    if [[ "$branch_name" =~ ^[0-9]{3}-fix- ]]; then
+        echo "$repo_root/.devspark.work/quickfixes"
+        return
+    fi
+
+    if [[ "$branch_name" =~ ^[0-9]{3}-work- ]]; then
+        echo "$specs_dir/$branch_name"
+        return
+    fi
 
     # Extract numeric prefix from branch (e.g., "004" from "004-whatever")
     if [[ ! "$branch_name" =~ ^([0-9]{3})- ]]; then
@@ -102,7 +362,7 @@ find_feature_dir_by_prefix() {
 
     local prefix="${BASH_REMATCH[1]}"
 
-    # Search for directories in .documentation/specs/ that start with this prefix
+    # Search for directories in .devspark.work/specs/ that start with this prefix
     local matches=()
     if [[ -d "$specs_dir" ]]; then
         for dir in "$specs_dir"/"$prefix"-*; do
@@ -142,12 +402,23 @@ get_feature_paths() {
     local feature_dir
     feature_dir=$(find_feature_dir_by_prefix "$repo_root" "$current_branch")
 
+    # Quickfix routes resolve FEATURE_DIR to .devspark.work/quickfixes/, but the
+    # record file is named after the branch (e.g. 042-fix-null-guard.md), not spec.md.
+    local feature_spec
+    if [[ "$current_branch" =~ ^[0-9]{3}-work- ]]; then
+        feature_spec="$feature_dir/work.md"
+    elif [[ "$feature_dir" == "$repo_root/.devspark.work/quickfixes" ]]; then
+        feature_spec="$feature_dir/$current_branch.md"
+    else
+        feature_spec="$feature_dir/spec.md"
+    fi
+
     cat <<EOF
 REPO_ROOT='$repo_root'
 CURRENT_BRANCH='$current_branch'
 HAS_GIT='$has_git_repo'
 FEATURE_DIR='$feature_dir'
-FEATURE_SPEC='$feature_dir/spec.md'
+FEATURE_SPEC='$feature_spec'
 IMPL_PLAN='$feature_dir/plan.md'
 TASKS='$feature_dir/tasks.md'
 RESEARCH='$feature_dir/research.md'
@@ -159,6 +430,46 @@ EOF
 
 check_file() { [[ -f "$1" ]] && echo "  ✓ $2" || echo "  ✗ $2"; }
 check_dir() { [[ -d "$1" && -n $(ls -A "$1" 2>/dev/null) ]] && echo "  ✓ $2" || echo "  ✗ $2"; }
+
+add_devspark_metric() {
+    local command_name="$1"
+    local status="${2:-success}"
+    local duration_ms="${3:-0}"
+    local findings_json="${4:-{\"showstopper\":0,\"critical\":0,\"high\":0,\"medium\":0,\"low\":0}}"
+    local extra_json="${5:-{}}"
+
+    [[ "${DEVSPARK_METRICS_ENABLED:-false}" == "true" ]] || return 0
+
+    # Best-effort only; metrics must never block primary workflow.
+    {
+        local repo_root
+        repo_root=$(get_repo_root)
+        local metrics_dir="$repo_root/.devspark.work/metrics"
+        mkdir -p "$metrics_dir"
+
+        local branch feature_dir author ts
+        branch=$(get_current_branch 2>/dev/null || echo "unknown")
+        feature_dir=$(find_feature_dir_by_prefix "$repo_root" "$branch" 2>/dev/null || echo "")
+        author=$(git config user.name 2>/dev/null || echo "unknown")
+        ts=$(date -u +%FT%TZ)
+
+        local base
+        base=$(jq -cn \
+            --arg ts "$ts" \
+            --arg cmd "$command_name" \
+            --arg status "$status" \
+            --arg branch "$branch" \
+            --arg feature_dir "$feature_dir" \
+            --arg author "$author" \
+            --argjson duration "$duration_ms" \
+            --argjson findings "$findings_json" \
+            '{ts_utc:$ts,command:$cmd,status:$status,duration_ms:$duration,branch:$branch,feature_dir:$feature_dir,author:$author,findings:$findings}')
+
+        local merged
+        merged=$(jq -cn --argjson b "$base" --argjson e "$extra_json" '$b + $e')
+        printf '%s\n' "$merged" >> "$metrics_dir/devspark-metrics.jsonl"
+    } 2>/dev/null || true
+}
 
 get_markdown_frontmatter() {
     local file_path="$1"
@@ -172,11 +483,249 @@ get_markdown_frontmatter() {
     ' "$file_path"
 }
 
+# ---------------------------------------------------------------------------
+# OKF knowledge documents
+# ---------------------------------------------------------------------------
+
+# Mirrors New-KnowledgeDocument (common.ps1) exactly: atomic (temp file + mv),
+# never propagates a failure to the caller's exit code -- returns 1 on error
+# after logging a warning, so  fail-soft guarantee holds in bash too.
+#
+# Usage: write_knowledge_document <feature_dir> <id> <type> <title> <status> <links_json> <generated_by>
+# <links_json> is a JSON object, e.g. '{"feature":"feature","implemented_by":[]}'.
+write_knowledge_document() {
+    local feature_dir="$1"
+    local id="$2"
+    local doc_type="$3"
+    local title="$4"
+    local status="$5"
+    local links_json="$6"
+    local generated_by="$7"
+
+    local knowledge_dir="$feature_dir/knowledge"
+    local doc_path="$knowledge_dir/$id.md"
+    local temp_path="$knowledge_dir/.$id.md.tmp"
+
+    if {
+        mkdir -p "$knowledge_dir" &&
+        generated_at=$(date -u +%FT%TZ) &&
+        links_yaml=$(printf '%s' "$links_json" | jq -r '
+            to_entries | map(
+                if (.value | type) == "array" then
+                    if (.value | length) == 0 then
+                        "  \(.key): []"
+                    else
+                        "  \(.key):\n" + (.value | map("    - \(.)") | join("\n"))
+                    end
+                else
+                    "  \(.key): \(.value)"
+                end
+            ) | join("\n")
+        ') &&
+        title_escaped=$(printf '%s' "$title" | sed 's/\\/\\\\/g; s/"/\\"/g') &&
+        {
+            echo '---'
+            echo "id: $id"
+            echo "type: $doc_type"
+            echo "title: \"$title_escaped\""
+            echo "status: $status"
+            echo 'links:'
+            echo "$links_yaml"
+            echo 'generated:'
+            echo "  by: $generated_by"
+            echo "  at: $generated_at"
+            echo '---'
+            echo ''
+        } > "$temp_path" &&
+        mv -f "$temp_path" "$doc_path"
+    } 2>/dev/null; then
+        add_devspark_metric "knowledge-document" "success" 0 "" \
+            "$(jq -cn --arg id "$id" --arg t "$doc_type" '{knowledge_id:$id, knowledge_type:$t}')"
+        return 0
+    else
+        echo "Warning: DevSpark: failed to write knowledge document '$id'" >&2
+        rm -f "$temp_path" 2>/dev/null
+        add_devspark_metric "knowledge-document" "failure" 0 "" \
+            "$(jq -cn --arg id "$id" --arg t "$doc_type" '{knowledge_id:$id, knowledge_type:$t}')" 2>/dev/null || true
+        return 1
+    fi
+}
+
 get_markdown_frontmatter_value() {
     local file_path="$1"
     local key="$2"
 
     get_markdown_frontmatter "$file_path" | awk -F': ' -v wanted="$key" '$1 == wanted { print $2; exit }'
+}
+
+# ---------------------------------------------------------------------------
+# Repository configuration ("set once" facts: assistant name, platform, shell)
+# ---------------------------------------------------------------------------
+
+# Read a jq path (e.g. '.assistant.name') from .devspark.work/devspark.json.
+get_devspark_config_value() {
+    local repo_root config out
+    repo_root=$(get_repo_root)
+    config="$repo_root/.devspark.work/devspark.json"
+    if [[ -f "$config" ]]; then
+        if out=$(jq -r "$1 // empty" "$config" 2>/dev/null); then
+            echo "$out"
+        else
+            echo "DevSpark: failed to parse $config" >&2
+        fi
+    fi
+}
+
+# Read a jq path from the per-developer .devspark.work/devspark.user.json (gitignored).
+get_devspark_user_config_value() {
+    local repo_root config out
+    repo_root=$(get_repo_root)
+    config="$repo_root/.devspark.work/devspark.user.json"
+    if [[ -f "$config" ]]; then
+        if out=$(jq -r "$1 // empty" "$config" 2>/dev/null); then
+            echo "$out"
+        else
+            echo "DevSpark: failed to parse $config" >&2
+        fi
+    fi
+}
+
+# Resolve the developer-chosen assistant name. Precedence:
+# 1. DEVSPARK_ASSISTANT_NAME env var  2. user prefs  3. repo config  4. default 'Spark'.
+get_assistant_name() {
+    if [[ -n "${DEVSPARK_ASSISTANT_NAME:-}" ]]; then echo "$DEVSPARK_ASSISTANT_NAME"; return; fi
+    local name
+    name=$(get_devspark_user_config_value '.assistant.name')
+    [[ -z "$name" ]] && name=$(get_devspark_config_value '.assistant.name')
+    if [[ -n "$name" ]]; then echo "$name"; else echo "Spark"; fi
+}
+
+# Read a preference/policy by name. Precedence: user prefs -> repo preferences -> repo policies -> default ($2).
+get_devspark_preference() {
+    local val
+    val=$(get_devspark_user_config_value ".preferences.$1")
+    [[ -z "$val" ]] && val=$(get_devspark_config_value ".preferences.$1")
+    [[ -z "$val" ]] && val=$(get_devspark_config_value ".policies.$1")
+    if [[ -n "$val" ]]; then echo "$val"; else echo "${2:-}"; fi
+}
+
+# Resolve the git user / DevSpark override key. Precedence:
+# 1. DEVSPARK_GIT_USER env  2. user config git_user  3. git config user.name  4. 'unknown'.
+get_git_user() {
+    if [[ -n "${DEVSPARK_GIT_USER:-}" ]]; then echo "$DEVSPARK_GIT_USER"; return; fi
+    local u
+    u=$(get_devspark_user_config_value '.git_user')
+    if [[ -n "$u" ]]; then echo "$u"; return; fi
+    if has_git; then
+        u=$(git config user.name 2>/dev/null || echo "")
+        if [[ -n "$u" ]]; then echo "$u"; return; fi
+    fi
+    echo "unknown"
+}
+
+# Emit "org\tproject\trepo" from devspark.json, falling back to the origin remote URL.
+get_azdo_repo_context() {
+    local org project repo url
+    org=$(get_devspark_config_value '.organization')
+    project=$(get_devspark_config_value '.project')
+    repo=$(get_devspark_config_value '.repository')
+    if [[ -z "$org" || -z "$project" || -z "$repo" ]]; then
+        url=$(git remote get-url origin 2>/dev/null || echo "")
+        if [[ "$url" =~ dev\.azure\.com/([^/]+)/([^/]+)/_git/([^/[:space:]]+) ]]; then
+            [[ -z "$org" ]] && org="${BASH_REMATCH[1]}"
+            [[ -z "$project" ]] && project="${BASH_REMATCH[2]}"
+            [[ -z "$repo" ]] && repo="${BASH_REMATCH[3]%.git}"
+        fi
+    fi
+    printf '%s\t%s\t%s\n' "$org" "$project" "$repo"
+}
+
+# Resolve work-tracking context in the declared precedence: explicit arguments, the
+# work_tracking block, top-level config, then the origin remote for repository identity only.
+# Area, iteration, type and tags are never inferred from the remote. Each resolved value
+# carries the step that produced it so a write can display where its inputs came from.
+#
+# Arguments: [organization] [project] [area_path] -- any may be empty.
+# Emits one value per line, in this order: configured platform org project repo area
+# iteration type tags review_on_specify org_src project_src repo_src area_src.
+# Newline-delimited rather than tab-delimited because tab is IFS whitespace, and `read`
+# collapses runs of it -- which silently shifts every value after the first empty one.
+get_work_tracking_context() {
+    local arg_org="${1:-}" arg_project="${2:-}" arg_area="${3:-}"
+    local repo_root config configured platform org project repo
+    local area iteration item_type tags review_on_specify url
+    local org_src project_src repo_src area_src
+
+    repo_root=$(get_repo_root)
+    config="$repo_root/.devspark.work/devspark.json"
+
+    # One jq pass reads every configured value; each is extracted exactly as
+    # get_devspark_config_value would (`<path> // empty`, raw) and NUL-terminated so an
+    # embedded newline cannot shift the values after it.
+    local values=() value warn=""
+    if [[ -f "$config" ]]; then
+        while IFS= read -r -d '' value; do
+            # Command substitution used to strip trailing line endings, which jq writes as
+            # CRLF on Windows.
+            value="${value%"${value##*[!$'\r\n']}"}"
+            # A path that cannot be evaluated yields an empty value and the parse warning.
+            [[ "$value" == $'\x01' ]] && { value=""; warn=1; }
+            values+=("$value")
+        done < <(jq -j '
+            def raw(f): [try (f // empty) catch "\u0001"]
+                | if length == 0 then "" else (.[0] | if type == "string" then . else tojson end) end;
+            (try has("work_tracking") catch false | tostring),
+            raw(.platform), raw(.organization), raw(.project), raw(.repository),
+            raw(.work_tracking.default_area_path), raw(.work_tracking.default_iteration_path),
+            raw(.work_tracking.default_work_item_type),
+            (try ((.work_tracking.tags // []) | join(",")) catch ""),
+            (try ((.work_tracking.review_on_specify // true) | if type == "string" then . else tojson end) catch "")
+            | ., "\u0000"' "$config" 2>/dev/null)
+        (( ${#values[@]} == 10 )) || { values=(); warn=1; }
+        [[ -n "$warn" ]] && echo "DevSpark: failed to parse $config" >&2
+    fi
+    local cfg_platform="${values[1]:-}" cfg_org="${values[2]:-}" cfg_project="${values[3]:-}"
+    local cfg_repo="${values[4]:-}" cfg_area="${values[5]:-}" cfg_iteration="${values[6]:-}"
+    local cfg_type="${values[7]:-}" cfg_tags="${values[8]:-}" cfg_review="${values[9]:-}"
+
+    configured="${values[0]:-false}"
+
+    platform="$cfg_platform"
+
+    if [[ -n "$arg_org" ]]; then org="$arg_org"; org_src="argument"
+    else org="$cfg_org"; [[ -n "$org" ]] && org_src="config"; fi
+
+    if [[ -n "$arg_project" ]]; then project="$arg_project"; project_src="argument"
+    else project="$cfg_project"; [[ -n "$project" ]] && project_src="config"; fi
+
+    repo="$cfg_repo"
+    [[ -n "$repo" ]] && repo_src="config"
+
+    # Step 4 applies to repository identity only.
+    if [[ -z "$org" || -z "$project" || -z "$repo" ]]; then
+        url=$(git remote get-url origin 2>/dev/null || echo "")
+        if [[ "$url" =~ dev\.azure\.com/([^/]+)/([^/]+)/_git/([^/[:space:]]+) ]]; then
+            [[ -z "$org" ]] && { org="${BASH_REMATCH[1]}"; org_src="origin_remote"; }
+            [[ -z "$project" ]] && { project="${BASH_REMATCH[2]}"; project_src="origin_remote"; }
+            [[ -z "$repo" ]] && { repo="${BASH_REMATCH[3]%.git}"; repo_src="origin_remote"; }
+        fi
+    fi
+
+    if [[ -n "$arg_area" ]]; then area="$arg_area"; area_src="argument"
+    else area="$cfg_area"; [[ -n "$area" ]] && area_src="work_tracking"; fi
+
+    iteration="$cfg_iteration"
+    item_type="$cfg_type"
+    tags="$cfg_tags"
+
+    review_on_specify="true"
+    [[ "$cfg_review" == "false" ]] && review_on_specify="false"
+
+    printf '%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n' \
+        "$configured" "$platform" "$org" "$project" "$repo" \
+        "$area" "$iteration" "$item_type" "$tags" "$review_on_specify" \
+        "${org_src:-unresolved}" "${project_src:-unresolved}" \
+        "${repo_src:-unresolved}" "${area_src:-unresolved}"
 }
 
 # ---------------------------------------------------------------------------
@@ -187,7 +736,7 @@ get_markdown_frontmatter_value() {
 detect_devspark_mode() {
     local repo_root
     repo_root=$(get_repo_root)
-    local registry="$repo_root/.documentation/devspark.json"
+    local registry="$repo_root/.devspark.work/devspark.registry.json"
 
     if [[ -f "$registry" ]]; then
         local mode
@@ -245,17 +794,17 @@ validate_registry_json() {
     echo "{\"valid\":true,\"apps\":$app_count,\"profiles\":$profile_count}"
 }
 
-# Resolve app documentation root (T014)
+# Resolve app documentation root
 resolve_app_doc_root() {
     local repo_root="$1"
     local app_id="$2"
 
     if [[ -z "$app_id" ]]; then
-        echo "$repo_root/.documentation"
+        echo "$repo_root/.devspark.work"
         return
     fi
 
-    local registry="$repo_root/.documentation/devspark.json"
+    local registry="$repo_root/.devspark.work/devspark.registry.json"
     if [[ ! -f "$registry" ]]; then
         echo "ERROR: No multi-app registry found" >&2; return 1
     fi
@@ -266,10 +815,10 @@ resolve_app_doc_root() {
         echo "ERROR: Unknown application: $app_id" >&2; return 1
     fi
 
-    echo "$repo_root/$app_path/.documentation"
+    echo "$repo_root/$app_path/.devspark.work"
 }
 
-# Parse --app and --repo-scope arguments (T026)
+# Parse --app and --repo-scope arguments
 # Sets DEVSPARK_APP_ID and DEVSPARK_REPO_SCOPE
 parse_app_context() {
     DEVSPARK_APP_ID=""
@@ -302,7 +851,7 @@ parse_app_context() {
     DEVSPARK_REMAINING_ARGS=("${remaining_args[@]}")
 }
 
-# Resolve scope and validate (T028, T030)
+# Resolve scope and validate
 # Sets DEVSPARK_SCOPE, DEVSPARK_DOC_ROOT, DEVSPARK_SCOPE_ERROR (used by callers)
 # shellcheck disable=SC2034
 resolve_app_scope() {
@@ -322,14 +871,14 @@ resolve_app_scope() {
             return 1
         fi
         DEVSPARK_SCOPE="repo"
-        DEVSPARK_DOC_ROOT="$repo_root/.documentation"
+        DEVSPARK_DOC_ROOT="$repo_root/.devspark.work"
         return 0
     fi
 
     # Multi-app mode
     if [[ "$DEVSPARK_REPO_SCOPE" == "true" ]]; then
         DEVSPARK_SCOPE="repo"
-        DEVSPARK_DOC_ROOT="$repo_root/.documentation"
+        DEVSPARK_DOC_ROOT="$repo_root/.devspark.work"
         return 0
     fi
 
@@ -345,7 +894,7 @@ resolve_app_scope() {
     fi
 
     # No explicit scope — check app count
-    local registry="$repo_root/.documentation/devspark.json"
+    local registry="$repo_root/.devspark.work/devspark.registry.json"
     local app_count
     app_count=$(jq '.apps | length' "$registry" 2>/dev/null || echo "0")
 
@@ -362,20 +911,20 @@ resolve_app_scope() {
         app_path=$(jq -r '.apps[0].path' "$registry")
         DEVSPARK_APP_ID="$app_id"
         DEVSPARK_SCOPE="single-app"
-        DEVSPARK_DOC_ROOT="$repo_root/$app_path/.documentation"
+        DEVSPARK_DOC_ROOT="$repo_root/$app_path/.devspark.work"
         return 0
     fi
 
     DEVSPARK_SCOPE="repo"
-    DEVSPARK_DOC_ROOT="$repo_root/.documentation"
+    DEVSPARK_DOC_ROOT="$repo_root/.devspark.work"
 }
 
-# Resolve constitution with app overlay (T022)
+# Resolve constitution with app overlay
 resolve_constitution() {
     local repo_root="$1"
     local app_id="${2:-}"
 
-    local repo_constitution="$repo_root/.documentation/memory/constitution.md"
+    local repo_constitution="$repo_root/.knowledge/governance/constitution.md"
     if [[ ! -f "$repo_constitution" ]]; then
         echo "ERROR: Repository constitution required at $repo_constitution" >&2
         return 1
@@ -385,9 +934,10 @@ resolve_constitution() {
     output=$(cat "$repo_constitution")
 
     if [[ -n "$app_id" ]]; then
-        local app_doc_root
-        app_doc_root=$(resolve_app_doc_root "$repo_root" "$app_id") || return 1
-        local app_constitution="$app_doc_root/memory/constitution.md"
+        local registry="$repo_root/.devspark.work/devspark.registry.json"
+        local app_path
+        app_path=$(jq -r --arg id "$app_id" '.apps[] | select(.id == $id) | .path // empty' "$registry" 2>/dev/null)
+        local app_constitution="$repo_root/$app_path/.knowledge/governance/constitution.md"
 
         if [[ -f "$app_constitution" ]]; then
             output="$output
@@ -403,11 +953,11 @@ $(cat "$app_constitution")"
     echo "$output"
 }
 
-# Get direct downstream consumers of an app (T039)
+# Get direct downstream consumers of an app
 get_downstream_apps() {
     local repo_root="$1"
     local app_id="$2"
-    local registry="$repo_root/.documentation/devspark.json"
+    local registry="$repo_root/.devspark.work/devspark.registry.json"
 
     if [[ ! -f "$registry" ]]; then
         return
@@ -419,7 +969,7 @@ get_downstream_apps() {
         "$registry" 2>/dev/null || true
 }
 
-# Generate scope report (T039)
+# Generate scope report
 generate_scope_report() {
     local repo_root
     repo_root=$(get_repo_root)
@@ -446,7 +996,7 @@ generate_scope_report() {
     fi
 }
 
-# Print scope summary (T035)
+# Print scope summary
 print_scope_summary() {
     echo "--- DevSpark Scope ---"
     echo "scope: ${DEVSPARK_SCOPE:-unknown}"
@@ -458,12 +1008,12 @@ print_scope_summary() {
     echo "---"
 }
 
-# Resolve inherited profile chain for an app (T052)
+# Resolve inherited profile chain for an app
 # Composes all inherited profiles + overrides + app.json into one effective profile
 resolve_app_profiles() {
     local repo_root="$1"
     local app_id="$2"
-    local registry="$repo_root/.documentation/devspark.json"
+    local registry="$repo_root/.devspark.work/devspark.registry.json"
 
     if [[ ! -f "$registry" ]]; then
         echo '{"tags":{},"rules":[],"hints":{}}'; return
@@ -498,7 +1048,7 @@ resolve_app_profiles() {
     '
 }
 
-# Override get_feature_paths for app-scoped workflows (T028)
+# Override get_feature_paths for app-scoped workflows
 get_feature_paths_app_aware() {
     local repo_root
     repo_root=$(get_repo_root)

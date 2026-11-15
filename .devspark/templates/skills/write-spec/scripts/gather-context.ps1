@@ -1,4 +1,5 @@
 #!/usr/bin/env pwsh
+# DevSpark - (c) 2026 Make Bold Solutions. Source: https://dev.makeboldspark.com
 # gather-context.ps1 — Gather repository context for the write-spec skill.
 # Always exits 0. Always emits valid JSON to stdout.
 # Records anything that could not be gathered in the skipped_context array.
@@ -38,7 +39,7 @@ if (-not $repoRoot) {
 
 # Load constitution summary
 $constitutionPaths = @(
-    Join-Path $repoRoot ".documentation/memory/constitution.md"
+    Join-Path $repoRoot ".knowledge/governance/constitution.md"
     Join-Path $repoRoot "constitution.md"
 )
 
@@ -69,7 +70,7 @@ if (-not $constitutionFound) {
 }
 
 # Gather prior specs
-$specsDir = Join-Path $repoRoot ".documentation/specs"
+$specsDir = Join-Path $repoRoot ".devspark.work/specs"
 if (Test-Path $specsDir) {
     try {
         $specFolders = Get-ChildItem $specsDir -Directory -ErrorAction Stop |

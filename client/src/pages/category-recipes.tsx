@@ -5,7 +5,7 @@ import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import PageHeader from "@/components/page-header";
 import RecipeCard from "@/components/recipe-card";
-import SeoHead from "@/components/seo/SeoHead";
+import SeoHead from "@/components/seo/seo-head";
 import { generateBreadcrumbs, generateCanonicalUrl, generateItemListStructuredData } from "@/utils/seo-helpers";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -42,9 +42,9 @@ export default function CategoryRecipes() {
   const endIndex = startIndex + pageSize;
   const filteredRecipes = searchQuery
     ? allCategoryRecipes.filter(recipe =>
-        recipe.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (recipe.description && recipe.description.toLowerCase().includes(searchQuery.toLowerCase()))
-      )
+      recipe.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (recipe.description && recipe.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    )
     : allCategoryRecipes;
 
   const recipes = filteredRecipes.slice(startIndex, endIndex);
@@ -62,12 +62,12 @@ export default function CategoryRecipes() {
   const currentUrl = generateCanonicalUrl(currentPath);
   const categoryStructuredData = currentCategory
     ? generateItemListStructuredData(
-        filteredRecipes.slice(0, 50).map((recipe) => ({
-          name: recipe.name,
-          url: generateCanonicalUrl(getRecipeUrl(recipe)),
-        })),
-        `${currentCategory.name} Recipes`
-      )
+      filteredRecipes.slice(0, 50).map((recipe) => ({
+        name: recipe.name,
+        url: generateCanonicalUrl(getRecipeUrl(recipe)),
+      })),
+      `${currentCategory.name} Recipes`
+    )
     : undefined;
 
   const handleSearch = (e: React.FormEvent) => {
@@ -164,8 +164,10 @@ export default function CategoryRecipes() {
       >
         <form onSubmit={handleSearch} className="max-w-md" role="search">
           <div className="relative">
+            <label htmlFor="category-recipe-search-input" className="sr-only">Search {currentCategory.name} recipes</label>
             <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} aria-hidden="true" />
             <Input
+              id="category-recipe-search-input"
               type="search"
               aria-label={`Search ${currentCategory.name} recipes`}
               placeholder="Search recipes in this category…"

@@ -4,8 +4,8 @@ import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import MarkdownContent from "@/components/markdown-content";
 import { RecipeChat } from "@/components/recipe-chat";
-import SeoHead from "@/components/seo/SeoHead";
-import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
+import SeoHead from "@/components/seo/seo-head";
+import BreadcrumbNav from "@/components/seo/breadcrumb-nav";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getRecipeBySlug } from "@/data/api-loader";
@@ -20,7 +20,7 @@ import {
   generateCanonicalUrl,
   generateBreadcrumbs
 } from "@/utils/seo-helpers";
-import { generateRecipeStructuredData } from "@/components/seo/StructuredData";
+import { generateRecipeStructuredData } from "@/components/seo/structured-data";
 import type { Recipe } from "@/data/api-types";
 
 const cookingTips = [
@@ -128,9 +128,9 @@ export default function RecipeDetail() {
   const rating = recipe?.averageRating || 5;
   const tags = recipe?.seO_Keywords
     ? recipe.seO_Keywords
-        .split(/[\n\r]+/)
-        .map(line => line.trim().replace(/^[-\d.]*\s*/, '').trim())
-        .filter(Boolean)
+      .split(/[\n\r]+/)
+      .map(line => line.trim().replace(/^[-\d.]*\s*/, '').trim())
+      .filter(Boolean)
     : [];
 
   const handleShare = () => {

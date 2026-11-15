@@ -106,8 +106,10 @@ export default function Navigation() {
         {/* Search, theme, mobile menu */}
         <div className="flex items-center gap-2">
           <form onSubmit={handleSearch} className="relative hidden md:block" role="search">
+            <label htmlFor="search-input" className="sr-only">Search recipes</label>
             <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} aria-hidden="true" />
             <Input
+              id="search-input"
               type="search"
               aria-label="Search recipes"
               placeholder="Search recipes…"
@@ -137,8 +139,10 @@ export default function Navigation() {
             <SheetContent side="right" className="w-[300px] sm:w-[380px]">
               <SheetTitle className="eyebrow mt-1">Menu</SheetTitle>
               <form onSubmit={handleSearch} className="relative mt-6" role="search">
+                <label htmlFor="mobile-search-input" className="sr-only">Search recipes</label>
                 <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} aria-hidden="true" />
                 <Input
+                  id="mobile-search-input"
                   type="search"
                   aria-label="Search recipes"
                   placeholder="Search recipes…"

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
+import BreadcrumbNav from "@/components/seo/breadcrumb-nav";
 
 interface BreadcrumbItem {
   name: string;

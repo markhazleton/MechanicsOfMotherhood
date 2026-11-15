@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# DevSpark - (c) 2026 Make Bold Solutions. Source: https://dev.makeboldspark.com
 
 set -euo pipefail
 
@@ -88,7 +89,7 @@ json_error() {
 
 get_default_base_branch() {
     local branch=""
-    if command -v gh >/dev/null 2>&1 && check_platform_auth; then
+    if [[ "$DEVSPARK_PLATFORM_NAME" == "github" ]] && command -v gh >/dev/null 2>&1 && check_platform_auth; then
         branch=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null || true)
     fi
     if [[ -z "$branch" ]]; then
@@ -143,7 +144,7 @@ extract_section_text() {
 find_quickfix_record_for_branch() {
     local repo_root="$1"
     local branch_name="$2"
-    local quickfix_dir="$repo_root/.documentation/quickfixes"
+    local quickfix_dir="$repo_root/.devspark.work/quickfixes"
     [[ -d "$quickfix_dir" ]] || return 0
     local best_id="" best_path="" file branch_line quickfix_id
     shopt -s nullglob
@@ -299,6 +300,178 @@ collect_gate_acknowledgements_json() {
     fi
 }
 
+# The engine needs PyYAML and Python 3.11+, so an interpreter that cannot run it is "unavailable",
+# never a reason to report the Knowledge as broken.
+resolve_knowledge_python() {
+    local name
+    for name in python3 python; do
+        if command -v "$name" >/dev/null 2>&1 && "$name" -c 'import sys, yaml; sys.exit(0 if sys.version_info >= (3, 11) else 1)' >/dev/null 2>&1; then
+            printf '%s\n' "$name"
+            return 0
+        fi
+    done
+    return 1
+}
+
+# Args: readiness, summary, head, blockers (JSON array), check output.
+knowledge_result_json() {
+    jq -n --arg readiness "$1" --arg summary "$2" --arg head "$3" \
+        --argjson blockers "$4" --arg output "$5" \
+        '{gap_summary: (if $summary == "" then null else $summary end), readiness: $readiness, blockers: $blockers, checked_head: $head, check_output: (if $output == "" then null else $output end)}'
+}
+
+# Read-only: proves the Knowledge at the committed HEAD still builds. It never regenerates,
+# edits, or commits anything, and it does not compare generated files or `last_verified` dates.
+collect_knowledge_json() {
+    local repo_root="$1" head="$2"
+    local engine python tracked check_output check_exit summary blockers_json
+    engine=$(resolve_knowledge_engine "$repo_root")
+    if [[ -z "$engine" ]]; then
+        knowledge_result_json unknown "build_knowledge_index.py not found" "$head" '[]' ""
+        return 0
+    fi
+    tracked=$(git -C "$repo_root" ls-tree -r --name-only HEAD -- .knowledge 2>/dev/null || true)
+    if [[ -z "$tracked" ]]; then
+        knowledge_result_json not-applicable "no .knowledge content is tracked at HEAD" "$head" '[]' ""
+        return 0
+    fi
+    if ! python=$(resolve_knowledge_python); then
+        knowledge_result_json unknown "no usable Python interpreter (python3 or python with PyYAML, 3.11+) found" "$head" '[]' ""
+        return 0
+    fi
+
+    check_output=$("$python" "$engine" --repo-root "$repo_root" --check 2>&1) && check_exit=0 || check_exit=$?
+
+    if [[ "$check_exit" -eq 0 ]]; then
+        knowledge_result_json ready "" "$head" '[]' "$check_output"
+        return 0
+    fi
+
+    if [[ "$check_exit" -eq 1 ]]; then
+        summary=$(printf '%s\n' "$check_output" | head -n 1)
+        blockers_json=$(printf '%s\n' "$check_output" | jq -R -s -c '
+            split("\n") | map(gsub("\\s+$"; "") | select(length > 0))
+            | (.[-1] // "knowledge check failed") as $message
+            | [{kind: "build-error", path: null, message: $message}]')
+        knowledge_result_json blocked "$summary" "$head" "$blockers_json" "$check_output"
+        return 0
+    fi
+
+    knowledge_result_json unknown "knowledge engine returned an unsupported result (exit $check_exit)" "$head" '[]' "$check_output"
+}
+
+knowledge_blocked_error() {
+    local preflight_json="$1"
+    local knowledge_json head repo_root engine_rel message details line
+    knowledge_json=$(jq -c '.knowledge' <<< "$preflight_json")
+    head=$(jq -r '.checked_head' <<< "$knowledge_json")
+    repo_root=$(jq -r '.repo_root' <<< "$preflight_json")
+    if [[ -f "$repo_root/.devspark/scripts/build_knowledge_index.py" ]]; then
+        engine_rel=".devspark/scripts/build_knowledge_index.py"
+    else
+        engine_rel="scripts/build_knowledge_index.py"
+    fi
+    message="CREATE PR BLOCKED — KNOWLEDGE CANNOT BE BUILT"
+    details="Committed HEAD: $head"
+    details+=$'\nKnowledge: BUILD ERROR'
+    while IFS= read -r line; do details+=$'\n'"Error: $line"; done < <(jq -r '.blockers[] | .message' <<< "$knowledge_json")
+    details+=$'\nRequired action:'
+    details+=$'\n1. Fix the reported source or frontmatter problem.'
+    details+=$'\n2. Confirm it builds: python '"$engine_rel"$' --repo-root . --check'
+    details+=$'\n3. Commit the .knowledge/** changes.'
+    details+=$'\n4. Push.'
+    details+=$'\n5. Rerun /devspark-create-pr.'
+
+    jq -n --arg message "$message" --arg details "$details" --arg head "$head" \
+        --argjson blockers "$(jq -c '.blockers' <<< "$knowledge_json")" \
+        '{error: true, message: $message, details: $details, checked_head: $head, blockers: $blockers}'
+}
+
+# Reports DevSpark's own lifecycle check (judge.py lifecycle) for the branch's work directory, the
+# same check /devspark-next and /devspark-implement use. It only reads; the rules live in judge.py.
+# When the check cannot run, the result says why and whether work.md declares mandatory obligations,
+# because an obligation that could not be evaluated must never read as one that passed.
+lifecycle_unavailable_json() {
+    local feature_dir="$1" reason="$2" declared=false
+    if [[ -f "$feature_dir/work.md" ]] && grep -Eiq $'^##[[:blank:]]+Required Obligations[[:blank:]]*\r?$' "$feature_dir/work.md"; then
+        declared=true
+    fi
+    jq -n --arg reason "$reason" --argjson declared "$declared" \
+        '{status: "unavailable", reason: $reason, obligations_declared: $declared, failures: [], pending_later_phase: []}'
+}
+
+collect_lifecycle_json() {
+    local feature_dir="$1" judge python output
+    if [[ -z "$feature_dir" || ! -d "$feature_dir" ]]; then
+        jq -n '{status: "not-applicable", failures: [], pending_later_phase: []}'
+        return 0
+    fi
+    judge="$SCRIPT_DIR/../judge.py"
+    if [[ ! -f "$judge" ]]; then
+        lifecycle_unavailable_json "$feature_dir" "judge-missing"
+        return 0
+    fi
+    if ! python=$(resolve_knowledge_python); then
+        lifecycle_unavailable_json "$feature_dir" "python-unavailable"
+        return 0
+    fi
+    output=$("$python" "$judge" lifecycle --feature-dir "$feature_dir" 2>/dev/null | tr -d '\r') || true
+    if jq -e '.status == "pass" or .status == "fail"' <<< "$output" >/dev/null 2>&1; then
+        jq -c '{status: .status, failures: (.failures // []), pending_later_phase: (.pending_later_phase // [])}' <<< "$output"
+    else
+        lifecycle_unavailable_json "$feature_dir" "invalid-output"
+    fi
+}
+
+lifecycle_unavailable_error() {
+    local preflight_json="$1"
+    local reason head feature_name cause fix details
+    reason=$(jq -r '.lifecycle.reason // ""' <<< "$preflight_json")
+    head=$(jq -r '.remote.local_head' <<< "$preflight_json")
+    feature_name=$(basename "$(jq -r '.feature.dir // ""' <<< "$preflight_json")")
+    case "$reason" in
+        judge-missing)
+            cause="DevSpark's judge.py is not installed beside its scripts"
+            fix="1. Restore judge.py by reinstalling or upgrading the DevSpark scripts." ;;
+        python-unavailable)
+            cause="no Python 3.11+ interpreter with PyYAML is available as python3 or python"
+            fix="1. Make Python 3.11+ with PyYAML available as python3 or python." ;;
+        *)
+            cause="judge.py ran but did not return a lifecycle result"
+            fix="1. Run judge.py lifecycle --feature-dir .devspark.work/specs/$feature_name to see the error, and fix it." ;;
+    esac
+    details="Committed HEAD: $head"
+    details+=$'\n'"work.md declares Required Obligations, but DevSpark could not run its lifecycle check: $cause."
+    details+=$'\nAn obligation that could not be evaluated is not an obligation that passed, so DevSpark will not publish this PR.'
+    details+=$'\nRequired action:'
+    details+=$'\n'"$fix"
+    details+=$'\n2. Rerun /devspark-create-pr.'
+    details+=$'\nDevSpark has no override for this. Where organizational policy authorizes a different approval path, follow that path outside DevSpark.'
+
+    jq -n --arg message "CREATE PR BLOCKED — LIFECYCLE CHECK UNAVAILABLE" --arg details "$details" --arg reason "$reason" \
+        '{error: true, message: $message, details: $details, reason: $reason}'
+}
+
+obligation_blocked_error() {
+    local preflight_json="$1"
+    local failure head details
+    failure=$(jq -c '[.lifecycle.failures[] | select(.code == "required-obligation-unresolved")][0]' <<< "$preflight_json")
+    head=$(jq -r '.remote.local_head' <<< "$preflight_json")
+    details="Committed HEAD: $head"
+    details+=$'\n'"Obligation: $(jq -r '.message' <<< "$failure")"
+    details+=$'\nA mandatory obligation is not the developer\'s to waive, and no flag or acknowledgement bypasses it.'
+    details+=$'\nRequired action:'
+    details+=$'\n1. Obtain the satisfying evidence, or an explicit decision from the authority the obligation names.'
+    details+=$'\n2. Check the entry under ## Required Obligations in work.md and add a reference to that evidence or decision (Evidence: followed by a repository path, commit, review or approval id, or link).'
+    details+=$'\n3. Commit.'
+    details+=$'\n4. Push.'
+    details+=$'\n5. Rerun /devspark-create-pr.'
+
+    jq -n --arg message "CREATE PR BLOCKED — REQUIRED OBLIGATION UNRESOLVED" --arg details "$details" \
+        --argjson obligations "$(jq -c '.obligations // []' <<< "$failure")" \
+        '{error: true, message: $message, details: $details, obligations: $obligations}'
+}
+
 collect_preflight() {
     local repo_root current_branch target_branch dirty auth_ok cli_available creation_supported
     local local_head remote_head origin_exists remote_branch_exists branch_pushed_to_remote branch_push_details clean_worktree
@@ -306,7 +479,7 @@ collect_preflight() {
     local spec_exists=false plan_exists=false tasks_exists=false
     local spec_title="" classification="" risk_level="" required_gates="" recommended_next_step=""
     local tasks_total=0 tasks_completed=0 tasks_incomplete=0
-    local diff_ref lines_summary changed_files_count file_changes_json commit_log_json existing_pr_json checklists_json gate_artifacts_json gate_acknowledgements_json quickfix_json
+    local diff_ref lines_summary changed_files_count file_changes_json commit_log_json existing_pr_json checklists_json gate_artifacts_json gate_acknowledgements_json quickfix_json knowledge_json lifecycle_json
     local existing_pr=false existing_pr_number="" existing_pr_url="" existing_pr_title="" existing_pr_state="" existing_pr_draft=false
 
     repo_root=$(get_repo_root)
@@ -348,7 +521,7 @@ collect_preflight() {
         branch_push_details="Push the latest commits from '$current_branch' to origin before creating a PR"
     fi
 
-    if command -v gh >/dev/null 2>&1; then
+    if command -v "$DEVSPARK_PR_CLI" >/dev/null 2>&1; then
         cli_available=true
         if check_platform_auth; then
             auth_ok=true
@@ -360,7 +533,7 @@ collect_preflight() {
         auth_ok=false
     fi
 
-    if [[ "$DEVSPARK_PLATFORM_NAME" == "github" && "$cli_available" == true ]]; then
+    if [[ "$cli_available" == true && ( "$DEVSPARK_PLATFORM_NAME" == "github" || "$DEVSPARK_PLATFORM_NAME" == "azdo" ) ]]; then
         creation_supported=true
     else
         creation_supported=false
@@ -421,15 +594,32 @@ collect_preflight() {
         jq -R 'split("") | if length >= 4 then {hash: .[0], subject: .[1], author: .[2], date: .[3]} else empty end' | \
         jq -s '.' 2>/dev/null || printf '[]\n')
 
+    knowledge_json=$(collect_knowledge_json "$repo_root" "$local_head")
+    lifecycle_json=$(collect_lifecycle_json "$feature_dir")
+
     if [[ "$cli_available" == true && "$auth_ok" == true ]]; then
-        existing_pr_json=$(gh pr list --head "$current_branch" --json number,url,title,state,isDraft --limit 1 2>/dev/null | jq '.[0] // {}' 2>/dev/null || echo '{}')
-        existing_pr_number=$(echo "$existing_pr_json" | jq -r '.number // empty')
-        if [[ -n "$existing_pr_number" ]]; then
-            existing_pr=true
-            existing_pr_url=$(echo "$existing_pr_json" | jq -r '.url // ""')
-            existing_pr_title=$(echo "$existing_pr_json" | jq -r '.title // ""')
-            existing_pr_state=$(echo "$existing_pr_json" | jq -r '.state // ""')
-            existing_pr_draft=$(echo "$existing_pr_json" | jq -r '.isDraft // false')
+        if [[ "$DEVSPARK_PLATFORM_NAME" == "azdo" ]]; then
+            local azorg azproject azrepo az_pr_json
+            IFS=$'\t' read -r azorg azproject azrepo < <(get_azdo_repo_context)
+            az_pr_json=$(az repos pr list --organization "https://dev.azure.com/$azorg" --project "$azproject" --repository "$azrepo" --source-branch "$current_branch" --status active --top 1 --output json 2>/dev/null | jq '.[0] // {}' 2>/dev/null || echo '{}')
+            existing_pr_number=$(echo "$az_pr_json" | jq -r '.pullRequestId // empty')
+            if [[ -n "$existing_pr_number" ]]; then
+                existing_pr=true
+                existing_pr_url="https://dev.azure.com/$azorg/$azproject/_git/$azrepo/pullrequest/$existing_pr_number"
+                existing_pr_title=$(echo "$az_pr_json" | jq -r '.title // ""')
+                existing_pr_state=$(echo "$az_pr_json" | jq -r '.status // ""')
+                existing_pr_draft=$(echo "$az_pr_json" | jq -r '.isDraft // false')
+            fi
+        else
+            existing_pr_json=$(gh pr list --head "$current_branch" --json number,url,title,state,isDraft --limit 1 2>/dev/null | jq '.[0] // {}' 2>/dev/null || echo '{}')
+            existing_pr_number=$(echo "$existing_pr_json" | jq -r '.number // empty')
+            if [[ -n "$existing_pr_number" ]]; then
+                existing_pr=true
+                existing_pr_url=$(echo "$existing_pr_json" | jq -r '.url // ""')
+                existing_pr_title=$(echo "$existing_pr_json" | jq -r '.title // ""')
+                existing_pr_state=$(echo "$existing_pr_json" | jq -r '.state // ""')
+                existing_pr_draft=$(echo "$existing_pr_json" | jq -r '.isDraft // false')
+            fi
         fi
     fi
 
@@ -478,6 +668,8 @@ collect_preflight() {
         --argjson gate_artifacts "$gate_artifacts_json" \
         --argjson gate_acknowledgements "$gate_acknowledgements_json" \
         --argjson quickfix_record "$quickfix_json" \
+        --argjson knowledge "$knowledge_json" \
+        --argjson lifecycle "$lifecycle_json" \
         '{
             repo_root: $repo_root,
             current_branch: $current_branch,
@@ -527,6 +719,8 @@ collect_preflight() {
                 file_changes: $file_changes
             },
             quickfix_record: $quickfix_record,
+            knowledge: $knowledge,
+            lifecycle: $lifecycle,
             existing_pr: {
                 exists: $existing_pr,
                 number: (if $existing_pr then $existing_pr_number else null end),
@@ -551,13 +745,28 @@ run_create_or_update() {
         json_error "Current branch is not pushed to remote" "$(echo "$preflight_json" | jq -r '.remote.details')"
         return 1
     fi
+    if [[ "$(echo "$preflight_json" | jq -r '.knowledge.readiness')" == "blocked" ]]; then
+        knowledge_blocked_error "$preflight_json"
+        return 1
+    fi
+    if jq -e '[.lifecycle.failures[] | select(.code == "required-obligation-unresolved")] | length > 0' <<< "$preflight_json" >/dev/null; then
+        obligation_blocked_error "$preflight_json"
+        return 1
+    fi
+    if jq -e '.lifecycle.status == "unavailable" and .lifecycle.obligations_declared == true' <<< "$preflight_json" >/dev/null; then
+        lifecycle_unavailable_error "$preflight_json"
+        return 1
+    fi
 
     if [[ "$(echo "$preflight_json" | jq -r '.creation_supported')" != "true" ]]; then
-        json_error "Automated PR creation is only supported for GitHub in this release" "Platform: $DEVSPARK_PLATFORM_NAME"
+        json_error "Automated PR creation is not supported for platform '$DEVSPARK_PLATFORM_NAME'" "Supported: github (gh), azdo (az). Install and authenticate the platform CLI."
         return 1
     fi
     if [[ "$(echo "$preflight_json" | jq -r '.auth_ok')" != "true" ]]; then
-        json_error "GitHub CLI is not authenticated" "Run: gh auth login"
+        local auth_hint="Authenticate the $DEVSPARK_PR_CLI CLI"
+        [[ "$DEVSPARK_PLATFORM_NAME" == "github" ]] && auth_hint="Run: gh auth login"
+        [[ "$DEVSPARK_PLATFORM_NAME" == "azdo" ]] && auth_hint="Run: az login"
+        json_error "$DEVSPARK_PLATFORM_DISPLAY CLI is not authenticated" "$auth_hint"
         return 1
     fi
 
@@ -572,7 +781,36 @@ run_create_or_update() {
         return 1
     fi
 
-    if [[ "$action" == "update" ]]; then
+    if [[ "$DEVSPARK_PLATFORM_NAME" == "azdo" ]]; then
+        local azorg azproject azrepo az_org_url az_id az_show base_branch cur_branch
+        IFS=$'\t' read -r azorg azproject azrepo < <(get_azdo_repo_context)
+        az_org_url="https://dev.azure.com/$azorg"
+        base_branch="${BASE_BRANCH:-$(echo "$preflight_json" | jq -r '.target_branch')}"
+        cur_branch=$(echo "$preflight_json" | jq -r '.current_branch')
+        if [[ "$action" == "update" ]]; then
+            pr_to_edit="$PR_NUMBER"
+            [[ -z "$pr_to_edit" ]] && pr_to_edit=$(echo "$preflight_json" | jq -r '.existing_pr.number // empty')
+            if [[ -z "$pr_to_edit" ]]; then json_error "No PR found to update" "Create a PR first or pass --pr-number"; return 1; fi
+            az repos pr update --organization "$az_org_url" --id "$pr_to_edit" --title "$TITLE" --description "$body_value" >/dev/null 2>&1
+            for reviewer in "${REVIEWERS[@]}"; do az repos pr reviewer add --organization "$az_org_url" --id "$pr_to_edit" --reviewers "$reviewer" >/dev/null 2>&1; done
+            az_id="$pr_to_edit"
+            az_show=$(az repos pr show --organization "$az_org_url" --id "$pr_to_edit" --output json 2>/dev/null)
+        else
+            local -a az_args=(repos pr create --organization "$az_org_url" --project "$azproject" --repository "$azrepo" --source-branch "$cur_branch" --target-branch "$base_branch" --title "$TITLE" --description "$body_value" --output json)
+            $DRAFT && az_args+=(--draft true)
+            for reviewer in "${REVIEWERS[@]}"; do az_args+=(--reviewers "$reviewer"); done
+            az_show=$(az "${az_args[@]}" 2>/dev/null || true)
+            az_id=$(echo "$az_show" | jq -r '.pullRequestId // empty')
+            if [[ -z "$az_id" ]]; then json_error "Failed to create pull request" "az repos pr create did not return a pull request id"; return 1; fi
+        fi
+        pr_view_json=$(jq -n \
+            --argjson number "${az_id:-0}" \
+            --arg url "https://dev.azure.com/$azorg/$azproject/_git/$azrepo/pullrequest/$az_id" \
+            --arg title "$(echo "$az_show" | jq -r '.title // ""')" \
+            --arg state "$(echo "$az_show" | jq -r '.status // ""')" \
+            --argjson draft "$(echo "$az_show" | jq '.isDraft // false')" \
+            '{number:$number,url:$url,title:$title,state:$state,isDraft:$draft}')
+    elif [[ "$action" == "update" ]]; then
         pr_to_edit="$PR_NUMBER"
         if [[ -z "$pr_to_edit" ]]; then
             pr_to_edit=$(echo "$preflight_json" | jq -r '.existing_pr.number // empty')
@@ -603,7 +841,7 @@ run_create_or_update() {
         pr_view_json=$(gh pr view "$pr_url" --json number,url,title,state,isDraft 2>/dev/null)
     fi
 
-    jq -n --arg action "$action" --arg title "$(echo "$pr_view_json" | jq -r '.title')" --arg url "$(echo "$pr_view_json" | jq -r '.url')" --arg state "$(echo "$pr_view_json" | jq -r '.state')" --argjson number "$(echo "$pr_view_json" | jq '.number')" --argjson draft "$(echo "$pr_view_json" | jq '.isDraft // false')" '{status: "ok", action: $action, pr_number: $number, url: $url, title: $title, state: $state, draft: $draft}'
+    jq -n --arg action "$action" --arg checked_head "$(echo "$preflight_json" | jq -r '.remote.local_head')" --arg title "$(echo "$pr_view_json" | jq -r '.title')" --arg url "$(echo "$pr_view_json" | jq -r '.url')" --arg state "$(echo "$pr_view_json" | jq -r '.state')" --argjson number "$(echo "$pr_view_json" | jq '.number')" --argjson draft "$(echo "$pr_view_json" | jq '.isDraft // false')" '{status: "ok", action: $action, checked_head: $checked_head, pr_number: $number, url: $url, title: $title, state: $state, draft: $draft}'
 }
 
 main() {

@@ -2,8 +2,8 @@ import { Link } from "wouter";
 import { ArrowRight, Compass } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
-import SeoHead from "@/components/seo/SeoHead";
+import BreadcrumbNav from "@/components/seo/breadcrumb-nav";
+import SeoHead from "@/components/seo/seo-head";
 import { Button } from "@/components/ui/button";
 import { generateBreadcrumbs, generateCanonicalUrl } from "@/utils/seo-helpers";
 

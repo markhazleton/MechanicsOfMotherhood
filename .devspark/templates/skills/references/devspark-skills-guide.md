@@ -1,5 +1,7 @@
 # DevSpark Skills Guide
 
+<!-- DevSpark — © 2026 Make Bold Solutions. Source: https://dev.makeboldspark.com -->
+
 Source standard: <https://agentskills.io/specification>  
 Last reviewed: 2026-05-19
 
@@ -46,7 +48,7 @@ Shared guidance belongs under `templates/skills/references/`. Skill-specific
 guidance belongs under `templates/skills/<skill-name>/references/`.
 
 The first pilot skill is `templates/skills/write-spec/`. It proves that
-`/devspark.specify` can keep the same user-facing command behavior while
+`/devspark-specify` can keep the same user-facing command behavior while
 delegating portable spec-drafting instructions to a standalone skill.
 
 ## Commands vs Skills
@@ -188,7 +190,7 @@ Script guidance:
 - Prefer JSON or another structured format for output.
 - Include clear diagnostics for missing tools, missing files, or non-repository
   execution.
-- Do not write under `.documentation/` unless the specific workflow and
+- Do not write under `.knowledge/` unless the specific workflow and
   constitution permit it.
 - Do not make script success mandatory unless the feature spec explicitly says
   the skill cannot proceed without that context.
@@ -220,7 +222,7 @@ data files. Add assets only when a reusable artifact is clearer than inline
 Markdown or a reference file.
 
 For DevSpark, assets should be portable with the skill folder. Do not place
-skill assets in `.documentation/`, because `.documentation/` is repository-owned
+skill assets in `.knowledge/`, because `.knowledge/` is repository-owned
 work product and must not be installed or modified by framework operations.
 
 ## Progressive Disclosure

@@ -4,15 +4,15 @@ import FeaturedRecipes from "@/components/featured-recipes";
 import BlogSection from "@/components/blog-section";
 import CommunitySection from "@/components/community-section";
 import Footer from "@/components/footer";
-import SeoHead from "@/components/seo/SeoHead";
-import { generateWebsiteStructuredData, generateOrganizationStructuredData } from "@/components/seo/StructuredData";
+import SeoHead from "@/components/seo/seo-head";
+import { generateWebsiteStructuredData, generateOrganizationStructuredData } from "@/components/seo/structured-data";
 import SITE_CONFIG from "@/lib/site-config";
 
 export default function Home() {
   // Generate structured data for homepage
   const websiteStructuredData = generateWebsiteStructuredData();
   const organizationStructuredData = generateOrganizationStructuredData();
-  
+
   // Combine structured data
   const combinedStructuredData = [websiteStructuredData, organizationStructuredData];
 
@@ -27,7 +27,7 @@ export default function Home() {
         type="website"
         structuredData={combinedStructuredData}
       />
-      
+
       <Navigation />
       <HeroSection />
       <FeaturedRecipes />

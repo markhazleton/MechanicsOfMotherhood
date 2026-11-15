@@ -1,5 +1,7 @@
 # DevSpark Agent Skills
 
+<!-- DevSpark — © 2026 Make Bold Solutions. Source: https://dev.makeboldspark.com -->
+
 This directory contains DevSpark's portable Agent Skills — capability packages
 that comply with the open Agent Skills specification and can run in any
 skills-compatible client without DevSpark installed.

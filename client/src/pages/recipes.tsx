@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { Search, LayoutGrid, X, SearchX } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import SeoHead from "@/components/seo/SeoHead";
+import SeoHead from "@/components/seo/seo-head";
 import PageHeader from "@/components/page-header";
 import RecipeCard from "@/components/recipe-card";
 import { Input } from "@/components/ui/input";
@@ -26,7 +26,7 @@ export default function Recipes() {
       ? new URLSearchParams(window.location.search).get("search") || ""
       : ""
   );
-  
+
   // Initialize analytics
   const analytics = useAnalytics();
 
@@ -36,11 +36,11 @@ export default function Recipes() {
 
   // Filter recipes based on search and category
   let filteredRecipes = allRecipes || [];
-  
+
   if (activeSearch) {
     filteredRecipes = searchRecipes(activeSearch);
   }
-  
+
   if (selectedCategory) {
     const categoryId = parseInt(selectedCategory);
     filteredRecipes = filteredRecipes.filter(recipe => recipe.recipeCategoryID === categoryId);
@@ -74,7 +74,7 @@ export default function Recipes() {
     const nextSearch = searchQuery.trim();
     setActiveSearch(nextSearch);
     updateSearchInUrl(nextSearch);
-    
+
     // Track search event
     if (nextSearch) {
       analytics.trackSearch(nextSearch, searchRecipes(nextSearch).length, 'global');
@@ -85,8 +85,8 @@ export default function Recipes() {
   const currentUrl = generateCanonicalUrl('/recipes');
   const breadcrumbs = generateBreadcrumbs('/recipes');
   const recipeCount = filteredRecipes?.length || 0;
-  
-  const pageDescription = activeSearch 
+
+  const pageDescription = activeSearch
     ? `Search results for "${activeSearch}" - ${recipeCount} recipes found. Tested recipes and meal planning solutions for busy families.`
     : `Browse our collection of ${recipeCount}+ tested recipes for working mothers. Quick meals, family favorites, and easy meal planning.`;
 
@@ -127,8 +127,10 @@ export default function Recipes() {
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
           <form onSubmit={handleSearch} className="w-full lg:max-w-md" role="search">
             <div className="relative">
+              <label htmlFor="recipe-search-input" className="sr-only">Search recipes</label>
               <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} aria-hidden="true" />
               <Input
+                id="recipe-search-input"
                 type="search"
                 aria-label="Search recipes"
                 placeholder="Search recipes…"

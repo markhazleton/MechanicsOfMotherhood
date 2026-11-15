@@ -1,4 +1,6 @@
-version: 2.4.0
-installed: 2026-05-26
+product: DevSpark
+edition: Make-Bold
+version: 9.6.0
+installed: 2026-11-15
 method: claude-code-quickstart
 migrated-from: legacy-layout

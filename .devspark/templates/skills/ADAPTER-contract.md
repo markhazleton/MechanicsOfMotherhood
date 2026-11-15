@@ -1,5 +1,7 @@
 # Adapter Contract
 
+<!-- DevSpark — © 2026 Make Bold Solutions. Source: https://dev.makeboldspark.com -->
+
 This document defines how a DevSpark command invokes an Agent Skill. It covers
 skill discovery, input mapping, output mapping, responsibility split, and
 backward-compatibility rules.
@@ -91,10 +93,10 @@ DevSpark-governed path.
 | Skill output | Command action |
 | ------------ | -------------- |
 | Draft `spec.md` body | Written to `SPEC_FILE` resolved by the command |
-| `[NEEDS CLARIFICATION]` markers | Preserved; command may invoke `/devspark.clarify` |
+| `[NEEDS CLARIFICATION]` markers | Preserved; command may invoke `/devspark-clarify` |
 | `Assumptions` section | Preserved verbatim in the placed spec |
 
-The skill must not write directly to `SPEC_FILE` or any `.documentation/` path.
+The skill must not write directly to `SPEC_FILE` or any `.knowledge/` path.
 Writing to DevSpark-governed paths is always a command responsibility.
 
 ---
@@ -129,7 +131,7 @@ The `write-spec` skill is the pilot implementation of this contract.
 Resolve the write-spec skill at templates/skills/write-spec/SKILL.md.
 Pass the following named inputs to the skill:
   $FEATURE_DESCRIPTION — the user's feature request text
-  $CONSTITUTION_PATH — the resolved path to .documentation/memory/constitution.md
+  $CONSTITUTION_PATH — the resolved path to .knowledge/governance/constitution.md
   $PRIOR_SPEC_SUMMARY — the JSON output from the skill's gather-context script
 
 The skill will produce a draft spec body. Place the draft into SPEC_FILE

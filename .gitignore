@@ -126,6 +126,8 @@ storybook-static
 # Temporary folders
 tmp/
 temp/
+__pycache__/
+*.pyc
 
 # OS generated files
 .DS_Store

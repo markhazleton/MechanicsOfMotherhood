@@ -3,7 +3,7 @@ import { ArrowRight, ChefHat } from "lucide-react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import PageHeader from "@/components/page-header";
-import SeoHead from "@/components/seo/SeoHead";
+import SeoHead from "@/components/seo/seo-head";
 import { generateBreadcrumbs, generateCanonicalUrl, generateItemListStructuredData } from "@/utils/seo-helpers";
 import { Badge } from "@/components/ui/badge";
 import { getCategorySlug } from "@/utils/slugify";

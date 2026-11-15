@@ -50,8 +50,10 @@ export default function HeroSection() {
           >
             <div className="flex flex-col gap-3 sm:flex-row">
               <div className="relative flex-1">
+                <label htmlFor="home-recipe-search-input" className="sr-only">Search all recipes</label>
                 <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} aria-hidden="true" />
                 <Input
+                  id="home-recipe-search-input"
                   type="search"
                   aria-label="Search all recipes"
                   placeholder="Search all recipes…"

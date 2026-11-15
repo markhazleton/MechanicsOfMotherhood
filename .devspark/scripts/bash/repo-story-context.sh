@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
+# DevSpark - (c) 2026 Make Bold Solutions. Source: https://dev.makeboldspark.com
 # Build repository history context for /devspark.repo-story
 # Usage:
 #   repo-story-context.sh [--output <path>] [--months <n>] [--scope <full|velocity|quality|business|team>] [--compare-baseline YYYY-MM] [--stdout]
 
 set -euo pipefail
 
-# Multi-app support (T087)
+# Multi-app support
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh" 2>/dev/null || true
 parse_app_context "$@" 2>/dev/null || true
 if [[ -n "${DEVSPARK_APP_ID:-}" || "${DEVSPARK_REPO_SCOPE:-false}" == "true" ]]; then
@@ -13,7 +14,7 @@ if [[ -n "${DEVSPARK_APP_ID:-}" || "${DEVSPARK_REPO_SCOPE:-false}" == "true" ]];
     print_scope_summary >&2
 fi
 
-OUTPUT_PATH=".documentation/repo-story/history.json"
+OUTPUT_PATH=".knowledge/guides/repo-story/history.json"
 PRINT_STDOUT=false
 MONTHS=12
 SCOPE="full"

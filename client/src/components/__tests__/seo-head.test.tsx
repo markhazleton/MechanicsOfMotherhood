@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
-import SeoHead from '@/components/seo/SeoHead';
+import SeoHead from '@/components/seo/seo-head';
 
 describe('SeoHead', () => {
   it('injects title and meta tags', async () => {

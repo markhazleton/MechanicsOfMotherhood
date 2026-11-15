@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# DevSpark - (c) 2026 Make Bold Solutions. Source: https://dev.makeboldspark.com
 # Quickfix context gathering script
 # Supports rapid bug fixes and small features without full spec overhead
 
@@ -9,7 +10,7 @@ set -o pipefail
 SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
-# Multi-app support (T083)
+# Multi-app support
 parse_app_context "$@" 2>/dev/null || true
 if [[ -n "${DEVSPARK_APP_ID:-}" || "${DEVSPARK_REPO_SCOPE:-false}" == "true" ]]; then
     resolve_app_scope 2>/dev/null || true
@@ -37,7 +38,7 @@ while [[ $# -gt 0 ]]; do
             ACTION="list"
             shift
             ;;
-        QF-*)
+        QF-*|[0-9][0-9][0-9]-fix-*)
             QUICKFIX_ID="$1"
             shift
             ;;
@@ -55,8 +56,8 @@ done
 
 # Get repository context
 REPO_ROOT=$(get_repo_root)
-CONSTITUTION_PATH="$REPO_ROOT/.documentation/memory/constitution.md"
-QUICKFIX_DIR="$REPO_ROOT/.documentation/quickfixes"
+CONSTITUTION_PATH="$REPO_ROOT/.knowledge/governance/constitution.md"
+QUICKFIX_DIR="$REPO_ROOT/.devspark.work/quickfixes"
 CURRENT_BRANCH=$(get_current_branch)
 
 # Check constitution exists
@@ -65,22 +66,37 @@ if [[ -f "$CONSTITUTION_PATH" ]]; then
     CONSTITUTION_EXISTS="true"
 fi
 
-# Calculate next quickfix ID (QF-YYYY-NNN format)
-YEAR=$(date +%Y)
-NEXT_NUM=1
-if [[ -d "$QUICKFIX_DIR" ]]; then
-    LATEST=$(find "$QUICKFIX_DIR" -maxdepth 1 -name "QF-${YEAR}-[0-9]*.md" -exec basename {} \; 2>/dev/null | grep -E "^QF-${YEAR}-[0-9]+\.md$" | sort -r | head -1 || echo "")
-    if [[ -n "$LATEST" ]]; then
-        # Extract number from filename like QF-2026-001.md
-        CURRENT_NUM=$(echo "$LATEST" | sed -E "s/QF-$YEAR-0*([0-9]+)\.md/\1/")
-        NEXT_NUM=$((CURRENT_NUM + 1))
+# Quickfix branch and record naming flows
+# through the unified allocator + slug normalizer (same ones new-branch.sh
+# uses), producing NNN-fix-<slug> instead of the legacy QF-YYYY-NNN. Legacy QF-YYYY-NNN records remain readable via the
+# unified allocator's scan of both formats.
+SLUG_SOURCE="${DESCRIPTION:-quickfix}"
+SLUG=$(clean_branch_name "$SLUG_SOURCE")
+SLUG=$(printf '%s' "$SLUG" | tr '-' '\n' | grep -v '^$' | head -4 | tr '\n' '-' | sed 's/-$//')
+[[ -n "$SLUG" ]] || SLUG="quickfix"
+
+NEXT_NUMBER=$(get_next_unified_index)
+FEATURE_NUM=$(printf "%03d" "$((10#$NEXT_NUMBER))")
+BRANCH_NAME="${FEATURE_NUM}-fix-${SLUG}"
+NEXT_ID="$BRANCH_NAME"
+
+# Detect git availability (needed to create the branch and commit the record)
+HAS_GIT="false"
+if has_git; then
+    HAS_GIT="true"
+fi
+
+# Detect a push target so the branch can be published for team visibility
+HAS_REMOTE="false"
+if [[ "$HAS_GIT" == "true" ]]; then
+    if [[ -n "$(git remote 2>/dev/null)" ]]; then
+        HAS_REMOTE="true"
     fi
 fi
-NEXT_ID=$(printf "QF-%s-%03d" "$YEAR" "$NEXT_NUM")
 
 # Get git user for attribution
 GIT_USER="unknown"
-if has_git; then
+if [[ "$HAS_GIT" == "true" ]]; then
     GIT_USER=$(git config user.name 2>/dev/null || echo "unknown")
 fi
 
@@ -132,6 +148,11 @@ if [[ "$JSON_MODE" == true ]]; then
   "QUICKFIX_DIR": "$QUICKFIX_DIR",
   "CURRENT_BRANCH": "$CURRENT_BRANCH",
   "NEXT_ID": "$NEXT_ID",
+  "BRANCH_NAME": "$BRANCH_NAME",
+  "NUMBER": "$FEATURE_NUM",
+  "SLUG": "$SLUG",
+  "HAS_GIT": $HAS_GIT,
+  "HAS_REMOTE": $HAS_REMOTE,
   "GIT_USER": "$GIT_USER",
   "TIMESTAMP": "$TIMESTAMP",
   "ACTION": "$ACTION",
@@ -152,6 +173,9 @@ else
     echo "Quickfix Directory: $QUICKFIX_DIR"
     echo "Current Branch: $CURRENT_BRANCH"
     echo "Next ID: $NEXT_ID"
+    echo "Branch Name: $BRANCH_NAME"
+    echo "Number: $FEATURE_NUM"
+    echo "Slug: $SLUG"
     echo "Action: $ACTION"
     if [[ -n "$DESCRIPTION" ]]; then
         echo "Description: $DESCRIPTION"
